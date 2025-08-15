@@ -6,8 +6,8 @@ This document provides comprehensive documentation for all utility functions use
 
 CIPP utility documentation is organized into two main sections:
 
-- **📄 This Document (utils.md)** - Core utility functions for data processing, formatting, validation, UI components, and authentication
-- **📄 [API Utilities (utilities.md)](./utilities.md)** - Specialized functions for API interactions using TanStack Query (ApiGetCall, ApiPostCall, etc.)
+- **📄 This Document (core-utilities.md)** - Core utility functions for data processing, formatting, validation, UI components, and authentication
+- **📄 [API Utilities (api-utilities.md)](./api-utilities.md)** - Specialized functions for API interactions using TanStack Query (ApiGetCall, ApiPostCall, etc.)
 
 ## Related Documentation
 
@@ -1122,7 +1122,7 @@ const apiDocs = getArticles(['title', 'slug', 'tags'])
 
 ## API Utilities Reference
 
-For comprehensive API interaction utilities, see the **[API Utilities Documentation](./utilities.md)** which covers:
+For comprehensive API interaction utilities, see the **[API Utilities Documentation](./api-utilities.md)** which covers:
 
 - **ApiGetCall** - GET requests with caching and retry logic
 - **ApiPostCall** - POST/PUT/DELETE requests with mutation support  

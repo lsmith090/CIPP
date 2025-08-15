@@ -18,13 +18,22 @@ Dashboard components for displaying metrics, status information, and interactive
 ```jsx
 import { CippInfoBar } from '../components/CippCards/CippInfoBar';
 
-// Usage: Status information with optional actions
+// Usage: Dashboard information display with array of data items
 <CippInfoBar
-  title="Tenant Status"
-  value="Healthy"
-  color="success"
-  icon={<CheckCircleIcon />}
-  action={<Button>Details</Button>}
+  data={[
+    {
+      name: 'Tenant Status',
+      value: 'Healthy',
+      color: 'success',
+      icon: <CheckCircleIcon />
+    },
+    {
+      name: 'Active Users',
+      value: '1,250',
+      color: 'primary'
+    }
+  ]}
+  isFetching={false}
 />
 ```
 
@@ -61,7 +70,7 @@ import { CippPropertyListCard } from '../components/CippCards/CippPropertyListCa
 
 ```jsx
 // Typical dashboard layout using Grid system
-import { Grid } from '@mui/material';
+import { Grid } from '@mui/system';
 
 function Dashboard() {
   return (
@@ -103,6 +112,7 @@ import { CippDataTable } from '../components/CippTable/CippDataTable';
     url: '/api/listUsers',
     data: { tenantFilter: selectedTenant }
   }}
+  queryKey={['users']}
   columns={[
     { accessorKey: 'displayName', header: 'Name' },
     { accessorKey: 'userPrincipalName', header: 'Email' },
@@ -121,10 +131,11 @@ import { CippDataTable } from '../components/CippTable/CippDataTable';
 #### Advanced Table Features
 
 ```jsx
-// Table with custom formatting and bulk actions
+// Table with simple columns and bulk actions
 <CippDataTable
   title="License Report"
   api={{ url: '/api/listLicenses' }}
+  queryKey={['licenses']}
   simpleColumns={['displayName', 'assignedLicenses', 'usageLocation']}
   filters={[
     { id: 'accountEnabled', value: true }
@@ -132,7 +143,6 @@ import { CippDataTable } from '../components/CippTable/CippDataTable';
   actions={[
     {
       label: 'Assign License',
-      type: 'bulk',
       action: (selectedRows) => handleBulkLicenseAssignment(selectedRows)
     }
   ]}
@@ -144,8 +154,8 @@ import { CippDataTable } from '../components/CippTable/CippDataTable';
 #### Table Patterns
 
 1. **List Pages**: Read-only data display with export capabilities
-2. **Management Pages**: Interactive tables with row actions
-3. **Report Pages**: Data analysis with filtering and grouping
+2. **Management Pages**: Interactive tables with row actions and offcanvas details
+3. **Report Pages**: Data analysis with filtering and simple columns
 4. **Selection Pages**: Multi-select for bulk operations
 
 ### 3. CippFormPages - Form Components
@@ -157,6 +167,7 @@ Standardized form components with validation, error handling, and submission wor
 **CippFormPage**
 ```jsx
 import { CippFormPage } from '../components/CippFormPages/CippFormPage';
+import { CippFormComponent } from '../components/CippComponents/CippFormComponent';
 import { useForm } from 'react-hook-form';
 
 function AddUserPage() {
@@ -216,7 +227,7 @@ function AddUserPage() {
 
 // Select dropdown
 <CippFormComponent
-  type="select"
+  type="autoComplete"
   label="License Type"
   name="licenseType"
   options={licenseOptions}
@@ -278,28 +289,27 @@ function OnboardingWizard() {
   const steps = [
     {
       title: 'Basic Information',
-      component: <BasicInfoStep />
+      component: BasicInfoStep
     },
     {
       title: 'License Assignment',
-      component: <LicenseStep />
+      component: LicenseStep
     },
     {
       title: 'Group Membership',
-      component: <GroupStep />
+      component: GroupStep
     },
     {
       title: 'Confirmation',
-      component: <ConfirmationStep />
+      component: ConfirmationStep
     }
   ];
 
   return (
     <CippWizard
-      title="User Onboarding Wizard"
+      postUrl="/api/onboardUser"
       steps={steps}
-      onComplete={handleWizardComplete}
-      onCancel={handleWizardCancel}
+      orientation="horizontal"
     />
   );
 }
@@ -391,12 +401,14 @@ import { CippTenantSelector } from '../components/CippComponents/CippTenantSelec
 
 #### Utility Components
 
-**CippCopyToClipboard**
+**CippCopyToClipBoard**
 ```jsx
-<CippCopyToClipboard
-  value="user@contoso.com"
-  showValue={true}
-  successMessage="Email copied to clipboard"
+import { CippCopyToClipBoard } from '../components/CippComponents/CippCopyToClipboard';
+
+<CippCopyToClipBoard
+  text="user@contoso.com"
+  type="button"
+  visible={true}
 />
 ```
 
@@ -487,39 +499,32 @@ function UserManagementPage() {
 
 ## Component Props Patterns
 
-### Common Prop Interfaces
+### Common Prop Patterns
 
-```typescript
+```jsx
 // Base component props
-interface BaseComponentProps {
-  title?: string;
-  loading?: boolean;
-  error?: string | Error;
-  sx?: SxProps;
-  children?: ReactNode;
-}
+// title (string, optional): Component title
+// loading (boolean, optional): Loading state
+// error (string|Error, optional): Error state
+// sx (object, optional): MUI styling
+// children (ReactNode, optional): Child components
 
 // API integration props
-interface ApiProps {
-  url: string;
-  data?: Record<string, any>;
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-}
+// api.url (string, required): API endpoint
+// api.data (object, optional): Request data
+// queryKey (array, optional): React Query key
 
 // Form component props
-interface FormComponentProps {
-  name: string;
-  label: string;
-  required?: boolean;
-  disabled?: boolean;
-  formControl: UseFormReturn;
-  validation?: ValidationRules;
-}
+// name (string, required): Form field name
+// label (string, required): Field label
+// required (boolean, optional): Required field
+// disabled (boolean, optional): Disabled state
+// formControl (object, required): React Hook Form control
 ```
 
 ### Prop Validation
 
-Components use TypeScript for prop validation and provide sensible defaults:
+Components use PropTypes and provide sensible defaults:
 
 ```jsx
 function CippInfoCard({
@@ -577,53 +582,145 @@ function Dashboard() {
 }
 ```
 
-### 3. Virtual Scrolling
+### 3. Pagination
 
-Large data sets use virtual scrolling:
+Large data sets use pagination:
 
 ```jsx
 <CippDataTable
   data={largeDataset}
-  enableVirtualization={true}
-  rowHeight={60}
-  overscan={10}
+  api={{ url: '/api/largeData' }}
+  queryKey={['largeData']}
 />
 ```
 
-## Testing Patterns
+## Integration Notes
 
-### Component Testing
+### API Integration
+
+Components integrate with the CIPP API using React Query:
 
 ```jsx
-import { render, screen, fireEvent } from '@testing-library/react';
-import { CippInfoCard } from './CippInfoCard';
+// Most data components accept an api prop
+<CippDataTable
+  api={{
+    url: '/api/endpoint',
+    data: { tenantFilter: 'contoso.com' }
+  }}
+  queryKey={['uniqueKey']}
+/>
 
-describe('CippInfoCard', () => {
-  it('renders title and value', () => {
-    render(
-      <CippInfoCard
-        title="Test Title"
-        value="Test Value"
-      />
-    );
-    
-    expect(screen.getByText('Test Title')).toBeInTheDocument();
-    expect(screen.getByText('Test Value')).toBeInTheDocument();
-  });
+// Forms use postUrl for submissions
+<CippFormPage
+  postUrl="/api/addUser"
+  queryKey={['users']}
+  formControl={formControl}
+>
+```
 
-  it('handles click events', () => {
-    const handleClick = jest.fn();
-    render(
-      <CippInfoCard
-        title="Test"
-        onClick={handleClick}
+## Best Practices
+
+### Component Usage
+
+1. **Always provide queryKey** for components with API integration
+2. **Use consistent prop naming** across similar components
+3. **Handle loading and error states** in data components
+4. **Follow MUI v6+ patterns** for styling and theming
+5. **Use React Hook Form** for all form implementations
+
+### Performance
+
+1. **Memoize expensive operations** in large components
+2. **Use appropriate loading states** for better UX
+3. **Implement proper error boundaries** for robustness
+
+## Real-World Usage Examples
+
+### User Management Page
+
+```jsx
+// Typical user management implementation
+import { CippDataTable } from '../components/CippTable/CippDataTable';
+import { CippTenantSelector } from '../components/CippComponents/CippTenantSelector';
+
+function UsersPage() {
+  const [selectedTenant, setSelectedTenant] = useState(null);
+  
+  return (
+    <>
+      <CippTenantSelector
+        value={selectedTenant}
+        onChange={setSelectedTenant}
+        allTenants={false}
       />
-    );
-    
-    fireEvent.click(screen.getByRole('button'));
-    expect(handleClick).toHaveBeenCalled();
-  });
-});
+      
+      <CippDataTable
+        title="Users"
+        api={{
+          url: '/api/listUsers',
+          data: { tenantFilter: selectedTenant }
+        }}
+        queryKey={['users', selectedTenant]}
+        simpleColumns={['displayName', 'userPrincipalName', 'accountEnabled']}
+        actions={[
+          {
+            label: 'Edit User',
+            action: (row) => router.push(`/users/edit/${row.original.id}`)
+          },
+          {
+            label: 'Reset Password',
+            action: (row) => handlePasswordReset(row.original)
+          }
+        ]}
+        exportEnabled={true}
+        offCanvas={true}
+      />
+    </>
+  );
+}
+```
+
+### Dashboard Information Cards
+
+```jsx
+// Dashboard with multiple info cards
+import { CippInfoBar } from '../components/CippCards/CippInfoBar';
+import { Grid } from '@mui/system';
+
+function TenantDashboard() {
+  const dashboardData = [
+    {
+      name: 'Total Users',
+      value: '1,247',
+      color: 'primary',
+      icon: <UsersIcon />
+    },
+    {
+      name: 'Active Licenses',
+      value: '1,100',
+      color: 'success',
+      icon: <LicenseIcon />
+    },
+    {
+      name: 'Security Alerts',
+      value: '3',
+      color: 'warning',
+      icon: <AlertIcon />,
+      offcanvas: {
+        title: 'Security Alerts',
+        component: SecurityAlertsDetails
+      }
+    }
+  ];
+  
+  return (
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <CippInfoBar data={dashboardData} isFetching={false} />
+      </Grid>
+    </Grid>
+  );
+}
 ```
 
 This component architecture provides a solid foundation for building consistent, maintainable, and scalable user interfaces in the CIPP application.

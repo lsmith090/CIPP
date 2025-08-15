@@ -6,12 +6,12 @@ This document provides comprehensive documentation for CIPP's API utility functi
 
 This document focuses specifically on **API interaction utilities**. For other utility functions, see:
 
-- **📄 [Core Utilities (utils.md)](./utils.md)** - Data processing, formatting, validation, UI, and authentication utilities
-- **📄 This Document (utilities.md)** - API call utilities for backend interactions
+- **📄 [Core Utilities (core-utilities.md)](./core-utilities.md)** - Data processing, formatting, validation, UI, and authentication utilities
+- **📄 This Document (api-utilities.md)** - API call utilities for backend interactions
 
 ## Integration with Core Utilities
 
-These API utilities work seamlessly with the core utilities documented in utils.md:
+These API utilities work seamlessly with the core utilities documented in core-utilities.md:
 - Error handling uses `getCippError` for consistent error message extraction
 - Data formatting uses `getCippFormatting` for consistent display
 - Permission checking integrates with authentication utilities

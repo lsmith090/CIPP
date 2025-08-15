@@ -9,12 +9,13 @@ This document provides comprehensive documentation for all custom React hooks us
 3. [UI State Management](#ui-state-management)
 4. [Data Processing](#data-processing)
 5. [Utilities](#utilities)
+6. [Best Practices](#best-practices)
 
 ## Authentication & User Management
 
 ### useAuth
 
-Provides access to the authentication context and user information.
+Simple wrapper hook that provides access to the authentication context.
 
 ```javascript
 import { useAuth } from '/src/hooks/use-auth';
@@ -22,18 +23,23 @@ import { useAuth } from '/src/hooks/use-auth';
 const MyComponent = () => {
   const auth = useAuth();
   
-  // Auth object contains authentication state and methods
-  return <div>Welcome, {auth.user?.name}</div>;
+  // This hook is a simple context wrapper
+  return <div>Auth context: {JSON.stringify(auth)}</div>;
 };
 ```
 
+**Implementation:**
+```javascript
+export const useAuth = () => useContext(AuthContext);
+```
+
 **Return Value:**
-Returns the authentication context object with user data and authentication methods.
+Returns whatever the AuthContext provides (context-dependent).
 
 **Usage:**
-- Access current user information
-- Check authentication status
-- Handle login/logout operations
+- Access authentication context state
+- Simple wrapper for AuthContext consumption
+- Integrates with CIPP's Azure AD authentication system
 
 ### usePermissions
 
@@ -187,9 +193,9 @@ const MyComponent = () => {
 ```javascript
 {
   open: boolean,           // Dialog open state
-  data: any,              // Data passed to handleOpen
+  data: any,              // Data passed to handleOpen (persists after close)
   handleOpen: (data?) => void,   // Open dialog with optional data
-  handleClose: () => void        // Close dialog
+  handleClose: () => void        // Close dialog (data persists until next handleOpen)
 }
 ```
 
@@ -603,19 +609,58 @@ const ScrollAwareComponent = () => {
 
 ### usePageView
 
-Placeholder hook for page view tracking (currently empty implementation).
+Placeholder hook for page view tracking.
 
 ```javascript
 import { usePageView } from '/src/hooks/use-page-view';
 
 const MyPage = () => {
-  usePageView(); // Currently no-op, intended for analytics
+  usePageView(); // No-op implementation, intended for analytics
   
   return <div>Page content</div>;
 };
 ```
 
-**Note:** This hook is currently a placeholder and can be extended to integrate with analytics platforms.
+**Usage:**
+- Placeholder for future analytics integration
+- Can be extended to track page views
+- No-op implementation ready for enhancement
+
+### useHasAccess
+
+Utility function for permission checking (located in `/src/utils/permissions.js`). Note: This is not a typical React hook but a utility function.
+
+```javascript
+import { useHasAccess } from '/src/utils/permissions';
+
+const MyComponent = () => {
+  const hasAccess = useHasAccess();
+  
+  // Returns a function that checks access based on user data
+  const userPermissions = ['Identity.User.Read'];
+  const userRoles = ['admin'];
+  
+  const canAccess = hasAccess(userPermissions, userRoles);
+  
+  return (
+    <div>
+      {canAccess && <AdminContent />}
+    </div>
+  );
+};
+```
+
+**Parameters:**
+- `requiredPermissions` - Array of required permissions
+- `requiredRoles` - Array of required roles
+
+**Return Value:**
+Returns a function `(userPermissions, userRoles) => boolean` that checks if user has access.
+
+**Usage:**
+- Utility for checking user access without React hooks
+- Can be used in non-React contexts
+- Integrates with the main permission checking system
 
 ### useMockedUser
 
@@ -646,6 +691,66 @@ const DevelopmentComponent = () => {
   email: string
 }
 ```
+
+### Redux Store Hooks
+
+Redux store integration hooks exported from `/src/store/index.js`.
+
+#### useSelector
+
+Wrapper for Redux Toolkit's useSelector hook.
+
+```javascript
+import { useSelector } from '/src/store';
+
+const MyComponent = () => {
+  const settings = useSelector((state) => state.settings);
+  const toasts = useSelector((state) => state.toasts);
+  
+  return (
+    <div>
+      Current theme: {settings.currentTheme?.label}
+    </div>
+  );
+};
+```
+
+#### useDispatch
+
+Wrapper for Redux Toolkit's useDispatch hook.
+
+```javascript
+import { useDispatch } from '/src/store';
+import { showToast } from '/src/store/toasts';
+
+const MyComponent = () => {
+  const dispatch = useDispatch();
+  
+  const handleAction = () => {
+    dispatch(showToast({
+      message: 'Action completed',
+      severity: 'success'
+    }));
+  };
+  
+  return (
+    <button onClick={handleAction}>
+      Perform Action
+    </button>
+  );
+};
+```
+
+**Implementation:**
+```javascript
+export const useSelector = useReduxSelector;
+export const useDispatch = () => useReduxDispatch();
+```
+
+**Usage:**
+- Access Redux store state
+- Dispatch actions to update store
+- Integrates with CIPP's centralized state management
 
 ## Best Practices
 

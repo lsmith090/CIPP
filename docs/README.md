@@ -35,9 +35,9 @@ Welcome to the comprehensive documentation for the CIPP (CyberDrain Improved Par
 - [Performance Optimization](./guides/performance.md) - React performance patterns and optimization
 
 ### API Reference
-- [API Utilities](./api/utilities.md) - API call utilities and helpers
+- [API Utilities](./api/api-utilities.md) - API call utilities and helpers
 - [Hooks Reference](./api/hooks.md) - Custom React hooks
-- [Utils Reference](./api/utils.md) - Utility functions and helpers
+- [Core Utilities](./api/core-utilities.md) - Utility functions and helpers
 
 ### Deployment & Configuration
 - [Build & Deployment](./deployment/build.md) - Build process and deployment
