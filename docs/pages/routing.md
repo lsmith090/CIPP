@@ -19,10 +19,16 @@ CIPP follows a hierarchical routing structure based on the file system:
 │   │   │   ├── index.js             # Route: /identity/administration/users
 │   │   │   ├── add.jsx              # Route: /identity/administration/users/add
 │   │   │   ├── bulk-add.js          # Route: /identity/administration/users/bulk-add
+│   │   │   ├── invite.jsx           # Route: /identity/administration/users/invite
+│   │   │   ├── patch-wizard.jsx     # Route: /identity/administration/users/patch-wizard
 │   │   │   └── user/
 │   │   │       ├── index.jsx        # Route: /identity/administration/users/user
 │   │   │       ├── edit.jsx         # Route: /identity/administration/users/user/edit
-│   │   │       └── exchange.jsx     # Route: /identity/administration/users/user/exchange
+│   │   │       ├── exchange.jsx     # Route: /identity/administration/users/user/exchange
+│   │   │       ├── bec.jsx          # Route: /identity/administration/users/user/bec
+│   │   │       ├── conditional-access.jsx # Route: /identity/administration/users/user/conditional-access
+│   │   │       ├── devices.jsx      # Route: /identity/administration/users/user/devices
+│   │   │       └── tabOptions.json  # Tab configuration for user detail page
 │   │   └── groups/
 │   │       ├── index.js             # Route: /identity/administration/groups
 │   │       └── add.jsx              # Route: /identity/administration/groups/add
@@ -54,6 +60,10 @@ Display collections of data (typically table pages):
 ```javascript
 // /src/pages/identity/administration/users/index.js
 // Route: /identity/administration/users
+import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { PermissionButton } from "../../../../utils/permissions";
+
 const UsersPage = () => {
   return (
     <CippTablePage
@@ -63,6 +73,9 @@ const UsersPage = () => {
     />
   );
 };
+
+UsersPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+export default UsersPage;
 ```
 
 #### 2. Add/Create Routes
@@ -71,7 +84,20 @@ Form pages for creating new entities:
 ```javascript
 // /src/pages/identity/administration/users/add.jsx
 // Route: /identity/administration/users/add
+import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
+import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { useForm } from "react-hook-form";
+import { useSettings } from "../../../../hooks/use-settings";
+
 const AddUserPage = () => {
+  const userSettingsDefaults = useSettings();
+  const formControl = useForm({
+    mode: "onBlur",
+    defaultValues: {
+      tenantFilter: userSettingsDefaults.currentTenant,
+    },
+  });
+
   return (
     <CippFormPage
       title="User"
@@ -81,6 +107,9 @@ const AddUserPage = () => {
     />
   );
 };
+
+AddUserPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+export default AddUserPage;
 ```
 
 #### 3. Detail/View Routes
@@ -89,18 +118,73 @@ Display detailed information about specific entities:
 ```javascript
 // /src/pages/identity/administration/users/user/index.jsx
 // Route: /identity/administration/users/user?userId=123
+import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { useSettings } from "/src/hooks/use-settings";
+import { useRouter } from "next/router";
+import { ApiGetCall } from "/src/api/ApiCall";
+import { HeaderedTabbedLayout } from "../../../../../layouts/HeaderedTabbedLayout";
+import tabOptions from "./tabOptions";
+
 const UserDetailPage = () => {
+  const userSettingsDefaults = useSettings();
   const router = useRouter();
   const { userId } = router.query;
+  
+  const userRequest = ApiGetCall({
+    url: `/api/ListUsers?UserId=${userId}&tenantFilter=${router.query.tenantFilter ?? userSettingsDefaults.currentTenant}`,
+    queryKey: `ListUsers-${userId}`,
+    waiting: !!userId,
+  });
+
+  const title = userRequest.isSuccess ? userRequest.data?.[0]?.displayName : "Loading...";
   
   return (
     <HeaderedTabbedLayout
       tabOptions={tabOptions}
-      title={userData?.displayName}
-      // ... layout configuration
-    />
+      title={title}
+      isFetching={userRequest.isLoading}
+    >
+      {/* User details content */}
+    </HeaderedTabbedLayout>
   );
 };
+
+UserDetailPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+export default UserDetailPage;
+```
+
+#### Tab Configuration (tabOptions.json)
+
+For pages using `HeaderedTabbedLayout`, tab configuration is defined in `tabOptions.json`:
+
+```json
+// /src/pages/identity/administration/users/user/tabOptions.json
+[
+  {
+    "label": "Overview",
+    "value": "overview"
+  },
+  {
+    "label": "Edit User",
+    "value": "edit"
+  },
+  {
+    "label": "Exchange",
+    "value": "exchange"
+  },
+  {
+    "label": "Business Email Compromise",
+    "value": "bec"
+  },
+  {
+    "label": "Conditional Access",
+    "value": "conditional-access"
+  },
+  {
+    "label": "Devices",
+    "value": "devices"
+  }
+]
 ```
 
 #### 4. Edit Routes
@@ -109,20 +193,38 @@ Form pages for modifying existing entities:
 ```javascript
 // /src/pages/identity/administration/users/user/edit.jsx
 // Route: /identity/administration/users/user/edit?userId=123
+import CippFormPage from "../../../../../components/CippFormPages/CippFormPage";
+import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { useSettings } from "../../../../../hooks/use-settings";
+
 const EditUserPage = () => {
   const router = useRouter();
   const { userId } = router.query;
+  const userSettingsDefaults = useSettings();
+  
+  const formControl = useForm({
+    mode: "onBlur",
+    defaultValues: {
+      tenantFilter: userSettingsDefaults.currentTenant,
+      userId: userId,
+    },
+  });
   
   return (
     <CippFormPage
       title="User"
       formPageType="Edit"
       formControl={formControl}
-      postUrl="/api/UpdateUser"
+      postUrl="/api/EditUser"
       // ... form configuration
     />
   );
 };
+
+EditUserPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+export default EditUserPage;
 ```
 
 ## Navigation Patterns
@@ -150,7 +252,7 @@ const Component = () => {
     });
   };
 
-  // Replace current route (no back button history)
+  // Replace route in history (no back button entry)
   const handleReplace = () => {
     router.replace("/dashboard");
   };
@@ -173,14 +275,13 @@ const Component = () => {
 #### Navigation Hooks
 
 ```javascript
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 const NavigationComponent = () => {
-  const pathname = usePathname(); // Current route path
   const router = useRouter();
 
-  // Check current route
-  const isUsersPage = pathname.startsWith("/identity/administration/users");
+  // Check active route
+  const isUsersPage = router.pathname.startsWith("/identity/administration/users");
 
   // Conditional navigation
   const handleConditionalNav = () => {
@@ -243,24 +344,27 @@ const NavigationLinks = () => {
 
 ```javascript
 import { PermissionButton } from "/src/utils/permissions";
+import Link from "next/link";
+import { PersonAdd, GroupAdd } from "@mui/icons-material";
+import { Box } from "@mui/material";
 
 const PermissionLinks = () => {
   return (
     <Box>
       <PermissionButton
-        requiredPermissions={["Identity.User.ReadWrite"]}
+        requiredPermissions={["Identity.User.*"]}
         component={Link}
         href="/identity/administration/users/add"
-        startIcon={<PersonAddIcon />}
+        startIcon={<PersonAdd />}
       >
         Add User
       </PermissionButton>
 
       <PermissionButton
-        requiredPermissions={["Identity.Group.ReadWrite"]}
+        requiredPermissions={["Identity.Group.*"]}
         component={Link}
         href="/identity/administration/groups/add"
-        startIcon={<GroupAddIcon />}
+        startIcon={<GroupAdd />}
       >
         Add Group
       </PermissionButton>
@@ -314,11 +418,15 @@ const UserPage = () => {
 #### Tenant Filtering
 ```javascript
 // Most pages include tenantFilter in query
+import { ApiGetCall } from "/src/api/ApiCall";
+
 const apiCall = ApiGetCall({
   url: "/api/ListUsers",
+  queryKey: "ListUsers",
   data: { 
-    tenantFilter: router.query.tenantFilter || settings.currentTenant 
-  }
+    tenantFilter: router.query.tenantFilter || userSettingsDefaults.currentTenant 
+  },
+  waiting: !!userId
 });
 ```
 
@@ -375,10 +483,12 @@ useEffect(() => {
 #### Page-Level Protection
 ```javascript
 // Protect individual pages
+import { usePermissions } from "/src/hooks/use-permissions.js";
+
 const ProtectedPage = () => {
-  const { data: userPermissions } = usePermissions();
+  const { userPermissions } = usePermissions();
   
-  if (!userPermissions?.includes("Identity.User.Read")) {
+  if (!userPermissions?.includes("Identity.User.*")) {
     return <UnauthorizedPage />;
   }
 
@@ -389,18 +499,21 @@ const ProtectedPage = () => {
 #### Component-Level Protection
 ```javascript
 // Protect UI components
+import { PermissionButton } from "/src/utils/permissions";
+import { Box } from "@mui/material";
+
 const UserActions = ({ user }) => {
   return (
     <Box>
       <PermissionButton
-        requiredPermissions={["Identity.User.ReadWrite"]}
+        requiredPermissions={["Identity.User.*"]}
         onClick={() => handleEdit(user.id)}
       >
         Edit
       </PermissionButton>
       
       <PermissionButton
-        requiredPermissions={["Identity.User.Delete"]}
+        requiredPermissions={["Identity.User.*"]}
         onClick={() => handleDelete(user.id)}
         color="error"
       >
@@ -417,30 +530,51 @@ Navigation menus are configured with permission requirements:
 
 ```javascript
 // /src/layouts/config.js
+import { UsersIcon } from "@heroicons/react/24/outline";
+import { SvgIcon } from "@mui/material";
+
 export const nativeMenuItems = [
   {
-    title: "Identity",
-    icon: <IdentityIcon />,
-    permissions: ["Identity.*"], // Wildcard permission
+    title: "Identity Management",
+    type: "header",
+    icon: (
+      <SvgIcon>
+        <UsersIcon />
+      </SvgIcon>
+    ),
+    permissions: ["Identity.*"],
     items: [
       {
         title: "Administration",
+        path: "/identity/administration",
+        permissions: ["Identity.User.*"],
         items: [
           {
             title: "Users",
             path: "/identity/administration/users",
-            permissions: ["Identity.User.Read"]
+            permissions: ["Identity.User.*"]
           },
           {
             title: "Groups",
-            path: "/identity/administration/groups", 
-            permissions: ["Identity.Group.Read"]
+            path: "/identity/administration/groups",
+            permissions: ["Identity.Group.*"]
           },
           {
             title: "Roles",
             path: "/identity/administration/roles",
-            permissions: ["Identity.Role.Read"],
-            roles: ["GlobalAdmin"] // Additional role requirement
+            permissions: ["Identity.Role.*"]
+          }
+        ]
+      },
+      {
+        title: "Reports",
+        path: "/identity/reports",
+        permissions: ["Identity.User.*", "Identity.Group.*", "Identity.Device.*", "Identity.Role.*", "Identity.AuditLog.*"],
+        items: [
+          {
+            title: "MFA Report",
+            path: "/identity/reports/mfa-report",
+            permissions: ["Identity.User.*"]
           }
         ]
       }

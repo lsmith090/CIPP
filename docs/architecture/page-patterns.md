@@ -20,139 +20,139 @@ Table pages are used for displaying, filtering, and managing collections of data
 
 #### Basic Table Page
 ```jsx
-import { CippTablePage } from '../components/CippComponents/CippTablePage';
+import { CippTablePage } from '/src/components/CippComponents/CippTablePage.jsx';
+import { Layout as DashboardLayout } from '/src/layouts/index.js';
+import { EditIcon, LockResetIcon } from '@mui/icons-material';
+import { CippUserActions } from '/src/components/CippComponents/CippUserActions.jsx';
 
 function UsersPage() {
   return (
     <CippTablePage
       title="Users"
-      api={{
-        url: '/api/listUsers',
-        data: { tenantFilter: 'AllTenants' }
+      apiUrl="/api/ListGraphRequest"
+      apiData={{
+        Endpoint: 'users',
+        tenantFilter: 'AllTenants',
+        $select: 'id,displayName,userPrincipalName,accountEnabled'
       }}
-      columns={[
-        { accessorKey: 'displayName', header: 'Display Name' },
-        { accessorKey: 'userPrincipalName', header: 'Email' },
-        { accessorKey: 'accountEnabled', header: 'Status' }
+      apiDataKey="Results"
+      simpleColumns={[
+        'displayName',
+        'userPrincipalName', 
+        'accountEnabled'
       ]}
-      actions={[
-        {
-          label: 'Edit User',
-          icon: <EditIcon />,
-          action: (row) => router.push(`/identity/administration/users/edit?userId=${row.id}`)
-        },
-        {
-          label: 'Reset Password',
-          icon: <LockResetIcon />,
-          action: (row) => handlePasswordReset(row)
-        }
-      ]}
+      actions={CippUserActions()}
     />
   );
 }
+
+UsersPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+
+export default UsersPage;
 ```
 
 #### Advanced Table Features
 ```jsx
+import { CippTablePage } from '/src/components/CippComponents/CippTablePage.jsx';
+import { Layout as DashboardLayout } from '/src/layouts/index.js';
+import { useState } from 'react';
+import { Button, Chip } from '@mui/material';
+import { Add, PersonAdd, GroupAdd, Send } from '@mui/icons-material';
+import Link from 'next/link';
+import { useSettings } from '/src/hooks/use-settings.js';
+import { PermissionButton } from '/src/utils/permissions';
+import { CippUserActions } from '/src/components/CippComponents/CippUserActions.jsx';
+
 function AdvancedUsersPage() {
-  const [selectedTenant, setSelectedTenant] = useState('');
+  const tenant = useSettings().currentTenant;
+  
+  const filters = [
+    {
+      filterName: "Account Enabled",
+      value: [{ id: "accountEnabled", value: "Yes" }],
+      type: "column",
+    },
+    {
+      filterName: "Account Disabled",
+      value: [{ id: "accountEnabled", value: "No" }],
+      type: "column",
+    },
+    {
+      filterName: "Guest Accounts",
+      value: [{ id: "userType", value: "Guest" }],
+      type: "column",
+    },
+  ];
+
+  const offCanvas = {
+    extendedInfoFields: [
+      "createdDateTime",
+      "id",
+      "userPrincipalName",
+      "givenName",
+      "surname",
+      "jobTitle",
+      "assignedLicenses",
+      "businessPhones",
+      "mobilePhone",
+      "mail",
+      "city",
+      "department",
+    ],
+    actions: CippUserActions(),
+  };
   
   return (
     <CippTablePage
       title="User Management"
-      subtitle="Manage users across all tenants"
-      
-      // API configuration
-      api={{
-        url: '/api/listUsers',
-        data: { 
-          tenantFilter: selectedTenant,
-          includeApplications: true 
-        }
+      apiUrl="/api/ListGraphRequest"
+      apiData={{
+        Endpoint: "users",
+        manualPagination: true,
+        $select: "id,accountEnabled,businessPhones,city,createdDateTime,displayName,givenName,jobTitle,mail,mailNickname,mobilePhone,surname,usageLocation,userPrincipalName,userType,assignedLicenses",
+        $count: true,
+        $orderby: "displayName",
+        $top: 999,
       }}
-      queryKey={['users', selectedTenant]}
-      
-      // Column configuration
-      columns={[
-        { accessorKey: 'displayName', header: 'Name', size: 200 },
-        { accessorKey: 'userPrincipalName', header: 'Email', size: 250 },
-        { 
-          accessorKey: 'accountEnabled', 
-          header: 'Status',
-          cell: ({ row }) => (
-            <Chip 
-              label={row.original.accountEnabled ? 'Enabled' : 'Disabled'}
-              color={row.original.accountEnabled ? 'success' : 'error'}
-            />
-          )
-        },
-        {
-          accessorKey: 'lastSignInDateTime',
-          header: 'Last Sign In',
-          cell: ({ row }) => <CippTimeAgo date={row.original.lastSignInDateTime} />
-        }
+      apiDataKey="Results"
+      actions={CippUserActions()}
+      offCanvas={offCanvas}
+      simpleColumns={[
+        "accountEnabled",
+        "userPrincipalName",
+        "displayName",
+        "mail",
+        "businessPhones",
+        "assignedLicenses",
       ]}
-      
-      // Actions configuration
-      actions={[
-        {
-          label: 'Edit User',
-          icon: <EditIcon />,
-          action: (row) => handleEditUser(row.original),
-          permission: 'users.edit'
-        },
-        {
-          label: 'Disable User',
-          icon: <BlockIcon />,
-          action: (row) => handleDisableUser(row.original),
-          condition: (row) => row.original.accountEnabled,
-          confirmation: true
-        }
-      ]}
-      
-      // Bulk actions
-      bulkActions={[
-        {
-          label: 'Enable Selected',
-          icon: <CheckIcon />,
-          action: (selectedRows) => handleBulkEnable(selectedRows)
-        },
-        {
-          label: 'Export Selected',
-          icon: <ExportIcon />,
-          action: (selectedRows) => handleBulkExport(selectedRows)
-        }
-      ]}
-      
-      // Additional features
-      exportEnabled={true}
-      filterPresets={[
-        { label: 'Active Users', filters: [{ id: 'accountEnabled', value: true }] },
-        { label: 'Inactive Users', filters: [{ id: 'accountEnabled', value: false }] }
-      ]}
-      
-      // Custom toolbar
+      filters={filters}
       cardButton={
-        <Button 
-          variant="contained" 
-          startIcon={<AddIcon />}
-          onClick={() => router.push('/identity/administration/users/add')}
-        >
-          Add User
-        </Button>
-      }
-      
-      // Page-specific filters
-      topToolbar={
-        <CippTenantSelector
-          value={selectedTenant}
-          onChange={setSelectedTenant}
-          allTenants={true}
-        />
+        <>
+          <PermissionButton
+            requiredPermissions={["Identity.User.ReadWrite"]}
+            component={Link}
+            href="users/add"
+            startIcon={<PersonAdd />}
+          >
+            Add User
+          </PermissionButton>
+          <PermissionButton
+            requiredPermissions={["Identity.User.ReadWrite"]}
+            component={Link}
+            href="users/bulk-add"
+            startIcon={<GroupAdd />}
+          >
+            Bulk Add Users
+          </PermissionButton>
+        </>
       }
     />
   );
 }
+
+AdvancedUsersPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+
+export default AdvancedUsersPage;
 ```
 
 ### Table Page Structure
@@ -182,119 +182,138 @@ Form pages handle data entry and editing operations. They provide validation, er
 
 #### Basic Form Page
 ```jsx
-import { CippFormPage } from '../components/CippFormPages/CippFormPage';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-
-const schema = yup.object({
-  displayName: yup.string().required('Display name is required'),
-  userPrincipalName: yup.string().email('Invalid email').required('Email is required'),
-  accountEnabled: yup.boolean()
-});
+import { Box } from '@mui/material';
+import CippFormPage from '/src/components/CippFormPages/CippFormPage.jsx';
+import { Layout as DashboardLayout } from '/src/layouts/index.js';
+import { useForm, useWatch } from 'react-hook-form';
+import { CippFormUserSelector } from '/src/components/CippComponents/CippFormUserSelector.jsx';
+import { useSettings } from '/src/hooks/use-settings.js';
+import { useEffect } from 'react';
+import CippAddEditUser from '/src/components/CippFormPages/CippAddEditUser.jsx';
 
 function AddUserPage() {
+  const userSettingsDefaults = useSettings();
+
   const formControl = useForm({
-    resolver: yupResolver(schema),
+    mode: 'onBlur',
     defaultValues: {
-      displayName: '',
-      userPrincipalName: '',
-      accountEnabled: true,
-      passwordProfile: {
-        forceChangePasswordNextSignIn: true
-      }
-    }
+      tenantFilter: userSettingsDefaults.currentTenant,
+      usageLocation: userSettingsDefaults.usageLocation,
+    },
   });
+
+  const formValues = useWatch({ control: formControl.control, name: 'userProperties' });
+  
+  useEffect(() => {
+    if (formValues) {
+      const { userPrincipalName, usageLocation, ...restFields } = formValues.addedFields || {};
+      let newFields = { ...restFields };
+      if (userPrincipalName) {
+        const [mailNickname, domainNamePart] = userPrincipalName.split('@');
+        if (mailNickname) {
+          newFields.mailNickname = mailNickname;
+        }
+        if (domainNamePart) {
+          newFields.primDomain = { label: domainNamePart, value: domainNamePart };
+        }
+      }
+      if (usageLocation) {
+        newFields.usageLocation = { label: usageLocation, value: usageLocation };
+      }
+      newFields.tenantFilter = userSettingsDefaults.currentTenant;
+
+      formControl.reset(newFields);
+    }
+  }, [formValues]);
 
   return (
     <CippFormPage
-      title="Add User"
-      backButtonTitle="Back to Users"
-      formPageType="Add"
-      queryKey={['users']}
+      queryKey={`Users-${userSettingsDefaults.currentTenant}`}
       formControl={formControl}
-      postUrl="/api/addUser"
-      customDataformatter={(data) => ({
-        ...data,
-        userPrincipalName: `${data.userPrincipalName}@${selectedTenant}`,
-        tenantId: selectedTenant
-      })}
+      title="User"
+      backButtonTitle="User Overview"
+      postUrl="/api/AddUser"
     >
-      <CippFormSection title="Basic Information">
-        <CippFormComponent
-          type="textField"
-          label="Display Name"
-          name="displayName"
-          validators={{ required: "Display name is required" }}
+      <Box sx={{ my: 2 }}>
+        <CippFormUserSelector
           formControl={formControl}
+          name="userProperties"
+          label="Copy properties from another user"
+          multiple={false}
+          select="id,userPrincipalName,displayName,givenName,surname,mailNickname,jobTitle,department,usageLocation"
+          addedField={{
+            groupType: "calculatedGroupType",
+            displayName: "displayName",
+            userPrincipalName: "userPrincipalName",
+            id: "id",
+            givenName: "givenName",
+            surname: "surname",
+            mailNickname: "mailNickname",
+            jobTitle: "jobTitle",
+            department: "department",
+            usageLocation: "usageLocation",
+          }}
         />
-        
-        <CippFormComponent
-          type="textField"
-          label="Username"
-          name="userPrincipalName"
-          validators={{ required: "Username is required" }}
-          formControl={formControl}
-          helperText="Enter username without domain"
-        />
-        
-        <CippFormComponent
-          type="switch"
-          label="Account Enabled"
-          name="accountEnabled"
-          formControl={formControl}
-        />
-      </CippFormSection>
-
-      <CippFormSection title="Password Settings">
-        <CippFormComponent
-          type="switch"
-          label="Force Password Change on First Login"
-          name="passwordProfile.forceChangePasswordNextSignIn"
-          formControl={formControl}
-        />
-      </CippFormSection>
-
-      <CippFormSection title="License Assignment">
-        <CippFormLicenseSelector
-          name="assignedLicenses"
-          label="Assign Licenses"
-          formControl={formControl}
-          tenantId={selectedTenant}
-          multiple={true}
-        />
-      </CippFormSection>
+      </Box>
+      <Box sx={{ my: 2 }}>
+        <CippAddEditUser formControl={formControl} userSettingsDefaults={userSettingsDefaults} />
+      </Box>
     </CippFormPage>
   );
 }
+
+AddUserPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+
+export default AddUserPage;
 ```
 
 #### Edit Form Page
 ```jsx
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { Box } from '@mui/material';
+import CippFormPage from '/src/components/CippFormPages/CippFormPage.jsx';
+import { Layout as DashboardLayout } from '/src/layouts/index.js';
+import { useForm } from 'react-hook-form';
+import { ApiGetCall } from '/src/api/ApiCall.jsx';
+import { useSettings } from '/src/hooks/use-settings.js';
+import CippAddEditUser from '/src/components/CippFormPages/CippAddEditUser.jsx';
+
 function EditUserPage() {
   const router = useRouter();
   const { userId } = router.query;
+  const userSettingsDefaults = useSettings();
   
   // Fetch existing user data
   const { data: userData, isLoading } = ApiGetCall({
-    url: '/api/getUser',
-    data: { userId },
-    queryKey: ['user', userId]
+    url: '/api/ListGraphRequest',
+    data: { 
+      Endpoint: `users/${userId}`,
+      tenantFilter: userSettingsDefaults.currentTenant,
+      $select: 'id,displayName,userPrincipalName,givenName,surname,jobTitle,department,usageLocation,accountEnabled'
+    },
+    queryKey: ['user', userId, userSettingsDefaults.currentTenant]
   });
 
   const formControl = useForm({
     mode: 'onChange',
-    defaultValues: userData || {}
+    defaultValues: {
+      tenantFilter: userSettingsDefaults.currentTenant
+    }
   });
 
   // Reset form when data loads
   useEffect(() => {
     if (userData) {
-      formControl.reset(userData);
+      formControl.reset({
+        ...userData,
+        userId: userId,
+        tenantFilter: userSettingsDefaults.currentTenant
+      });
     }
-  }, [userData, formControl]);
+  }, [userData, formControl, userId, userSettingsDefaults.currentTenant]);
 
-  if (isLoading) return <CippFormSkeleton />;
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <CippFormPage
@@ -302,16 +321,26 @@ function EditUserPage() {
       formPageType="Edit"
       queryKey={['users', 'user', userId]}
       formControl={formControl}
-      postUrl="/api/editUser"
+      postUrl="/api/EditUser"
       customDataformatter={(data) => ({
         ...data,
         userId: userId
       })}
     >
-      {/* Form sections same as Add form */}
+      <Box sx={{ my: 2 }}>
+        <CippAddEditUser 
+          formControl={formControl} 
+          userSettingsDefaults={userSettingsDefaults}
+          editMode={true}
+        />
+      </Box>
     </CippFormPage>
   );
 }
+
+EditUserPage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+
+export default EditUserPage;
 ```
 
 ### Form Page Structure
@@ -345,117 +374,141 @@ Wizard pages guide users through complex multi-step processes, breaking them int
 
 #### Basic Wizard
 ```jsx
-import { CippWizard } from '../components/CippWizard/CippWizard';
+import { Layout as DashboardLayout } from '/src/layouts/index.js';
+import { CippWizardConfirmation } from '/src/components/CippWizard/CippWizardConfirmation.jsx';
+import { CippDeploymentStep } from '/src/components/CippWizard/CIPPDeploymentStep.jsx';
+import CippWizardPage from '/src/components/CippWizard/CippWizardPage.jsx';
+import { CippWizardOptionsList } from '/src/components/CippWizard/CippWizardOptionsList.jsx';
+import { BuildingOfficeIcon, CloudIcon, CpuChipIcon } from '@heroicons/react/24/outline';
 
 function UserOnboardingWizard() {
-  const [wizardData, setWizardData] = useState({});
-  
   const steps = [
     {
-      title: 'Basic Information',
-      component: <BasicInfoStep />,
-      validation: basicInfoSchema
+      title: 'Step 1',
+      description: 'Basic Information',
+      component: CippWizardOptionsList,
+      componentProps: {
+        title: 'Select user type',
+        subtext: 'Choose the type of user account to create',
+        valuesKey: 'UserType',
+        options: [
+          {
+            description: 'Create a standard user account with basic permissions',
+            icon: <CpuChipIcon />,
+            label: 'Standard User',
+            value: 'StandardUser',
+          },
+          {
+            description: 'Create an administrator account with elevated permissions',
+            icon: <CloudIcon />,
+            label: 'Administrator',
+            value: 'Admin',
+          },
+          {
+            description: 'Create a guest account for external users',
+            icon: <BuildingOfficeIcon />,
+            label: 'Guest User',
+            value: 'Guest',
+          },
+        ],
+      },
     },
     {
-      title: 'License Assignment',
-      component: <LicenseStep />,
-      validation: licenseSchema
+      title: 'Step 2',
+      description: 'Configuration',
+      component: CippDeploymentStep,
     },
     {
-      title: 'Group Membership',
-      component: <GroupStep />,
-      validation: groupSchema
+      title: 'Step 3',
+      description: 'Confirmation',
+      component: CippWizardConfirmation,
     },
-    {
-      title: 'Review & Confirm',
-      component: <ConfirmationStep />
-    }
   ];
 
-  const handleWizardComplete = async (data) => {
-    try {
-      await ApiPostCall({
-        url: '/api/onboardUser',
-        data: data
-      });
-      
-      showSuccess('User onboarded successfully');
-      router.push('/identity/administration/users');
-    } catch (error) {
-      showError('Failed to onboard user');
-    }
-  };
-
   return (
-    <CippWizard
-      title="User Onboarding Wizard"
-      subtitle="Create and configure a new user account"
+    <CippWizardPage
+      backButton={false}
       steps={steps}
-      data={wizardData}
-      onDataChange={setWizardData}
-      onComplete={handleWizardComplete}
-      onCancel={() => router.back()}
+      wizardTitle="User Onboarding"
+      postUrl="/api/AddUser"
     />
   );
 }
+
+UserOnboardingWizard.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+
+export default UserOnboardingWizard;
 ```
 
 #### Wizard Step Implementation
 ```jsx
-function BasicInfoStep({ data, onDataChange, onNext, onPrevious }) {
-  const formControl = useForm({
-    mode: 'onChange',
-    defaultValues: data.basicInfo || {}
-  });
+import { useState } from 'react';
+import { Box, Stack, Typography, Button } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { CippFormComponent } from '/src/components/CippComponents/CippFormComponent.jsx';
+import { CippWizardStepButtons } from '/src/components/CippWizard/CippWizardStepButtons.jsx';
 
+function BasicInfoStep({ onNextStep, onPreviousStep, formControl, currentStep, lastStep, title, subtext }) {
   const handleNext = () => {
-    if (formControl.formState.isValid) {
-      onDataChange({
-        ...data,
-        basicInfo: formControl.getValues()
-      });
-      onNext();
-    }
+    // Validate current step
+    formControl.trigger().then((isValid) => {
+      if (isValid) {
+        onNextStep();
+      }
+    });
   };
 
   return (
-    <CippWizardPage
-      title="Basic Information"
-      subtitle="Enter the user's basic information"
-    >
-      <CippFormComponent
-        type="textField"
-        label="First Name"
-        name="firstName"
-        required={true}
-        formControl={formControl}
-      />
-      
-      <CippFormComponent
-        type="textField"
-        label="Last Name"
-        name="lastName"
-        required={true}
-        formControl={formControl}
-      />
-      
-      <CippFormComponent
-        type="textField"
-        label="Email"
-        name="userPrincipalName"
-        required={true}
-        formControl={formControl}
-      />
+    <Box>
+      <Stack spacing={3}>
+        <Box>
+          <Typography variant="h5" gutterBottom>
+            {title || 'Basic Information'}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {subtext || 'Enter the user\'s basic information'}
+          </Typography>
+        </Box>
+        
+        <Stack spacing={2}>
+          <CippFormComponent
+            type="textField"
+            label="First Name"
+            name="firstName"
+            required={true}
+            formControl={formControl}
+          />
+          
+          <CippFormComponent
+            type="textField"
+            label="Last Name"
+            name="lastName"
+            required={true}
+            formControl={formControl}
+          />
+          
+          <CippFormComponent
+            type="textField"
+            label="Email"
+            name="userPrincipalName"
+            required={true}
+            formControl={formControl}
+          />
+        </Stack>
 
-      <CippWizardStepButtons
-        onNext={handleNext}
-        onPrevious={onPrevious}
-        nextDisabled={!formControl.formState.isValid}
-        showPrevious={false} // First step
-      />
-    </CippWizardPage>
+        <CippWizardStepButtons
+          onNext={handleNext}
+          onPrevious={onPreviousStep}
+          nextDisabled={false}
+          showPrevious={currentStep > 0}
+          nextLabel={currentStep === lastStep ? 'Finish' : 'Next'}
+        />
+      </Stack>
+    </Box>
   );
 }
+
+export default BasicInfoStep;
 ```
 
 ### Wizard Structure
@@ -488,101 +541,120 @@ Dashboard pages provide overview information, metrics, and quick access to key f
 
 #### Basic Dashboard
 ```jsx
-import { Grid } from '@mui/material';
-import { CippInfoBar, CippChartCard, CippPropertyListCard } from '../components/CippCards';
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import { Box, Container, Button, Card, CardContent, Tooltip } from '@mui/material';
+import { Grid } from '@mui/system';
+import { CippInfoBar } from '/src/components/CippCards/CippInfoBar.jsx';
+import { CippChartCard } from '/src/components/CippCards/CippChartCard.jsx';
+import { CippPropertyListCard } from '/src/components/CippCards/CippPropertyListCard.jsx';
+import { Layout as DashboardLayout } from '/src/layouts/index.js';
+import { useSettings } from '/src/hooks/use-settings.js';
+import { ApiGetCall } from '/src/api/ApiCall.jsx';
 
 function TenantDashboard() {
-  const { data: tenantStats } = ApiGetCall({
-    url: '/api/getTenantStats',
-    queryKey: ['tenantStats']
+  const { currentTenant } = useSettings();
+  const [domainVisible, setDomainVisible] = useState(false);
+
+  const organization = ApiGetCall({
+    url: '/api/ListOrg',
+    queryKey: `${currentTenant}-ListOrg`,
+    data: { tenantFilter: currentTenant },
   });
 
-  const { data: userActivity } = ApiGetCall({
-    url: '/api/getUserActivity',
-    queryKey: ['userActivity']
+  const dashboard = ApiGetCall({
+    url: '/api/ListuserCounts',
+    data: { tenantFilter: currentTenant },
+    queryKey: `${currentTenant}-ListuserCounts`,
   });
+
+  const sharepoint = ApiGetCall({
+    url: '/api/ListSharepointQuota',
+    queryKey: `${currentTenant}-ListSharepointQuota`,
+    data: { tenantFilter: currentTenant },
+  });
+
+  const formatStorageSize = (sizeInMB) => {
+    if (sizeInMB >= 1024) {
+      return `${(sizeInMB / 1024).toFixed(2)}GB`;
+    }
+    return `${sizeInMB}MB`;
+  };
 
   return (
-    <Box sx={{ flexGrow: 1, py: 4 }}>
-      <Container maxWidth="xl">
-        <Typography variant="h4" gutterBottom>
-          Dashboard
-        </Typography>
-        
-        <Grid container spacing={3}>
-          {/* Key Metrics */}
-          <Grid item xs={12} sm={6} md={3}>
-            <CippInfoBar
-              title="Total Users"
-              value={tenantStats?.totalUsers || 0}
-              color="primary"
-              icon={<PeopleIcon />}
-            />
-          </Grid>
-          
-          <Grid item xs={12} sm={6} md={3}>
-            <CippInfoBar
-              title="Active Licenses"
-              value={tenantStats?.activeLicenses || 0}
-              color="success"
-              icon={<LicenseIcon />}
-            />
-          </Grid>
-          
-          <Grid item xs={12} sm={6} md={3}>
-            <CippInfoBar
-              title="Security Score"
-              value={`${tenantStats?.securityScore || 0}%`}
-              color="warning"
-              icon={<SecurityIcon />}
-            />
-          </Grid>
-          
-          <Grid item xs={12} sm={6} md={3}>
-            <CippInfoBar
-              title="Active Alerts"
-              value={tenantStats?.activeAlerts || 0}
-              color="error"
-              icon={<AlertIcon />}
-            />
-          </Grid>
+    <>
+      <Head>
+        <title>Dashboard</title>
+      </Head>
+      <Box sx={{ flexGrow: 1, py: 4 }}>
+        <Container maxWidth={false}>
+          <Grid container spacing={3}>
+            {/* User Statistics Chart */}
+            <Grid size={{ md: 4, xs: 12 }}>
+              <CippChartCard
+                title="User Statistics"
+                isFetching={dashboard.isFetching}
+                chartType="pie"
+                chartSeries={[
+                  Number(dashboard.data?.LicUsers || 0),
+                  Number(dashboard.data?.Users - dashboard.data?.LicUsers - dashboard.data?.Guests || 0),
+                  Number(dashboard.data?.Guests || 0),
+                ]}
+                labels={['Licensed Users', 'Unlicensed Users', 'Guests']}
+              />
+            </Grid>
 
-          {/* Charts */}
-          <Grid item xs={12} md={8}>
-            <CippChartCard
-              title="User Activity (Last 30 Days)"
-              chartType="line"
-              data={userActivity}
-              height="400px"
-            />
-          </Grid>
+            {/* SharePoint Quota Chart */}
+            <Grid size={{ md: 4, xs: 12 }}>
+              <CippChartCard
+                title="SharePoint Quota"
+                isFetching={sharepoint.isFetching}
+                chartType="donut"
+                chartSeries={[
+                  Number(sharepoint.data?.TenantStorageMB - sharepoint.data?.GeoUsedStorageMB) || 0,
+                  Number(sharepoint.data?.GeoUsedStorageMB) || 0,
+                ]}
+                labels={[
+                  `Free (${formatStorageSize(
+                    sharepoint.data?.TenantStorageMB - sharepoint.data?.GeoUsedStorageMB
+                  )})`,
+                  `Used (${formatStorageSize(sharepoint.data?.GeoUsedStorageMB)})`,
+                ]}
+              />
+            </Grid>
 
-          {/* Quick Stats */}
-          <Grid item xs={12} md={4}>
-            <CippPropertyListCard
-              title="Quick Stats"
-              properties={[
-                { label: 'Sign-ins Today', value: tenantStats?.signinsToday },
-                { label: 'Failed Sign-ins', value: tenantStats?.failedSignins },
-                { label: 'New Users (7d)', value: tenantStats?.newUsers7d },
-                { label: 'License Utilization', value: `${tenantStats?.licenseUtilization}%` }
-              ]}
-            />
+            {/* Domain Names Property List */}
+            <Grid size={{ md: 4, xs: 12 }}>
+              <CippPropertyListCard
+                title="Domain Names"
+                showDivider={false}
+                copyItems={true}
+                isFetching={organization.isFetching}
+                propertyItems={organization.data?.verifiedDomains
+                  ?.slice(0, domainVisible ? undefined : 3)
+                  .map((domain, idx) => ({
+                    label: '',
+                    value: domain.name,
+                  }))}
+                actionButton={
+                  organization.data?.verifiedDomains?.length > 3 && (
+                    <Button onClick={() => setDomainVisible(!domainVisible)}>
+                      {domainVisible ? 'See less' : 'See more...'}
+                    </Button>
+                  )
+                }
+              />
+            </Grid>
           </Grid>
-
-          {/* Recent Activity */}
-          <Grid item xs={12}>
-            <CippRecentActivityCard
-              title="Recent Activity"
-              activities={tenantStats?.recentActivities}
-              maxItems={10}
-            />
-          </Grid>
-        </Grid>
-      </Container>
-    </Box>
+        </Container>
+      </Box>
+    </>
   );
 }
+
+TenantDashboard.getLayout = (page) => <DashboardLayout allTenantsSupport={false}>{page}</DashboardLayout>;
+
+export default TenantDashboard;
 ```
 
 #### Advanced Dashboard with Interactive Elements
@@ -678,12 +750,67 @@ function AdvancedDashboard() {
 
 ## Common Implementation Patterns
 
+### API Call Patterns
+```jsx
+import { ApiGetCall, ApiPostCall } from '/src/api/ApiCall.jsx';
+import { useSettings } from '/src/hooks/use-settings.js';
+
+// Basic GET request
+const { data, isLoading, error } = ApiGetCall({
+  url: '/api/ListGraphRequest',
+  data: { 
+    tenantFilter: currentTenant,
+    Endpoint: 'users',
+    $select: 'id,displayName,userPrincipalName,accountEnabled'
+  },
+  queryKey: ['users', currentTenant]
+});
+
+// GET request with pagination
+const { data: paginatedData } = ApiGetCall({
+  url: '/api/ListGraphRequest',
+  data: {
+    tenantFilter: currentTenant,
+    Endpoint: 'users',
+    manualPagination: true,
+    $count: true,
+    $orderby: 'displayName',
+    $top: 999
+  },
+  queryKey: ['users-paginated', currentTenant]
+});
+
+// POST request with mutation
+const postCall = ApiPostCall({
+  datafromUrl: true,
+  relatedQueryKeys: ['users', currentTenant]
+});
+
+// Submit data
+const handleSubmit = () => {
+  postCall.mutate({
+    url: '/api/AddUser',
+    data: formData
+  });
+};
+
+// Query key patterns:
+// - Use tenant in key: ['users', currentTenant]
+// - Include identifying data: ['user', userId, currentTenant]
+// - Use descriptive prefixes: ['ListGraphRequest', endpoint, currentTenant]
+```
+
 ### Error Handling
 ```jsx
+import { ApiGetCall } from '/src/api/ApiCall.jsx';
+import { CippErrorPage } from '/src/components/CippComponents/CippErrorPage.jsx';
+import { CippLoadingPage } from '/src/components/CippComponents/CippLoadingPage.jsx';
+
 // Consistent error handling across all page types
 const { data, isLoading, error } = ApiGetCall({
-  url: '/api/getData',
-  queryKey: ['data']
+  url: '/api/ListGraphRequest',
+  data: { tenantFilter: currentTenant, Endpoint: 'users' },
+  queryKey: ['users', currentTenant]
 });
 
 if (error) {
@@ -697,24 +824,56 @@ if (isLoading) {
 
 ### Permission Checking
 ```jsx
+import { PermissionButton } from '/src/utils/permissions.js';
+import { usePermissions } from '/src/hooks/use-permissions.js';
+import { CippUnauthorized } from '/src/components/CippComponents/CippUnauthorized.jsx';
+
 // Role-based page access
 function ProtectedPage() {
   const { hasPermission } = usePermissions();
   
-  if (!hasPermission('users.view')) {
+  if (!hasPermission('Identity.User.Read')) {
     return <CippUnauthorized />;
   }
   
   return <PageContent />;
 }
+
+// Permission-based button rendering
+function PageWithPermissionButton() {
+  return (
+    <PermissionButton
+      requiredPermissions={['Identity.User.ReadWrite']}
+      component={Link}
+      href="/identity/administration/users/add"
+      startIcon={<PersonAddIcon />}
+    >
+      Add User
+    </PermissionButton>
+  );
+}
 ```
 
 ### Responsive Design
 ```jsx
-// Mobile-responsive layouts
+import { Grid } from '@mui/system';
+import { CippInfoBar } from '/src/components/CippCards/CippInfoBar.jsx';
+
+// Mobile-responsive layouts using MUI Grid v2
 <Grid container spacing={{ xs: 2, md: 3 }}>
-  <Grid item xs={12} sm={6} md={3}>
-    <CippInfoCard />
+  <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+    <CippInfoBar
+      title="Total Users"
+      value={dashboard.data?.Users || 0}
+      color="primary"
+    />
+  </Grid>
+  <Grid size={{ xs: 12, md: 8 }}>
+    <CippChartCard
+      title="User Activity"
+      chartType="line"
+      data={activityData}
+    />
   </Grid>
 </Grid>
 ```
