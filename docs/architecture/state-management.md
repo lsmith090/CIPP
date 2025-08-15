@@ -435,15 +435,21 @@ export function ApiGetCall(props) {
 
   const retryFn = (failureCount, error) => {
     // Custom retry logic based on HTTP status codes
-    let returnRetry = false;
+    // HTTP_STATUS_TO_NOT_RETRY = [302, 401, 403, 404, 500]
+    let returnRetry = true;
     
-    if (error.response?.status === 401) {
-      // Handle authentication errors
-      queryClient.invalidateQueries({ queryKey: ['authmeswa'] });
+    if (failureCount >= retry) {
       returnRetry = false;
-    } else if (error.response?.status >= 500) {
-      // Retry server errors
-      returnRetry = failureCount < retry;
+    }
+    
+    if (error.response?.status === 302 && 
+        error.response?.headers.get("location").includes("/.auth/login/aad")) {
+      // Handle Azure AD authentication redirects
+      queryClient.invalidateQueries({ queryKey: ['authmecipp'] });
+      returnRetry = false;
+    } else if ([401, 403, 404, 500].includes(error.response?.status)) {
+      // Don't retry client/server errors
+      returnRetry = false;
     }
     
     if (!returnRetry && toast) {
@@ -460,12 +466,63 @@ export function ApiGetCall(props) {
   const queryInfo = useQuery({
     queryKey: [queryKey],
     queryFn: async ({ signal }) => {
-      if (bulkRequest) {
-        return handleBulkRequest(url, data);
+      if (bulkRequest && Array.isArray(data)) {
+        // Bulk request processing: iterate through data array
+        const results = [];
+        for (let i = 0; i < data.length; i++) {
+          const element = data[i];
+          const response = await axios.get(url, {
+            signal: signal,
+            params: element,
+            headers: { "Content-Type": "application/json" },
+          });
+          results.push(response.data);
+          
+          // Emit each result as it arrives for real-time updates
+          if (onResult) {
+            onResult(response.data);
+          }
+        }
+        
+        // Invalidate related queries after bulk completion
+        if (relatedQueryKeys) {
+          const clearKeys = Array.isArray(relatedQueryKeys) ? relatedQueryKeys : [relatedQueryKeys];
+          setTimeout(() => {
+            clearKeys.forEach((key) => {
+              queryClient.invalidateQueries({ queryKey: [key] });
+            });
+          }, 1000);
+        }
+        
+        return results;
+      } else {
+        // Single request processing
+        // Special handling: disable abort signal for tenant filter API
+        const requestSignal = url === "/api/tenantFilter" ? null : signal;
+        const response = await axios.get(url, {
+          signal: requestSignal,
+          params: data,
+          headers: { "Content-Type": "application/json" },
+        });
+        
+        if (onResult) {
+          onResult(response.data);
+        }
+        
+        // Invalidate related queries after single request
+        if (relatedQueryKeys) {
+          const clearKeys = Array.isArray(relatedQueryKeys) ? relatedQueryKeys : [relatedQueryKeys];
+          setTimeout(() => {
+            clearKeys.forEach((key) => {
+              queryClient.invalidateQueries({ queryKey: [key] });
+            });
+          }, 1000);
+        }
+        
+        return response.data;
       }
-      return apiRequest(url, data, signal);
     },
-    enabled: !waiting,
+    enabled: waiting,
     retry: retryFn,
     staleTime,
     refetchOnWindowFocus,
@@ -494,11 +551,28 @@ export function ApiPostCall({ relatedQueryKeys, onResult }) {
     mutationFn: async (props) => {
       const { url, data, bulkRequest } = props;
       
-      if (bulkRequest) {
-        return handleBulkMutation(url, data);
+      if (bulkRequest && Array.isArray(data)) {
+        // Bulk mutation processing: iterate through data array
+        const results = [];
+        for (let i = 0; i < data.length; i++) {
+          let element = data[i];
+          const response = await axios.post(url, element);
+          results.push(response);
+          
+          // Emit each result as it arrives for real-time updates
+          if (onResult) {
+            onResult(response.data);
+          }
+        }
+        return results;
+      } else {
+        // Single mutation processing
+        const response = await axios.post(url, data);
+        if (onResult) {
+          onResult(response.data);
+        }
+        return response;
       }
-      
-      return apiRequest(url, data, null, 'POST');
     },
     onSuccess: (data, variables, context) => {
       // Automatic cache invalidation
@@ -559,12 +633,16 @@ export function ApiGetCallWithPagination({
     getNextPageParam: (lastPage) => {
       return lastPage.nextCursor;
     },
-    enabled: !waiting,
+    enabled: waiting,
     retry: (failureCount, error) => {
-      if (error.response?.status === 401) {
+      // HTTP_STATUS_TO_NOT_RETRY = [401, 403, 404] for pagination
+      if (failureCount >= retry) {
         return false;
       }
-      return failureCount < retry;
+      if ([401, 403, 404].includes(error.response?.status)) {
+        return false;
+      }
+      return true;
     },
     initialPageParam: null,
   });
@@ -672,8 +750,10 @@ const initialState = {
   currentIndex: 0,
 };
 
+export const TOAST_REDUCER_PATH = "toasts";
+
 export const toastsSlice = createSlice({
-  name: "toasts",
+  name: TOAST_REDUCER_PATH,
   initialState,
   reducers: {
     showToast: (state, { payload: { message, title, toastError } }) => {
@@ -796,6 +876,10 @@ class MemoryStorage {
     this.store = new Map();
   }
 
+  get length() {
+    return this.store.size;
+  }
+
   getItem(key) {
     return this.store.get(key);
   }
@@ -806,6 +890,14 @@ class MemoryStorage {
 
   removeItem(key) {
     this.store.delete(key);
+  }
+
+  clear() {
+    this.store.clear();
+  }
+
+  key(index) {
+    return Array.from(this.store.values())[index] || null;
   }
 }
 
