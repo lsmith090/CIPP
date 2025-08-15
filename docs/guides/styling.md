@@ -1,10 +1,59 @@
-# CIPP Styling Guide
+# Styling Guide
 
-This guide covers the styling approach used in CIPP, including Material-UI theming, custom components, responsive design patterns, and best practices for maintaining visual consistency.
+This comprehensive guide covers CIPP's styling system, including Material-UI theme integration, component styling patterns, and best practices for consistent design implementation across both light and dark modes.
 
-## Theme Architecture
+## Material-UI Theme System
 
-CIPP uses Material-UI v6+ with a custom theme system that supports light/dark modes and customizable color presets.
+CIPP uses a sophisticated Material-UI theme system that provides consistent styling across all components, supporting both light and dark modes with custom component overrides.
+
+#### Core Theme Factory (`/src/theme/index.js`)
+
+The main theme factory combines base, light/dark, and component configurations:
+
+```javascript
+export const createTheme = (config) => {
+  let theme = createMuiTheme(
+    createBaseOptions({
+      direction: config.direction,
+    }),
+    config.paletteMode === "dark"
+      ? createDarkOptions({
+          colorPreset: config.colorPreset,
+          contrast: config.contrast,
+        })
+      : createLightOptions({
+          colorPreset: config.colorPreset,
+          contrast: config.contrast,
+        }),
+    {
+      components: {
+        // Global component overrides
+        MuiCssBaseline: {
+          styleOverrides: {
+            // Custom scrollbar styling
+          },
+        },
+      },
+    }
+  );
+
+  if (config.responsiveFontSizes) {
+    theme = responsiveFontSizes(theme);
+  }
+
+  return theme;
+};
+```
+
+#### Theme Configuration Options
+
+The theme accepts several configuration options:
+
+- `paletteMode`: "light" | "dark"
+- `colorPreset`: Color scheme preset
+- `contrast`: "normal" | "high"
+- `direction`: "ltr" | "rtl"
+- `responsiveFontSizes`: boolean
 
 ### Theme Structure
 
@@ -29,7 +78,158 @@ CIPP uses Material-UI v6+ with a custom theme system that supports light/dark mo
     └── create-components.js # Dark component styles
 ```
 
-### Color System
+### Component Overrides
+
+#### Base Component Styles (`/src/theme/base/create-components.js`)
+
+**Button Customization:**
+```javascript
+MuiButton: {
+  defaultProps: {
+    disableRipple: true, // Disabled for performance
+  },
+  styleOverrides: {
+    root: {
+      fontWeight: 600,
+    },
+    sizeLarge: { fontSize: 15 },
+    sizeMedium: { fontSize: 14 },
+    sizeSmall: { fontSize: 13 },
+  },
+}
+```
+
+**Card Customization:**
+```javascript
+MuiCardContent: {
+  styleOverrides: {
+    root: {
+      paddingBottom: 20,
+      paddingLeft: 24,
+      paddingRight: 24,
+      paddingTop: 20,
+    },
+  },
+}
+```
+
+**Input Field Standardization:**
+```javascript
+MuiTextField: {
+  defaultProps: {
+    variant: "filled", // Default variant for consistency
+  },
+}
+
+MuiInputBase: {
+  styleOverrides: {
+    input: {
+      fontSize: 14,
+      height: "40px", // Consistent height for single-line inputs
+      "&.MuiInputBase-inputMultiline": {
+        height: "unset", // Allow textareas to be flexible
+      },
+    },
+  },
+}
+```
+
+#### Custom Scrollbar Styling
+
+CIPP implements custom scrollbar styling for both light and dark themes:
+
+```javascript
+MuiCssBaseline: {
+  styleOverrides: {
+    html: {
+      "--sb-track-color": "#232E33",
+      "--sb-thumb-color": "#6BAF8D",
+      "--sb-size": "7px",
+    },
+    "html, body, *": {
+      "&::-webkit-scrollbar": {
+        width: "var(--sb-size)",
+        height: "var(--sb-size)",
+      },
+      "&::-webkit-scrollbar-track": {
+        backgroundColor: "var(--sb-track-color)",
+        borderRadius: "4px",
+      },
+      "&::-webkit-scrollbar-thumb": {
+        backgroundColor: "var(--sb-thumb-color)",
+        borderRadius: "4px",
+      },
+    },
+  },
+}
+```
+
+### Theme Mode Configuration
+
+#### Light Mode
+```javascript
+// Light mode palette
+background: {
+  default: contrast === 'high' ? '#FCFCFD' : common.white,
+  paper: common.white
+},
+text: {
+  primary: neutral[900],
+  secondary: neutral[500],
+  disabled: alpha(neutral[900], 0.38)
+}
+```
+
+#### Dark Mode
+```javascript
+// Dark mode palette
+background: {
+  default: contrast === 'high' ? '#0A0F18' : '#0C121D',
+  paper: '#101826'
+},
+text: {
+  primary: common.white,
+  secondary: '#97A1BA',
+  disabled: alpha(common.white, 0.38)
+}
+```
+
+### Typography System
+
+#### Font Configuration
+- **Primary Font**: Inter (sans-serif)
+- **Font Weights**: 400, 500, 600
+- **Text Transform**: None (natural casing)
+
+#### Typography Variants
+```javascript
+h1: { fontSize: 48, fontWeight: 600, lineHeight: 1.5 }
+h2: { fontSize: 36, fontWeight: 600, lineHeight: 1.5 }
+h3: { fontSize: 32, fontWeight: 600, lineHeight: 1.5 }
+h4: { fontSize: 24, fontWeight: 600, lineHeight: 1.5 }
+h5: { fontSize: 18, fontWeight: 600, lineHeight: 1.5 }
+h6: { fontSize: 16, fontWeight: 600, lineHeight: 1.5 }
+body1: { lineHeight: 1.5 }
+body2: { lineHeight: 1.6 }
+button: { fontWeight: 500, textTransform: "none" }
+```
+
+### Color System Integration
+
+#### Primary Colors
+```javascript
+primary: getPrimary(colorPreset) // Dynamically selected based on preset
+```
+
+#### Semantic Colors
+```javascript
+error: { main: "#F04438", light: "#FEE4E2", dark: "#B42318" }
+warning: { main: "#F79009", light: "#FEF0C7", dark: "#B54708" }
+success: { main: "#10B981", light: "#3FC79A", dark: "#0B815A" }
+info: { main: "#06AED4", light: "#CFF9FE", dark: "#0E7090" }
+```
+
+### Color System (Legacy)
 
 CIPP uses a semantic color system with alpha variants for consistency:
 
@@ -62,7 +262,180 @@ export const orange = withAlphas({
 });
 ```
 
-### Accessing Theme in Components
+## Component Styling Patterns
+
+### Component Organization
+
+CIPP components are organized into several categories with specific styling patterns:
+
+```
+/src/components/
+├── CippCards/           # Card-based components
+├── CippComponents/      # Core utility components  
+├── CippFormPages/       # Form-specific components
+├── CippTable/          # Table and data display components
+├── CippWizard/         # Multi-step wizard components
+├── CippSettings/       # Settings and configuration components
+└── General/            # General utility components
+```
+
+### Card Component Patterns
+
+#### 1. Info Card Pattern (`CippInfoCard.jsx`)
+```jsx
+export const CippInfoCard = (props) => {
+  const { isFetching, actionLink, actionText, value, icon, label, cardSize, ...other } = props;
+
+  return (
+    <Card {...other}>
+      <Stack alignItems="center" direction="row" spacing={2} sx={{ p: 2 }}>
+        <Avatar
+          sx={{
+            backgroundColor: "primary.alpha12",
+            color: "primary.main",
+          }}
+        >
+          <SvgIcon fontSize="small">{icon ? icon : <CubeIcon />}</SvgIcon>
+        </Avatar>
+        <div>
+          <Typography color="text.secondary" variant="overline">
+            {isFetching ? <Skeleton width={150} /> : label}
+          </Typography>
+          <Typography variant="h6">
+            {isFetching ? <Skeleton width={200} /> : value}
+          </Typography>
+        </div>
+      </Stack>
+      {actionLink && (
+        <>
+          <Divider />
+          <CardActions sx={{ px: 3, py: 1 }}>
+            <Button
+              color="inherit"
+              component={Link}
+              endIcon={<SvgIcon fontSize="small"><ArrowRightIcon /></SvgIcon>}
+              href={actionLink}
+              size="small"
+            >
+              {actionText}
+            </Button>
+          </CardActions>
+        </>
+      )}
+    </Card>
+  );
+};
+```
+
+**Key Styling Patterns:**
+- Consistent card padding: `p: 2` (16px)
+- Avatar with theme colors: `primary.alpha12` background
+- Loading states with Skeleton components
+- Conditional action sections with Divider separation
+
+#### 2. Button Card Pattern
+```jsx
+const CippButtonCard = ({ title, description, icon, onClick, disabled, color = "primary" }) => (
+  <Card
+    sx={{
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      transition: 'all 0.2s',
+      '&:hover': {
+        transform: disabled ? 'none' : 'translateY(-2px)',
+        boxShadow: disabled ? 1 : 4,
+      },
+      opacity: disabled ? 0.6 : 1,
+    }}
+    onClick={disabled ? undefined : onClick}
+  >
+    <CardContent sx={{ textAlign: 'center', p: 3 }}>
+      <Avatar
+        sx={{
+          bgcolor: `${color}.alpha12`,
+          color: `${color}.main`,
+          width: 56,
+          height: 56,
+          mx: 'auto',
+          mb: 2,
+        }}
+      >
+        <SvgIcon fontSize="large">{icon}</SvgIcon>
+      </Avatar>
+      <Typography variant="h6" gutterBottom>
+        {title}
+      </Typography>
+      <Typography variant="body2" color="text.secondary">
+        {description}
+      </Typography>
+    </CardContent>
+  </Card>
+);
+```
+
+### Form Component Patterns
+
+#### 1. Form Component Structure (`CippFormComponent.jsx`)
+```jsx
+export const CippFormComponent = (props) => {
+  const {
+    validators,
+    formControl,
+    type = "textField",
+    name,
+    label,
+    labelLocation = "behind",
+    defaultValue,
+    helperText,
+    ...other
+  } = props;
+
+  const { errors } = useFormState({ control: formControl.control });
+  const convertedName = convertBracketsToDots(name);
+
+  // Component rendering based on type
+  switch (type) {
+    case "textField":
+      return (
+        <TextField
+          {...formControl.register(convertedName, { ...validators })}
+          error={!!get(errors, convertedName)}
+          helperText={get(errors, convertedName)?.message || helperText}
+          label={label}
+          variant="filled"
+          fullWidth
+          {...other}
+        />
+      );
+    
+    case "autoComplete":
+      return (
+        <Controller
+          name={convertedName}
+          control={formControl.control}
+          render={({ field }) => (
+            <MemoizedCippAutoComplete
+              {...field}
+              label={label}
+              error={!!get(errors, convertedName)}
+              helperText={get(errors, convertedName)?.message || helperText}
+              {...other}
+            />
+          )}
+        />
+      );
+    
+    // Additional cases...
+  }
+};
+```
+
+**Key Patterns:**
+- Consistent error handling with `get(errors, convertedName)`
+- Default `variant="filled"` for text fields
+- `fullWidth` for form consistency
+- Memoized components for performance
+
+### Using Theme in Components
 
 ```javascript
 import { useTheme } from '@mui/material/styles';
@@ -678,4 +1051,12 @@ const styles = { complexObject: 'values' };
 const styles = useMemo(() => ({ complexObject: 'values' }), [dependencies]);
 ```
 
-This styling guide ensures consistent, maintainable, and accessible styling across the CIPP application. Always refer to existing components for patterns and maintain consistency with the established design system.
+## Related Files
+
+- `/src/theme/colors.js` - Color definitions and presets
+- `/src/theme/utils.js` - Theme utility functions  
+- `/src/hooks/use-settings.js` - Theme settings management
+- `/src/contexts/settings-context.js` - Settings context provider
+- `/src/theme/base/create-components.js` - Component style overrides
+
+Following these styling patterns ensures consistency, maintainability, and optimal performance across the CIPP application while providing an excellent user experience in both light and dark modes.

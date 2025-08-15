@@ -12,32 +12,12 @@ import { CippFormSection } from '../CippFormPages/CippFormSection';
 import { CippFormComponent } from '../CippComponents/CippFormComponent';
 import { CippFormTenantSelector } from '../CippComponents/CippFormTenantSelector';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-
-const userSchema = yup.object({
-  displayName: yup.string().required('Display name is required'),
-  givenName: yup.string().required('First name is required'),
-  surname: yup.string().required('Last name is required'),
-  mail: yup.string().email('Invalid email').required('Email is required'),
-  userPrincipalName: yup.string().required('User principal name is required'),
-  jobTitle: yup.string(),
-  department: yup.string(),
-  officeLocation: yup.string(),
-  phoneNumber: yup.string(),
-  manager: yup.string(),
-  accountEnabled: yup.boolean(),
-  mustChangePassword: yup.boolean(),
-  licenses: yup.array().of(yup.string()),
-  groups: yup.array().of(yup.string()),
-});
 
 const AddUserForm = () => {
   const router = useRouter();
   const { currentTenant } = useSettings();
   
   const formControl = useForm({
-    resolver: yupResolver(userSchema),
     mode: 'onChange',
     defaultValues: {
       displayName: '',
@@ -115,7 +95,7 @@ const AddUserForm = () => {
                 name="givenName"
                 label="First Name"
                 formControl={formControl}
-                required
+                validators={{ required: "First name is required" }}
                 fullWidth
               />
             </Grid>
@@ -125,7 +105,7 @@ const AddUserForm = () => {
                 name="surname"
                 label="Last Name"
                 formControl={formControl}
-                required
+                validators={{ required: "Last name is required" }}
                 fullWidth
               />
             </Grid>
@@ -135,7 +115,7 @@ const AddUserForm = () => {
                 name="displayName"
                 label="Display Name"
                 formControl={formControl}
-                required
+                validators={{ required: "Display name is required" }}
                 fullWidth
                 helperText="Auto-generated from first and last name"
               />
@@ -146,7 +126,13 @@ const AddUserForm = () => {
                 name="mail"
                 label="Email Address"
                 formControl={formControl}
-                required
+                validators={{
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Invalid email format"
+                  }
+                }}
                 fullWidth
               />
             </Grid>
@@ -156,7 +142,7 @@ const AddUserForm = () => {
                 name="userPrincipalName"
                 label="User Principal Name"
                 formControl={formControl}
-                required
+                validators={{ required: "User principal name is required" }}
                 fullWidth
                 helperText="Auto-generated from email"
               />
@@ -292,31 +278,10 @@ Complex form with conditional logic and dynamic fields:
 ```jsx
 import { useFieldArray } from 'react-hook-form';
 
-const conditionalAccessSchema = yup.object({
-  displayName: yup.string().required('Policy name is required'),
-  state: yup.string().required('Policy state is required'),
-  conditions: yup.object({
-    users: yup.object({
-      includeUsers: yup.array().min(1, 'At least one user must be included'),
-      excludeUsers: yup.array(),
-    }),
-    applications: yup.object({
-      includeApplications: yup.array().min(1, 'At least one application must be included'),
-    }),
-    locations: yup.object({
-      includeLocations: yup.array(),
-      excludeLocations: yup.array(),
-    }),
-  }),
-  grantControls: yup.object({
-    operator: yup.string().required('Grant operator is required'),
-    builtInControls: yup.array().min(1, 'At least one control must be selected'),
-  }),
-});
 
 const ConditionalAccessPolicyForm = () => {
   const formControl = useForm({
-    resolver: yupResolver(conditionalAccessSchema),
+    mode: 'onChange',
     defaultValues: {
       displayName: '',
       state: 'disabled',
@@ -382,7 +347,7 @@ const ConditionalAccessPolicyForm = () => {
                 name="displayName"
                 label="Policy Name"
                 formControl={formControl}
-                required
+                validators={{ required: "Policy name is required" }}
                 fullWidth
                 helperText="Enter a descriptive name for this policy"
               />
@@ -393,7 +358,7 @@ const ConditionalAccessPolicyForm = () => {
                 name="state"
                 label="Policy State"
                 formControl={formControl}
-                required
+                validators={{ required: "Policy state is required" }}
                 options={[
                   { value: 'disabled', label: 'Report-only' },
                   { value: 'enabled', label: 'On' },
@@ -422,7 +387,7 @@ const ConditionalAccessPolicyForm = () => {
                   formControl={formControl}
                   multiple={true}
                   includeGroups={true}
-                  required
+                  validators={{ required: "At least one user must be included" }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -451,7 +416,7 @@ const ConditionalAccessPolicyForm = () => {
                     { value: 'Office365', label: 'Office 365' },
                     { value: 'MicrosoftAdminPortals', label: 'Microsoft Admin Portals' },
                   ]}
-                  required
+                  validators={{ required: "At least one application must be included" }}
                 />
               </Grid>
               {!watchIncludeApplications?.includes('All') && (
@@ -540,7 +505,7 @@ const ConditionalAccessPolicyForm = () => {
                   { value: 'OR', label: 'One of the selected controls' },
                   { value: 'AND', label: 'All the selected controls' },
                 ]}
-                required
+                validators={{ required: "Grant operator is required" }}
               />
             </Grid>
             <Grid item xs={12} md={8}>
@@ -558,7 +523,7 @@ const ConditionalAccessPolicyForm = () => {
                   { value: 'approvedApplication', label: 'Require approved client app' },
                   { value: 'appProtectionPolicy', label: 'Require app protection policy' },
                 ]}
-                required
+                validators={{ required: "At least one control must be selected" }}
               />
             </Grid>
           </Grid>
@@ -900,35 +865,6 @@ const BulkUserImportForm = () => {
 Complex settings form with nested configurations:
 
 ```jsx
-const settingsSchema = yup.object({
-  general: yup.object({
-    organizationName: yup.string().required('Organization name is required'),
-    supportEmail: yup.string().email('Invalid email'),
-    logoUrl: yup.string().url('Invalid URL'),
-  }),
-  security: yup.object({
-    passwordPolicy: yup.object({
-      minimumLength: yup.number().min(8).max(128),
-      requireUppercase: yup.boolean(),
-      requireLowercase: yup.boolean(),
-      requireNumbers: yup.boolean(),
-      requireSymbols: yup.boolean(),
-      passwordHistory: yup.number().min(0).max(24),
-      maxPasswordAge: yup.number().min(0).max(365),
-    }),
-    accountLockout: yup.object({
-      enabled: yup.boolean(),
-      threshold: yup.number().min(1).max(999),
-      duration: yup.number().min(1).max(99999),
-      resetCounter: yup.number().min(1).max(99999),
-    }),
-  }),
-  notifications: yup.object({
-    emailNotifications: yup.boolean(),
-    smsNotifications: yup.boolean(),
-    webhookUrl: yup.string().url('Invalid webhook URL'),
-  }),
-});
 
 const SettingsForm = () => {
   const { data: currentSettings, isLoading } = ApiGetCall({
@@ -937,7 +873,7 @@ const SettingsForm = () => {
   });
 
   const formControl = useForm({
-    resolver: yupResolver(settingsSchema),
+    mode: 'onChange',
     defaultValues: {
       general: {
         organizationName: '',
@@ -1002,7 +938,7 @@ const SettingsForm = () => {
                 name="general.organizationName"
                 label="Organization Name"
                 formControl={formControl}
-                required
+                validators={{ required: "Organization name is required" }}
                 fullWidth
               />
             </Grid>
@@ -1021,6 +957,12 @@ const SettingsForm = () => {
                 name="general.logoUrl"
                 label="Logo URL"
                 formControl={formControl}
+                validators={{
+                  pattern: {
+                    value: /^https?:\/\/.+/,
+                    message: "Invalid URL format"
+                  }
+                }}
                 fullWidth
                 helperText="URL to your organization logo"
               />
@@ -1053,8 +995,10 @@ const SettingsForm = () => {
                   name="security.passwordPolicy.minimumLength"
                   label="Minimum Length"
                   formControl={formControl}
-                  min={8}
-                  max={128}
+                  validators={{
+                    min: { value: 8, message: "Minimum length must be at least 8" },
+                    max: { value: 128, message: "Maximum length cannot exceed 128" }
+                  }}
                   fullWidth
                 />
               </Grid>
@@ -1064,8 +1008,10 @@ const SettingsForm = () => {
                   name="security.passwordPolicy.passwordHistory"
                   label="Password History"
                   formControl={formControl}
-                  min={0}
-                  max={24}
+                  validators={{
+                    min: { value: 0, message: "Cannot be negative" },
+                    max: { value: 24, message: "Cannot exceed 24" }
+                  }}
                   fullWidth
                   helperText="Number of previous passwords to remember"
                 />
@@ -1121,8 +1067,10 @@ const SettingsForm = () => {
                   name="security.accountLockout.threshold"
                   label="Lockout Threshold"
                   formControl={formControl}
-                  min={1}
-                  max={999}
+                  validators={{
+                    min: { value: 1, message: "Must be at least 1" },
+                    max: { value: 999, message: "Cannot exceed 999" }
+                  }}
                   fullWidth
                   helperText="Failed attempts before lockout"
                 />

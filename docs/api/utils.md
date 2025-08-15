@@ -2,6 +2,20 @@
 
 This document provides comprehensive documentation for all utility functions used in the CIPP application. These utilities provide common functionality for data processing, formatting, validation, and various helper operations.
 
+## Documentation Structure
+
+CIPP utility documentation is organized into two main sections:
+
+- **📄 This Document (utils.md)** - Core utility functions for data processing, formatting, validation, UI components, and authentication
+- **📄 [API Utilities (utilities.md)](./utilities.md)** - Specialized functions for API interactions using TanStack Query (ApiGetCall, ApiPostCall, etc.)
+
+## Related Documentation
+
+- **[Component Documentation](../components/README.md)** - Many utilities are used extensively in CIPP components
+- **[Hooks Documentation](./hooks.md)** - Custom React hooks that often utilize these utilities
+- **[Table Documentation](../components/cipp-table/README.md)** - CippTable components rely heavily on formatting and filter utilities
+- **[Authentication Architecture](../architecture/auth.md)** - How permission utilities integrate with CIPP's auth system
+
 ## Table of Contents
 
 1. [Data Processing](#data-processing)
@@ -10,6 +24,10 @@ This document provides comprehensive documentation for all utility functions use
 4. [Array & Object Utilities](#array--object-utilities)
 5. [String Utilities](#string-utilities)
 6. [System Utilities](#system-utilities)
+7. [UI & Theming Utilities](#ui--theming-utilities)
+8. [Authentication & Authorization](#authentication--authorization)
+9. [Documentation Processing](#documentation-processing)
+10. [API Utilities Reference](#api-utilities-reference)
 
 ## Data Processing
 
@@ -33,6 +51,39 @@ const filters = [
 
 const filteredUsers = applyFilters(users, filters);
 // Result: [{ name: "John Doe", department: "IT", age: 30 }, { name: "Bob Johnson", department: "IT", age: 35 }]
+```
+
+**Real-World Usage Examples:**
+
+```javascript
+// From CippTable components - client-side filtering
+import { useMemo } from 'react';
+
+const processedData = useMemo(() => {
+  let filtered = data;
+  
+  if (searchFilters.length > 0) {
+    filtered = applyFilters(filtered, searchFilters);
+  }
+  
+  if (sortBy && sortDir) {
+    filtered = applySort(filtered, sortBy, sortDir);
+  }
+  
+  return applyPagination(filtered, currentPage, pageSize);
+}, [data, searchFilters, sortBy, sortDir, currentPage, pageSize]);
+
+// Common filtering patterns in CIPP
+const tenantFilters = [
+  { property: "tenantFilter", operator: "equals", value: selectedTenant },
+  { property: "accountEnabled", operator: "equals", value: true }
+];
+
+const auditFilters = [
+  { property: "DateTime", operator: "isAfter", value: startDate },
+  { property: "DateTime", operator: "isBefore", value: endDate },
+  { property: "Result", operator: "contains", value: "Success" }
+];
 ```
 
 **Parameters:**
@@ -141,6 +192,36 @@ const formattedBoolean = getCippFormatting(true, "accountEnabled", "component");
 
 const formattedArray = getCippFormatting(["tenant1", "tenant2"], "tenantFilter", "component");
 // Returns: CollapsibleChipList with tenant chips
+```
+
+**Real-World Usage Examples:**
+
+```javascript
+// From src/components/CippTable/util-columnsFromAPI.js
+const column = {
+  accessorKey: item.value,
+  header: getCippTranslation(item.label),
+  cell: (info) => getCippFormatting(info.getValue(), item.value, "component"),
+  filterFn: getCippFilterVariant(item.value)?.filterFn,
+  sortingFn: getCippFilterVariant(item.value)?.sortingFn,
+};
+
+// From src/components/CippCards/CippUserInfoCard.jsx
+<Typography variant="body2">
+  {getCippFormatting(user.lastSignInDateTime, "lastSignInDateTime", "component")}
+</Typography>
+
+// From src/pages/identity/administration/users/user/exchange.jsx
+const mailboxData = [
+  {
+    label: "Archive Status",
+    value: getCippFormatting(exchange.ArchiveStatus, "ArchiveStatus", "component")
+  },
+  {
+    label: "Litigation Hold",
+    value: getCippFormatting(exchange.LitigationHoldEnabled, "LitigationHoldEnabled", "component")
+  }
+];
 ```
 
 **Parameters:**
@@ -566,6 +647,512 @@ maybeCallback(data); // Safe to call regardless
 - Safe to call in any context
 - Zero overhead
 
+## UI & Theming Utilities
+
+### codeStyle
+
+Comprehensive syntax highlighting styles for code display components using Prism.js compatible styling.
+
+```javascript
+import { codeStyle } from '/src/utils/code-style';
+
+// Apply to code blocks
+const CodeBlock = ({ children, language }) => (
+  <pre 
+    style={codeStyle[`pre[class*="language-"]`]}
+    className={`language-${language}`}
+  >
+    <code style={codeStyle[`code[class*="language-"]`]}>
+      {children}
+    </code>
+  </pre>
+);
+
+// Use in Material-UI themes
+const theme = createTheme({
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: codeStyle
+    }
+  }
+});
+```
+
+**Style Categories:**
+- **Base Styles**: Font family, sizing, spacing for code blocks
+- **Syntax Colors**: Keywords, strings, comments, operators
+- **Language Support**: JavaScript, PowerShell, JSON, CSS
+- **Theme Integration**: Works with CIPP's dark theme using neutral colors
+
+**Supported Elements:**
+- `code[class*="language-"]` - Inline code styling
+- `pre[class*="language-"]` - Code block containers  
+- Token types: `comment`, `keyword`, `string`, `number`, `function`, `operator`
+- Special: `important`, `bold`, `italic` formatting
+
+### createEmotionCache
+
+Creates optimized Emotion CSS cache for Material-UI applications with SSR support.
+
+```javascript
+import { createEmotionCache } from '/src/utils/create-emotion-cache';
+
+// Client-side cache creation
+const cache = createEmotionCache();
+
+// Use with CacheProvider
+import { CacheProvider } from '@emotion/react';
+
+const App = () => (
+  <CacheProvider value={cache}>
+    <ThemeProvider theme={theme}>
+      <MyApplication />
+    </ThemeProvider>
+  </CacheProvider>
+);
+
+// SSR setup (in pages/_app.js)
+const clientSideEmotionCache = createEmotionCache();
+
+export default function MyApp({ Component, emotionCache = clientSideEmotionCache, pageProps }) {
+  return (
+    <CacheProvider value={emotionCache}>
+      <Component {...pageProps} />
+    </CacheProvider>
+  );
+}
+```
+
+**Configuration:**
+- **Key**: `css` - Emotion cache identifier
+- **Prepend**: `true` - Ensures proper CSS injection order
+- **SSR Compatible**: Works with Next.js server-side rendering
+
+**Use Cases:**
+- Material-UI theme optimization
+- Custom CSS-in-JS styling
+- Performance optimization for large applications
+- Server-side rendering support
+
+### getCippFilterVariant
+
+Determines the appropriate filter type and configuration for table columns based on field names and data types.
+
+```javascript
+import { getCippFilterVariant } from '/src/utils/get-cipp-filter-variant';
+
+// Basic usage
+const filterConfig = getCippFilterVariant('createdDateTime');
+// Returns: { filterVariant: "datetime-range", sortingFn: "dateTimeNullsLast", filterFn: "betweenInclusive" }
+
+const licenseFilter = getCippFilterVariant('assignedLicenses'); 
+// Returns: { filterVariant: "multi-select", sortingFn: "alphanumeric", filterFn: "arrIncludesSome" }
+
+// Use in table column definitions
+const columns = useMemo(() => [
+  {
+    accessorKey: 'displayName',
+    header: 'Name',
+    ...getCippFilterVariant('displayName') // Returns: { filterVariant: "text" }
+  },
+  {
+    accessorKey: 'accountEnabled',
+    header: 'Enabled',
+    ...getCippFilterVariant('accountEnabled') // Returns: { filterVariant: "select" }
+  },
+  {
+    accessorKey: 'lastModifiedDateTime', 
+    header: 'Modified',
+    ...getCippFilterVariant('lastModifiedDateTime') // Returns datetime-range config
+  }
+], []);
+```
+
+**Filter Variants:**
+
+| Field Pattern | Filter Type | Description |
+|---------------|-------------|-------------|
+| **DateTime Fields** | `datetime-range` | Date/time range picker with null handling |
+| **License Fields** | `multi-select` | Multiple license selection with array filtering |
+| **Boolean Fields** | `select` | True/false dropdown selection |
+| **Domain Fields** | `select` | Dropdown for domain selection |
+| **ID Fields** | `text` | Simple text input for IDs |
+| **Number Fields** | `range` | Numeric range input |
+| **Default** | `text` | Standard text filtering |
+
+**DateTime Recognition:**
+- Field names ending in: `DateTime`, `Date`, `Time`, `Received`, `Expires`
+- Predefined fields: `ExecutedTime`, `ScheduledTime`, `Timestamp`, `LastRun`, `createdAt`, etc.
+- Regex pattern: `/[dD]ate[tT]ime/`
+
+**Sorting Functions:**
+- `dateTimeNullsLast` - Proper date sorting with null values at end
+- `alphanumeric` - Standard alphanumeric sorting
+- Default Material React Table sorting for others
+
+## Authentication & Authorization
+
+### Permission System
+
+Comprehensive permission checking utilities with React component integration for role-based access control.
+
+```javascript
+import { 
+  hasPermission, 
+  hasRole, 
+  hasAccess, 
+  PermissionButton, 
+  PermissionCheck 
+} from '/src/utils/permissions';
+
+// Basic permission checking
+const userPerms = ['users.read', 'users.write', 'tenants.read'];
+const requiredPerms = ['users.write'];
+
+const canEditUsers = hasPermission(userPerms, requiredPerms); // true
+
+// Wildcard pattern matching
+const adminPerms = ['admin.*', 'users.read'];
+const hasAdminAccess = hasPermission(adminPerms, ['admin.users.create']); // true
+
+// Role-based checking
+const userRoles = ['Admin', 'User'];
+const requiredRoles = ['Admin', 'SuperAdmin'];
+
+const isAdmin = hasRole(userRoles, requiredRoles); // true
+```
+
+#### hasPermission
+
+Checks user permissions with wildcard pattern support.
+
+```javascript
+// Exact matching
+hasPermission(['users.read', 'users.write'], ['users.read']); // true
+
+// Wildcard patterns  
+hasPermission(['admin.*'], ['admin.users.create']); // true
+hasPermission(['tenant.*.read'], ['tenant.contoso.read']); // true
+
+// Multiple permissions (OR logic)
+hasPermission(['users.read'], ['users.write', 'users.read']); // true (has one)
+
+// No permissions required
+hasPermission(['users.read'], []); // true (no restrictions)
+```
+
+#### hasRole
+
+Simple role membership checking.
+
+```javascript
+// Basic role check
+hasRole(['Admin', 'User'], ['Admin']); // true
+hasRole(['User'], ['Admin', 'SuperAdmin']); // false
+
+// No roles required  
+hasRole(['User'], []); // true
+```
+
+#### hasAccess
+
+Combined permission and role checking.
+
+```javascript
+const accessConfig = {
+  userPermissions: ['users.read', 'users.write'],
+  userRoles: ['Admin'],
+  requiredPermissions: ['users.write'],
+  requiredRoles: ['Admin', 'SuperAdmin']
+};
+
+const canAccess = hasAccess(accessConfig); // true (has permission AND role)
+```
+
+#### React Components
+
+Permission-aware components for conditional rendering and access control.
+
+```javascript
+// Permission-aware button
+<PermissionButton
+  requiredPermissions={['users.delete']}
+  requiredRoles={['Admin']}
+  hideIfNoAccess={true}
+  variant="contained"
+  color="error"
+  onClick={handleDeleteUser}
+>
+  Delete User
+</PermissionButton>
+
+// Conditional rendering
+<PermissionCheck
+  requiredPermissions={['admin.settings.read']}
+  fallback={<AccessDeniedMessage />}
+>
+  <AdminSettingsPanel />
+</PermissionCheck>
+
+// Higher-order component
+const ProtectedAdminPanel = withPermissions({
+  component: AdminPanel,
+  requiredPermissions: ['admin.*'],
+  requiredRoles: ['Admin'],
+  fallback: <UnauthorizedAccess />
+});
+```
+
+**Component Props:**
+
+| Component | Props | Description |
+|-----------|-------|-------------|
+| `PermissionButton` | `requiredPermissions`, `requiredRoles`, `hideIfNoAccess` | Button with permission checking |
+| `PermissionCheck` | `requiredPermissions`, `requiredRoles`, `fallback` | Conditional rendering wrapper |
+| `withPermissions` | `component`, `requiredPermissions`, `requiredRoles`, `fallback` | HOC for protection |
+
+**Integration with Hooks:**
+- Uses `usePermissions()` hook for current user context
+- Automatically handles authentication state
+- Disables/hides components based on permissions
+
+**Real-World Usage Examples:**
+
+```javascript
+// From src/components/CippSettings/CippRoles.jsx
+<PermissionCheck requiredPermissions={["admin.roles.read"]}>
+  <RoleManagementPanel />
+</PermissionCheck>
+
+// From src/layouts/top-nav.js - Navigation permission checking
+const navigationItems = useMemo(() => {
+  return menuItems.filter(item => {
+    if (!item.requiredPermissions) return true;
+    return hasPermission(userPermissions, item.requiredPermissions);
+  });
+}, [userPermissions, menuItems]);
+
+// From various admin pages - Conditional feature access
+<PermissionButton
+  requiredPermissions={["tenant.administration.write"]}
+  variant="contained"
+  onClick={handleCreateTenant}
+  disabled={isCreating}
+>
+  Create New Tenant
+</PermissionButton>
+
+// Pattern matching for module permissions
+const canAccessModule = hasPermission(
+  userPermissions, 
+  [`module.${moduleName}.*`, `admin.*`]
+);
+```
+
+### JWT Utilities (Development)
+
+Mock JWT implementation for development and testing environments.
+
+```javascript
+import { sign, decode, verify, JWT_SECRET, JWT_EXPIRES_IN } from '/src/utils/jwt';
+
+// Create a mock token (development only)
+const payload = { userId: 123, role: 'admin' };
+const header = { expiresIn: JWT_EXPIRES_IN };
+const token = sign(payload, JWT_SECRET, header);
+
+// Decode token
+try {
+  const decoded = decode(token);
+  console.log('User:', decoded.userId); // 123
+} catch (error) {
+  console.error('Token expired or invalid');
+}
+
+// Verify token signature
+try {
+  const verified = verify(token, JWT_SECRET);
+  console.log('Verified payload:', verified);
+} catch (error) {
+  console.error('Invalid signature or expired');
+}
+```
+
+**Important Notes:**
+- **Development Only**: Not cryptographically secure
+- **Browser Compatible**: Uses btoa/atob instead of Node.js libraries
+- **Simple XOR**: Basic signature verification for testing
+- **Expiration**: Built-in token expiration handling
+
+**Configuration:**
+- `JWT_SECRET`: Development secret key
+- `JWT_EXPIRES_IN`: 2 days (172800 seconds)
+
+### getSignInErrorCodeTranslation
+
+Translates Microsoft sign-in error codes into user-friendly messages.
+
+```javascript
+import { getSignInErrorCodeTranslation } from '/src/utils/get-cipp-signin-errorcode-translation';
+
+// Translate known error codes
+const errorMessage = getSignInErrorCodeTranslation('50126');
+// Returns: "Invalid username or password"
+
+const unknownError = getSignInErrorCodeTranslation('99999');  
+// Returns: "99999" (original code if not found)
+
+// Use in error handling
+const handleSignInError = (errorCode) => {
+  const userMessage = getSignInErrorCodeTranslation(errorCode);
+  showErrorToast(userMessage);
+};
+
+// Integration with authentication flows
+const processAuthError = (error) => {
+  const errorCode = error.response?.data?.error_code;
+  if (errorCode) {
+    const translation = getSignInErrorCodeTranslation(errorCode);
+    return translation;
+  }
+  return 'Authentication failed';
+};
+```
+
+**Error Code Examples:**
+- `50126` → "Invalid username or password"
+- `50058` → "Session timeout"
+- `50053` → "Account locked"
+- `50079` → "Multi-factor authentication required"
+- `50144` → "Invalid password"
+
+**Features:**
+- **Fallback Handling**: Returns original code if translation not found
+- **Type Safety**: Converts error codes to strings for lookup
+- **Extensible**: Easy to add new error code translations
+- **Integration Ready**: Works with existing error handling patterns
+
+## Documentation Processing
+
+### Documentation File Processing
+
+Utilities for processing markdown documentation files with frontmatter support.
+
+```javascript
+import { getArticle, getArticles } from '/src/utils/docs';
+
+// Get a specific documentation article
+const article = getArticle('getting-started', ['title', 'content', 'slug', 'tags']);
+// Returns: { title: "Getting Started", content: "...", slug: "getting-started", tags: [...] }
+
+// Get all documentation articles
+const allArticles = getArticles(['title', 'slug', 'excerpt', 'publishedAt']);
+// Returns: [{ title: "...", slug: "...", excerpt: "...", publishedAt: "..." }, ...]
+
+// Dynamic field selection
+const minimalArticle = getArticle('api-guide', ['slug', 'title']);
+// Returns: { slug: "api-guide", title: "API Guide" }
+```
+
+#### getArticle
+
+Processes a single markdown file with gray-matter frontmatter parsing.
+
+```javascript
+// File: docs/api-guide.md
+// ---
+// title: "API Integration Guide"  
+// excerpt: "Learn how to integrate with CIPP APIs"
+// publishedAt: "2023-12-01"
+// tags: ["api", "integration"]
+// ---
+// 
+// # API Integration Guide
+// This guide covers...
+
+const article = getArticle('api-guide', ['title', 'content', 'excerpt', 'tags']);
+// Returns:
+// {
+//   title: "API Integration Guide",
+//   content: "# API Integration Guide\nThis guide covers...",
+//   excerpt: "Learn how to integrate with CIPP APIs", 
+//   tags: ["api", "integration"]
+// }
+```
+
+#### getArticles
+
+Processes all markdown files in the docs directory.
+
+```javascript
+// Get article listings
+const articleList = getArticles(['title', 'slug', 'excerpt', 'publishedAt']);
+
+// Build navigation
+const navigation = getArticles(['title', 'slug']).map(article => ({
+  label: article.title,
+  href: `/docs/${article.slug}`
+}));
+
+// Filter by field
+const apiDocs = getArticles(['title', 'slug', 'tags'])
+  .filter(article => article.tags?.includes('api'));
+```
+
+**Parameters:**
+- `slug` - Filename without .md extension
+- `fields` - Array of field names to extract
+
+**Supported Fields:**
+- `slug` - Generated from filename
+- `content` - Markdown content (without frontmatter)
+- Any frontmatter field: `title`, `excerpt`, `publishedAt`, `tags`, etc.
+
+**Features:**
+- **Gray-matter Integration**: Automatic frontmatter parsing
+- **Selective Loading**: Only extract requested fields for performance
+- **File System Based**: Reads from `docs/` directory
+- **Type Safety**: Handles undefined fields gracefully
+
+**Use Cases:**
+- Documentation site generation
+- Article listing and navigation
+- Dynamic content loading
+- Static site building
+
+## API Utilities Reference
+
+For comprehensive API interaction utilities, see the **[API Utilities Documentation](./utilities.md)** which covers:
+
+- **ApiGetCall** - GET requests with caching and retry logic
+- **ApiPostCall** - POST/PUT/DELETE requests with mutation support  
+- **ApiGetCallWithPagination** - Infinite scroll and pagination support
+
+The API utilities provide standardized patterns for:
+- Authentication integration
+- Error handling with `getCippError`
+- Cache management and invalidation
+- Bulk request processing
+- Real-time progress tracking
+
+```javascript
+import { ApiGetCall, ApiPostCall } from '/src/api/ApiCall';
+
+// Example usage with formatting utilities
+const users = ApiGetCall({
+  url: '/api/ListUsers',
+  queryKey: 'users'
+});
+
+// Process data with formatting utilities
+const formattedUsers = users.data?.map(user => ({
+  ...user,
+  displayName: getCippFormatting(user.displayName, 'displayName', 'text'),
+  licenses: getCippFormatting(user.assignedLicenses, 'assignedLicenses', 'component'),
+  lastSignIn: getCippFormatting(user.lastSignInDateTime, 'lastSignInDateTime', 'component')
+}));
+```
+
 ## Best Practices
 
 ### 1. Performance Optimization
@@ -616,6 +1203,74 @@ const UserTable = ({ users }) => (
     ))}
   </table>
 );
+```
+
+### 4. API Integration Patterns
+
+```javascript
+// Combine API utilities with formatting utilities
+import { ApiGetCall } from '/src/api/ApiCall';
+import { getCippFormatting, getCippError } from '/src/utils/...';
+
+const UserManagement = () => {
+  const users = ApiGetCall({
+    url: '/api/ListUsers',
+    queryKey: 'users',
+    onResult: (result) => {
+      // Process each user with formatting utilities
+      return result.map(user => ({
+        ...user,
+        formattedLastSignIn: getCippFormatting(user.lastSignInDateTime, 'lastSignInDateTime', 'component'),
+        formattedLicenses: getCippFormatting(user.assignedLicenses, 'assignedLicenses', 'component')
+      }));
+    }
+  });
+
+  if (users.isError) {
+    const errorMessage = getCippError(users.error);
+    return <ErrorDisplay message={errorMessage} />;
+  }
+
+  return <UserDataTable data={users.data} />;
+};
+```
+
+### 5. Permission-Aware Component Patterns
+
+```javascript
+// Combine permissions with API calls and formatting
+const AdminDashboard = () => {
+  const { userPermissions } = usePermissions();
+  
+  // Conditional API calls based on permissions
+  const tenants = ApiGetCall({
+    url: '/api/ListTenants',
+    queryKey: 'tenants',
+    waiting: hasPermission(userPermissions, ['tenants.read'])
+  });
+
+  const users = ApiGetCall({
+    url: '/api/ListUsers', 
+    queryKey: 'users',
+    waiting: hasPermission(userPermissions, ['users.read'])
+  });
+
+  return (
+    <Grid container spacing={3}>
+      <PermissionCheck requiredPermissions={['tenants.read']}>
+        <Grid item xs={12} md={6}>
+          <TenantStatsCard data={tenants.data} />
+        </Grid>
+      </PermissionCheck>
+      
+      <PermissionCheck requiredPermissions={['users.read']}>
+        <Grid item xs={12} md={6}>
+          <UserStatsCard data={users.data} />
+        </Grid>
+      </PermissionCheck>
+    </Grid>
+  );
+};
 ```
 
 ### 4. Type Safety

@@ -37,7 +37,7 @@ Main wizard container that manages step navigation and form state.
     subtext: 'Additional information',
     options: [], // Step-specific options
   },
-  validation: yupSchema, // Step validation schema
+  validation: validationRules, // Step validation rules
   hideStepWhen: (formData) => boolean, // Conditional hiding
   showStepWhen: (formData) => boolean, // Conditional showing
   required: true, // Step is required
@@ -347,29 +347,37 @@ const ConditionalWizard = () => {
 
 ### Validation per Step
 ```jsx
-import * as yup from 'yup';
+// Validation rules for each step
+const step1ValidationRules = {
+  organizationName: { required: 'Organization name is required' },
+  adminEmail: { 
+    required: 'Email is required',
+    pattern: {
+      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      message: 'Invalid email format'
+    }
+  }
+};
 
-const step1Schema = yup.object({
-  organizationName: yup.string().required('Organization name is required'),
-  adminEmail: yup.string().email('Invalid email').required('Email is required'),
-});
-
-const step2Schema = yup.object({
-  userCount: yup.number().min(1, 'At least 1 user required').required(),
-  licenseType: yup.string().required('License type is required'),
-});
+const step2ValidationRules = {
+  userCount: { 
+    required: 'User count is required',
+    min: { value: 1, message: 'At least 1 user required' }
+  },
+  licenseType: { required: 'License type is required' }
+};
 
 const ValidatedWizard = () => {
   const steps = [
     {
       label: 'Organization',
       component: OrganizationStep,
-      validation: step1Schema,
+      validation: step1ValidationRules,
     },
     {
       label: 'Licensing',
       component: LicensingStep,
-      validation: step2Schema,
+      validation: step2ValidationRules,
     },
   ];
 

@@ -130,10 +130,17 @@ const UsersTable = () => (
 ### Form Pattern
 ```jsx
 import { CippFormPage } from '../../src/components/CippFormPages';
+import { CippFormComponent } from '../../src/components/CippComponents';
 import { useForm } from 'react-hook-form';
 
 const AddUser = () => {
-  const formControl = useForm();
+  const formControl = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      displayName: '',
+      email: ''
+    }
+  });
   
   return (
     <CippFormPage
@@ -142,7 +149,26 @@ const AddUser = () => {
       postUrl="/api/AddUser"
       queryKey={['users']}
     >
-      {/* Form fields */}
+      <CippFormComponent
+        type="textField"
+        name="displayName"
+        label="Display Name"
+        formControl={formControl}
+        validators={{ required: "Display Name is required" }}
+      />
+      <CippFormComponent
+        type="emailField"
+        name="email"
+        label="Email"
+        formControl={formControl}
+        validators={{
+          required: "Email is required",
+          pattern: {
+            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            message: "Invalid email format"
+          }
+        }}
+      />
     </CippFormPage>
   );
 };

@@ -198,7 +198,7 @@ const formControl = useForm({
     name: "",
     email: ""
   },
-  resolver: yupResolver(schema) // Optional validation schema
+  // Form validation handled by individual field validators
 });
 ```
 

@@ -12,9 +12,9 @@ Welcome to the comprehensive documentation for the CIPP (CyberDrain Improved Par
 ### Architecture & Patterns
 - [Component Architecture](./architecture/components.md) - Component library organization and patterns
 - [Page Patterns](./architecture/page-patterns.md) - Common page types and their implementations
-- [State Management](./architecture/state-management.md) - Redux, React Query, and data flow
+- [State Management](./architecture/state-management.md) - Comprehensive Redux, React Query, and Context patterns
 - [Routing & Navigation](./architecture/routing.md) - Next.js routing and navigation patterns
-- [Authentication & Authorization](./architecture/auth.md) - Azure AD integration and role-based access
+- [Authentication & Authorization](./architecture/auth.md) - Azure AD integration, RBAC system, and permission components
 
 ### Components Documentation
 - [Component Library](./components/README.md) - Overview of the component library
@@ -28,8 +28,11 @@ Welcome to the comprehensive documentation for the CIPP (CyberDrain Improved Par
 - [Adding New Pages](./guides/adding-pages.md) - How to create new pages
 - [Creating Components](./guides/creating-components.md) - Component development guidelines
 - [Working with APIs](./guides/api-integration.md) - API integration patterns
-- [Styling Guidelines](./guides/styling.md) - Material-UI theming and styling practices
+- [Styling Guidelines](./guides/styling.md) - Material-UI theming and component styling
 - [Testing Patterns](./guides/testing.md) - Testing strategies and examples
+- [Accessibility](./guides/accessibility.md) - WCAG 2.1 compliance and accessibility patterns
+- [Naming Conventions](./guides/naming-conventions.md) - Code naming standards and patterns
+- [Performance Optimization](./guides/performance.md) - React performance patterns and optimization
 
 ### API Reference
 - [API Utilities](./api/utilities.md) - API call utilities and helpers

@@ -38,18 +38,9 @@ Complete form page layout with validation, submission, and error handling.
 ```jsx
 import CippFormPage from '../CippFormPages/CippFormPage';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-
-const schema = yup.object({
-  displayName: yup.string().required('Display name is required'),
-  mail: yup.string().email('Invalid email').required('Email is required'),
-  department: yup.string(),
-});
 
 const AddUserForm = () => {
   const formControl = useForm({
-    resolver: yupResolver(schema),
     mode: 'onChange',
     defaultValues: {
       displayName: '',
@@ -84,7 +75,7 @@ const AddUserForm = () => {
             label="Display Name"
             name="displayName"
             formControl={formControl}
-            required
+            validators={{ required: "Display Name is required" }}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -93,7 +84,13 @@ const AddUserForm = () => {
             label="Email"
             name="mail"
             formControl={formControl}
-            required
+            validators={{ 
+              required: "Email is required",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Invalid email format"
+              }
+            }}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -223,7 +220,7 @@ import { CippFormComponent } from '../CippComponents/CippFormComponent';
   name="displayName"
   label="Display Name"
   formControl={formControl}
-  required
+  validators={{ required: "Display Name is required" }}
   helperText="Enter the user's full name"
 />
 
@@ -434,50 +431,45 @@ const DynamicFieldsForm = () => {
 };
 ```
 
-### Validation Schemas
+### Validation Patterns
 ```jsx
-import * as yup from 'yup';
+// Simple required validation
+validators={{ required: "Display name is required" }}
 
-const userValidationSchema = yup.object({
-  displayName: yup
-    .string()
-    .required('Display name is required')
-    .min(2, 'Display name must be at least 2 characters'),
-  
-  mail: yup
-    .string()
-    .email('Invalid email format')
-    .required('Email is required'),
-  
-  userPrincipalName: yup
-    .string()
-    .matches(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      'Invalid UPN format'
-    ),
-  
-  department: yup.string(),
-  
-  accountEnabled: yup.boolean(),
-  
-  licenseAssignment: yup.array().of(
-    yup.object({
-      skuId: yup.string().required('License is required'),
-    })
-  ),
-});
+// Complex validation with multiple rules
+validators={{
+  required: "Email is required",
+  pattern: {
+    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    message: "Invalid email format"
+  }
+}}
+
+// Multiple validation rules
+validators={{
+  required: { value: true, message: "Display name is required" },
+  minLength: { value: 2, message: "Must be at least 2 characters" },
+  maxLength: { value: 255, message: "Cannot exceed 255 characters" }
+}}
+
+// Custom validation function
+validators={{
+  required: "UPN is required",
+  validate: {
+    validUPN: (value) => 
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value) || "Invalid UPN format"
+  }
+}}
 ```
 
 ## Advanced Features
 
 ### Custom Validation
 ```jsx
-const customValidation = {
-  validateUniqueEmail: async (email) => {
-    const response = await fetch(`/api/ValidateEmail?email=${email}`);
-    const result = await response.json();
-    return result.isUnique || 'Email already exists';
-  },
+const validateUniqueEmail = async (email) => {
+  const response = await fetch(`/api/ValidateEmail?email=${email}`);
+  const result = await response.json();
+  return result.isUnique || 'Email already exists';
 };
 
 <CippFormComponent
@@ -485,8 +477,11 @@ const customValidation = {
   name="mail"
   label="Email"
   formControl={formControl}
-  rules={{
-    validate: customValidation.validateUniqueEmail,
+  validators={{
+    required: "Email is required",
+    validate: {
+      uniqueEmail: validateUniqueEmail
+    }
   }}
 />
 ```
@@ -516,6 +511,11 @@ const MultiStepForm = () => {
   const [step, setStep] = useState(1);
   const formControl = useForm({
     mode: 'onChange',
+    defaultValues: {
+      displayName: '',
+      email: '',
+      licenseType: ''
+    }
   });
 
   const isStepValid = (stepNumber) => {
@@ -558,7 +558,7 @@ const MultiStepForm = () => {
 
 ## Best Practices
 
-1. **Validation**: Always use Yup schemas for consistent validation
+1. **Validation**: Use React Hook Form's built-in validators for consistent validation
 2. **Default Values**: Provide sensible defaults to improve UX
 3. **Error Handling**: Show clear, actionable error messages
 4. **Loading States**: Indicate when forms are submitting

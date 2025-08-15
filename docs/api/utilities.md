@@ -2,6 +2,21 @@
 
 This document provides comprehensive documentation for CIPP's API utility functions, which provide a standardized way to interact with the backend API using TanStack Query (React Query) with built-in error handling, caching, and retry logic.
 
+## Documentation Structure
+
+This document focuses specifically on **API interaction utilities**. For other utility functions, see:
+
+- **📄 [Core Utilities (utils.md)](./utils.md)** - Data processing, formatting, validation, UI, and authentication utilities
+- **📄 This Document (utilities.md)** - API call utilities for backend interactions
+
+## Integration with Core Utilities
+
+These API utilities work seamlessly with the core utilities documented in utils.md:
+- Error handling uses `getCippError` for consistent error message extraction
+- Data formatting uses `getCippFormatting` for consistent display
+- Permission checking integrates with authentication utilities
+- Filter utilities work with `getCippFilterVariant` for table interactions
+
 ## Overview
 
 CIPP's API utilities are built on top of TanStack Query and provide three main functions:

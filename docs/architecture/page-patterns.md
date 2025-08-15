@@ -225,7 +225,7 @@ function AddUserPage() {
           type="textField"
           label="Display Name"
           name="displayName"
-          required={true}
+          validators={{ required: "Display name is required" }}
           formControl={formControl}
         />
         
@@ -233,7 +233,7 @@ function AddUserPage() {
           type="textField"
           label="Username"
           name="userPrincipalName"
-          required={true}
+          validators={{ required: "Username is required" }}
           formControl={formControl}
           helperText="Enter username without domain"
         />
@@ -283,7 +283,7 @@ function EditUserPage() {
   });
 
   const formControl = useForm({
-    resolver: yupResolver(schema),
+    mode: 'onChange',
     defaultValues: userData || {}
   });
 
@@ -404,7 +404,7 @@ function UserOnboardingWizard() {
 ```jsx
 function BasicInfoStep({ data, onDataChange, onNext, onPrevious }) {
   const formControl = useForm({
-    resolver: yupResolver(basicInfoSchema),
+    mode: 'onChange',
     defaultValues: data.basicInfo || {}
   });
 

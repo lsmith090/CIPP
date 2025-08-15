@@ -62,7 +62,7 @@ const UserInfoStep = ({ formControl, title, onNextStep, onPreviousStep, currentS
             name="firstName"
             label="First Name"
             formControl={formControl}
-            required
+            validators={{ required: "First name is required" }}
             fullWidth
           />
         </Grid>
@@ -72,7 +72,7 @@ const UserInfoStep = ({ formControl, title, onNextStep, onPreviousStep, currentS
             name="lastName"
             label="Last Name"
             formControl={formControl}
-            required
+            validators={{ required: "Last name is required" }}
             fullWidth
           />
         </Grid>
@@ -82,7 +82,13 @@ const UserInfoStep = ({ formControl, title, onNextStep, onPreviousStep, currentS
             name="email"
             label="Email Address"
             formControl={formControl}
-            required
+            validators={{
+              required: "Email is required",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Invalid email format"
+              }
+            }}
             fullWidth
             helperText="This will be the user's primary email address"
           />
@@ -94,7 +100,7 @@ const UserInfoStep = ({ formControl, title, onNextStep, onPreviousStep, currentS
             label="Department"
             formControl={formControl}
             options={departments}
-            required
+            validators={{ required: "Department is required" }}
             fullWidth
           />
         </Grid>
