@@ -25,15 +25,22 @@ Main data table component with full functionality.
 - `columns` (array): Column definitions
 - `api` (object): API configuration
 - `actions` (array): Row action definitions
-- `title` (string): Table title
+- `title` (string): Table title (default: "Report")
 - `simpleColumns` (array): Column visibility configuration
 - `filters` (array): Initial column filters
 - `offCanvas` (object/boolean): Off-canvas detail panel configuration
-- `exportEnabled` (boolean): Enable export functionality
+- `exportEnabled` (boolean): Enable export functionality (default: true)
 - `refreshFunction` (function): Custom refresh handler
 - `onChange` (function): Selection change handler
-- `maxHeightOffset` (string): Height calculation offset
+- `maxHeightOffset` (string): Height calculation offset (default: "380px")
 - `defaultSorting` (array): Initial sort state
+- `isFetching` (boolean): Override loading state
+- `columnVisibility` (object): Initial column visibility settings
+- `simple` (boolean): Simple table mode (default: false)
+- `cardButton` (ReactNode): Button in table header
+- `noCard` (boolean): Render without card wrapper (default: false)
+- `hideTitle` (boolean): Hide table title (default: false)
+- `incorrectDataMessage` (string): Custom error message for malformed data
 
 **API Configuration:**
 ```jsx

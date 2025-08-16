@@ -14,11 +14,10 @@ Simple metric display card with optional action link.
 - `actionLink` (string): Optional navigation link
 - `actionText` (string): Text for action button
 - `isFetching` (boolean): Shows skeleton loading state
-- `cardSize` (string): Size variant
 
 **Usage:**
 ```jsx
-import { CippInfoCard } from '../../src/components/CippCards/CippInfoCard';
+import { CippInfoCard } from '../../../src/components/CippCards/CippInfoCard';
 import { UserIcon } from '@heroicons/react/24/outline';
 
 <CippInfoCard
@@ -38,14 +37,15 @@ Displays key-value property lists with optional actions.
 - `title` (string): Card header title
 - `propertyItems` (array, required): Array of property objects
 - `actionItems` (array): Array of action objects
-- `align` (string): 'vertical' or 'horizontal' alignment
-- `layout` (string): 'single' or 'double' column layout
-- `copyItems` (boolean): Enable copy-to-clipboard functionality
-- `showDivider` (boolean): Show dividers between items
+- `align` (string): 'vertical' or 'horizontal' alignment (default: 'vertical')
+- `layout` (string): 'single' or 'double' column layout (default: 'single')
+- `copyItems` (boolean): Enable copy-to-clipboard functionality (default: false)
+- `showDivider` (boolean): Show dividers between items (default: true)
 - `isFetching` (boolean): Loading state
 - `data` (object): Data object passed to actions
 - `actionButton` (ReactNode): Button in card header
 - `cardButton` (ReactNode): Button in card footer
+- `cardSx` (object): Custom styling for the card (default: { width: "100%", height: "100%" })
 
 **Property Item Structure:**
 ```jsx
@@ -76,7 +76,7 @@ Displays key-value property lists with optional actions.
 
 **Usage:**
 ```jsx
-import { CippPropertyListCard } from '../../src/components/CippCards/CippPropertyListCard';
+import { CippPropertyListCard } from '../../../src/components/CippCards/CippPropertyListCard';
 
 const userProperties = [
   { label: 'Name', value: user.displayName },
@@ -124,7 +124,7 @@ Chart visualization card component using ApexCharts with Material-UI theming.
 
 **Usage:**
 ```jsx
-import { CippChartCard } from '../../src/components/CippCards/CippChartCard';
+import { CippChartCard } from '../../../src/components/CippCards/CippChartCard';
 
 // Donut/Pie Chart
 const pieData = [400, 300, 500, 200];
@@ -197,7 +197,7 @@ Horizontal information bar displaying metrics in a grid layout with optional off
 
 **Usage:**
 ```jsx
-import { CippInfoBar } from '../../src/components/CippCards/CippInfoBar';
+import { CippInfoBar } from '../../../src/components/CippCards/CippInfoBar';
 
 const metrics = [
   {
@@ -246,7 +246,7 @@ Interactive card with primary action button.
 
 **Usage:**
 ```jsx
-import { CippButtonCard } from '../../src/components/CippCards/CippButtonCard';
+import { CippButtonCard } from '../../../src/components/CippCards/CippButtonCard';
 
 <CippButtonCard
   title="Create New User"

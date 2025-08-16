@@ -19,11 +19,8 @@ Main wizard container that manages step navigation and form state.
 **Props:**
 - `steps` (array, required): Array of step configurations
 - `postUrl` (string): API endpoint for final submission
-- `orientation` (string): 'horizontal' or 'vertical' layout
-- `initialState` (object): Initial form values
-- `onComplete` (function): Callback when wizard completes
-- `allowSkipSteps` (boolean): Allow users to skip steps
-- `showStepNumbers` (boolean): Display step numbers
+- `orientation` (string): 'horizontal' or 'vertical' layout (default: 'horizontal')
+- `initialState` (object): Initial form values passed to React Hook Form
 
 **Step Configuration:**
 ```jsx

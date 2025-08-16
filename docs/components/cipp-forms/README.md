@@ -163,32 +163,29 @@ Universal form field component supporting multiple input types.
 
 **Supported Types:**
 - `textField`: Standard text input
-- `textFieldMultiline`: Multi-line text area
+- `password`: Password input field
+- `number`: Numeric input field
 - `select`: Dropdown selection
 - `autoComplete`: Autocomplete with search
 - `switch`: Boolean toggle switch
 - `checkbox`: Checkbox input
+- `radio`: Radio button group
 - `datePicker`: Date selection
-- `dateTimePicker`: Date and time selection
-- `colorPicker`: Color selection
-- `filePicker`: File upload
-- `passwordField`: Password input with visibility toggle
-- `numberField`: Numeric input
-- `emailField`: Email input with validation
-- `phoneField`: Phone number input
+- `file`: File upload input
+- `richText`: Rich text editor with formatting
+- `CSVReader`: CSV file upload and preview
+- `cippDataTable`: Embedded data table component
+- `hidden`: Hidden form field
 
 **Common Props:**
 - `type` (string, required): Field type
 - `name` (string, required): Field name for form state
 - `label` (string): Field label
 - `formControl` (object, required): React Hook Form control
-- `required` (boolean): Required field validation
-- `disabled` (boolean): Disable field
-- `hidden` (boolean): Hide field
+- `validators` (object): Form validation rules
+- `defaultValue` (any): Default field value
 - `helperText` (string): Help text below field
-- `placeholder` (string): Placeholder text
-- `fullWidth` (boolean): Full width styling
-- `size` (string): Field size ('small', 'medium', 'large')
+- `labelLocation` (string): Label position for switches ('above', 'behind') - default: 'behind'
 
 **Type-Specific Props:**
 
