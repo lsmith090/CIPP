@@ -12,6 +12,11 @@ import { CippFormSection } from '/src/components/CippFormPages/CippFormSection.j
 import { CippFormComponent } from '/src/components/CippComponents/CippFormComponent.jsx';
 import { CippFormTenantSelector } from '/src/components/CippComponents/CippFormTenantSelector.jsx';
 import { useForm } from 'react-hook-form';
+import { getCippFormatting } from '/src/utils/get-cipp-formatting';
+import { getCippValidator } from '/src/utils/get-cipp-validator';
+import { getCippError } from '/src/utils/get-cipp-error';
+import { deepCopy } from '/src/utils/deep-copy';
+import { createResourceId } from '/src/utils/create-resource-id';
 
 const AddUserForm = () => {
   const router = useRouter();
@@ -59,14 +64,17 @@ const AddUserForm = () => {
   }, [watchMail, currentTenant]);
 
   const customDataFormatter = (data) => {
+    // Use standardized formatting where possible
     return {
       ...data,
       mailNickname: data.mail.split('@')[0],
       usageLocation: 'US', // Default usage location
       passwordProfile: {
         forceChangePasswordNextSignIn: data.mustChangePassword,
-        password: generateSecurePassword(),
+        password: generateSecurePassword(), // Consider using createResourceId() for secure IDs
       },
+      // Format dates consistently
+      createdDateTime: getCippFormatting(new Date().toISOString(), 'createdDateTime', 'text'),
     };
   };
 
@@ -77,7 +85,7 @@ const AddUserForm = () => {
       formControl={formControl}
       postUrl="/api/AddUser"
       queryKey={['users', 'list']}
-      customDataformatter={customDataFormatter}
+      customDataFormatter={customDataFormatter}
       backButtonTitle="Back to Users"
     >
       <Stack spacing={3}>
@@ -128,9 +136,8 @@ const AddUserForm = () => {
                 formControl={formControl}
                 validators={{
                   required: "Email is required",
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Invalid email format"
+                  validate: {
+                    email: (value) => getCippValidator('email')(value) || "Invalid email format"
                   }
                 }}
                 fullWidth
@@ -588,6 +595,11 @@ Form with file upload and dynamic preview:
 import { useState } from 'react';
 import { CippFormComponent } from '/src/components/CippComponents/CippFormComponent.jsx';
 import CippFormPage from '/src/components/CippFormPages/CippFormPage.jsx';
+import { getCippFormatting } from '/src/utils/get-cipp-formatting';
+import { getCippValidator } from '/src/utils/get-cipp-validator';
+import { getCippError } from '/src/utils/get-cipp-error';
+import { deepCopy } from '/src/utils/deep-copy';
+import { createResourceId } from '/src/utils/create-resource-id';
 
 const BulkUserImportForm = () => {
   const [csvData, setCsvData] = useState([]);
@@ -644,7 +656,8 @@ const BulkUserImportForm = () => {
       });
 
       // Validate email format
-      if (row.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row.email)) {
+      const emailValidator = getCippValidator('email');
+      if (row.email && !emailValidator(row.email)) {
         errors.push({
           row: index + 1,
           field: 'email',
@@ -658,18 +671,23 @@ const BulkUserImportForm = () => {
   };
 
   const customDataFormatter = (formData) => {
+    // Use deepCopy for safe object manipulation
+    const processedData = deepCopy(formData);
+    
     return {
-      ...formData,
+      ...processedData,
       users: importPreview.map(user => ({
         ...user,
         userPrincipalName: `${user.email.split('@')[0]}@${formData.defaultDomain}`,
         passwordProfile: {
-          password: formData.defaultPassword || generateRandomPassword(),
+          password: formData.defaultPassword || createResourceId(), // Use secure ID generation
           forceChangePasswordNextSignIn: formData.mustChangePassword,
         },
         accountEnabled: formData.accountEnabled,
         licenses: formData.defaultLicenses,
         groups: formData.defaultGroups,
+        // Add consistent timestamp
+        createdDateTime: getCippFormatting(new Date().toISOString(), 'createdDateTime', 'text'),
       })),
     };
   };
@@ -681,7 +699,7 @@ const BulkUserImportForm = () => {
       formControl={formControl}
       postUrl="/api/BulkAddUsers"
       queryKey={['users', 'bulk-import']}
-      customDataformatter={customDataFormatter}
+      customDataFormatter={customDataFormatter}
       allowResubmit={true}
     >
       <Stack spacing={3}>
@@ -949,9 +967,8 @@ const SettingsForm = () => {
                 label="Support Email"
                 formControl={formControl}
                 validators={{
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Invalid email format"
+                  validate: {
+                    email: (value) => !value || getCippValidator('email')(value) || "Invalid email format"
                   }
                 }}
                 fullWidth
@@ -964,9 +981,8 @@ const SettingsForm = () => {
                 label="Logo URL"
                 formControl={formControl}
                 validators={{
-                  pattern: {
-                    value: /^https?:\/\/.+/,
-                    message: "Invalid URL format"
+                  validate: {
+                    url: (value) => !value || getCippValidator('url')(value) || "Invalid URL format"
                   }
                 }}
                 fullWidth

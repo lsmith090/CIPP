@@ -10,6 +10,11 @@ Simple user table with common actions:
 import { CippTablePage } from '/src/components/CippComponents/CippTablePage.jsx';
 import { Chip, Avatar, Stack, Typography } from '@mui/material';
 import { UserIcon, KeyIcon, XMarkIcon, EditIcon } from '@heroicons/react/24/outline';
+import { getCippFormatting } from '/src/utils/get-cipp-formatting';
+import { getCippError } from '/src/utils/get-cipp-error';
+import { hasPermission } from '/src/utils/permissions';
+import { objFromArray } from '/src/utils/obj-from-array';
+import { getInitials } from '/src/utils/get-initials';
 
 const UsersTable = () => {
   const userColumns = [
@@ -19,7 +24,7 @@ const UsersTable = () => {
       cell: ({ getValue, row }) => (
         <Stack direction="row" alignItems="center" spacing={2}>
           <Avatar sx={{ width: 32, height: 32 }}>
-            {getValue()?.charAt(0)}
+            {getInitials(getValue())}
           </Avatar>
           <div>
             <Typography variant="body2" fontWeight="medium">
@@ -57,12 +62,14 @@ const UsersTable = () => {
     {
       accessorKey: 'lastSignInDateTime',
       header: 'Last Sign In',
-      cell: ({ getValue }) => 
-        getValue() ? new Date(getValue()).toLocaleDateString() : 'Never',
+      cell: ({ getValue }) => getCippFormatting(getValue(), 'lastSignInDateTime', 'component'),
       sortingFn: 'dateTimeNullsLast',
     },
   ];
 
+  // Example: Filter actions based on user permissions
+  const { userPermissions } = usePermissions();
+  
   const userActions = [
     {
       label: 'Edit User',
@@ -71,6 +78,8 @@ const UsersTable = () => {
         router.push(`/identity/administration/users/edit?userId=${row.id}`);
       },
       noConfirm: true,
+      // Only show if user has edit permissions
+      condition: (row) => hasPermission(userPermissions, ['users.write']),
     },
     {
       label: 'Reset Password',
@@ -94,6 +103,7 @@ const UsersTable = () => {
           defaultValue: false,
         }
       ],
+      condition: (row) => hasPermission(userPermissions, ['users.password.reset']),
     },
     {
       label: 'Enable Account',
@@ -103,7 +113,7 @@ const UsersTable = () => {
         method: 'POST',
         data: { ID: '{id}', AccountEnabled: true },
       },
-      condition: (row) => !row.accountEnabled,
+      condition: (row) => !row.accountEnabled && hasPermission(userPermissions, ['users.write']),
       color: 'success',
     },
     {
@@ -114,10 +124,17 @@ const UsersTable = () => {
         method: 'POST',
         data: { ID: '{id}', AccountEnabled: false },
       },
-      condition: (row) => row.accountEnabled,
+      condition: (row) => row.accountEnabled && hasPermission(userPermissions, ['users.write']),
       color: 'error',
     },
   ];
+
+  // Example error handling function using getCippError
+  const handleApiError = (error) => {
+    const errorMessage = getCippError(error);
+    console.error('API Error:', errorMessage);
+    // Could also show notification or handle error state
+  };
 
   return (
     <CippTablePage
@@ -127,6 +144,7 @@ const UsersTable = () => {
       actions={userActions}
       columns={userColumns}
       queryKey="users"
+      onError={handleApiError}
       offCanvas={{
         extendedInfoFields: [
           'id', 'userPrincipalName', 'displayName', 'mail', 
@@ -210,21 +228,7 @@ const LicenseManagementTable = () => {
     {
       accessorKey: 'lastSignInDateTime',
       header: 'Last Activity',
-      cell: ({ getValue }) => {
-        const date = getValue();
-        if (!date) return <Chip label="Never" color="error" size="small" />;
-        
-        const daysSince = Math.floor((new Date() - new Date(date)) / (1000 * 60 * 60 * 24));
-        const color = daysSince > 30 ? 'error' : daysSince > 7 ? 'warning' : 'success';
-        
-        return (
-          <Chip
-            label={`${daysSince} days ago`}
-            color={color}
-            size="small"
-          />
-        );
-      },
+      cell: ({ getValue }) => getCippFormatting(getValue(), 'lastSignInDateTime', 'component'),
     },
   ];
 
@@ -420,15 +424,7 @@ const SecurityAlertsTable = () => {
         
         return (
           <Stack>
-            <Typography variant="body2">
-              {date.toLocaleDateString()}
-            </Typography>
-            <Typography 
-              variant="caption" 
-              color={diffHours < 24 ? 'error.main' : 'text.secondary'}
-            >
-              {diffHours < 1 ? 'Just now' : `${diffHours}h ago`}
-            </Typography>
+            {getCippFormatting(getValue(), 'detectedDateTime', 'component')}
           </Stack>
         );
       },
@@ -572,7 +568,7 @@ const AuditLogTable = () => {
     {
       accessorKey: 'CreationTime',
       header: 'Timestamp',
-      cell: ({ getValue }) => new Date(getValue()).toLocaleString(),
+      cell: ({ getValue }) => getCippFormatting(getValue(), 'CreationTime', 'component'),
       sortingFn: 'datetime',
       size: 150,
     },
@@ -784,8 +780,7 @@ const MobileOptimizedTable = () => {
       {
         accessorKey: 'lastSignInDateTime',
         header: 'Last Sign In',
-        cell: ({ getValue }) => 
-          getValue() ? new Date(getValue()).toLocaleDateString() : 'Never',
+        cell: ({ getValue }) => getCippFormatting(getValue(), 'lastSignInDateTime', 'component'),
       },
     ] : []),
   ];
@@ -854,6 +849,11 @@ const LargeDatasetTable = () => {
       size: 150,
     },
   ], []);
+
+  // Example: Use objFromArray for efficient lookups
+  const usersById = useMemo(() => {
+    return objFromArray(data || [], 'id');
+  }, [data]);
 
   // Memoize action handlers
   const handleEdit = useCallback((row) => {

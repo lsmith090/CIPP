@@ -16,6 +16,8 @@ import {
   CippButtonCard
 } from '../CippCards';
 import { UserIcon, BuildingIcon, ShieldIcon } from '@heroicons/react/24/outline';
+import { getCippFormatting } from '/src/utils/get-cipp-formatting';
+import { hasPermission, PermissionCheck } from '/src/utils/permissions';
 
 const TenantDashboard = () => {
   const { data: overview, isLoading } = ApiGetCall({
@@ -96,32 +98,36 @@ const TenantDashboard = () => {
             propertyItems={[
               { label: 'Domain', value: overview?.primaryDomain, copyItems: true },
               { label: 'Region', value: overview?.region },
-              { label: 'Created', value: new Date(overview?.createdDate).toLocaleDateString() },
+              { label: 'Created', value: getCippFormatting(overview?.createdDate, 'createdDate', 'text') },
               { label: 'License Type', value: overview?.licenseType, chip: true },
             ]}
             isFetching={isLoading}
           />
         </Grid>
 
-        {/* Quick actions */}
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <CippButtonCard
-            title="Add New User"
-            description="Create a new user account"
-            buttonText="Create User"
-            onButtonClick={() => router.push('/identity/administration/users/add')}
-          />
-        </Grid>
+        {/* Quick actions - with permission checks */}
+        <PermissionCheck requiredPermissions={['users.write']}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <CippButtonCard
+              title="Add New User"
+              description="Create a new user account"
+              buttonText="Create User"
+              onButtonClick={() => router.push('/identity/administration/users/add')}
+            />
+          </Grid>
+        </PermissionCheck>
 
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <CippButtonCard
-            title="Run Security Scan"
-            description="Perform security assessment"
-            buttonText="Start Scan"
-            onButtonClick={handleSecurityScan}
-            loading={scanInProgress}
-          />
-        </Grid>
+        <PermissionCheck requiredPermissions={['security.scan']}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <CippButtonCard
+              title="Run Security Scan"
+              description="Perform security assessment"
+              buttonText="Start Scan"
+              onButtonClick={handleSecurityScan}
+              loading={scanInProgress}
+            />
+          </Grid>
+        </PermissionCheck>
       </Grid>
     </Container>
   );
@@ -159,8 +165,8 @@ const UserDetailView = ({ userId }) => {
       chip: true,
       chipColor: user?.accountEnabled ? 'success' : 'error'
     },
-    { label: 'Created', value: new Date(user?.createdDateTime).toLocaleDateString() },
-    { label: 'Last Sign In', value: user?.signInActivity?.lastSignInDateTime },
+    { label: 'Created', value: getCippFormatting(user?.createdDateTime, 'createdDateTime', 'component') },
+    { label: 'Last Sign In', value: getCippFormatting(user?.signInActivity?.lastSignInDateTime, 'lastSignInDateTime', 'component') },
     { 
       label: 'MFA Status', 
       value: user?.mfaEnabled ? 'Enabled' : 'Disabled',
@@ -298,7 +304,7 @@ const SecurityDashboard = () => {
             description={item.description}
             priority={item.priority}
             assignee={item.assignee}
-            dueDate={new Date(item.dueDate)}
+            dueDate={getCippFormatting(item.dueDate, 'dueDate', 'text')}
             actions={[
               {
                 label: 'Mark Complete',
@@ -503,7 +509,7 @@ const AlertCard = ({ alert }) => {
           chipColor: severity === 'high' ? 'error' : severity === 'medium' ? 'warning' : 'info'
         },
         { label: 'Source', value: alert.source },
-        { label: 'Detected', value: new Date(alert.detectedTime).toLocaleString() },
+        { label: 'Detected', value: getCippFormatting(alert.detectedTime, 'detectedTime', 'component') },
         { label: 'Status', value: alert.status, chip: true },
       ]}
       actionItems={[

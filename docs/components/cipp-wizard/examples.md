@@ -13,6 +13,7 @@ import { CippWizardStepButtons } from '/src/components/CippWizard/CippWizardStep
 import { CippFormComponent } from '/src/components/CippComponents/CippFormComponent.jsx';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { getCippFormatting } from '/src/utils/get-cipp-formatting';
 
 // Validation schemas for each step
 const userInfoSchema = yup.object({
@@ -340,8 +341,8 @@ const ReviewStep = ({ formControl, onPreviousStep, currentStep, onComplete, isSu
       title: 'Security Settings',
       data: [
         { label: 'MFA Required', value: formData.mfaRequired ? 'Yes' : 'No' },
-        { label: 'Start Date', value: formData.startDate ? new Date(formData.startDate).toLocaleDateString() : 'Not set' },
-        { label: 'End Date', value: formData.endDate ? new Date(formData.endDate).toLocaleDateString() : 'No expiration' },
+        { label: 'Start Date', value: getCippFormatting(formData.startDate, 'startDate', 'text') || 'Not set' },
+        { label: 'End Date', value: getCippFormatting(formData.endDate, 'endDate', 'text') || 'No expiration' },
         { label: 'Must Change Password', value: formData.mustChangePassword ? 'Yes' : 'No' },
       ],
     },
