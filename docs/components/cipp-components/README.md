@@ -94,32 +94,81 @@ const [selectedData, setSelectedData] = useState({});
 ```
 
 ### CippApiDialog
-Confirmation dialog for API actions with form inputs and validation.
+Advanced confirmation dialog for API actions with form inputs, validation, and comprehensive action processing.
+
+**Key Features:**
+- Dynamic form generation with validation
+- Single and bulk row operations
+- Automatic data replacement and processing
+- Real-time form validation
+- API result display with progress tracking
+- Mobile-responsive full-screen mode
+- Custom data formatters and functions
+- Query cache invalidation
 
 **Props:**
-- `createDialog` (object): Dialog control object from useDialog
+- `createDialog` (object, required): Dialog control object from useDialog hook
 - `title` (string): Dialog title
-- `api` (object): API configuration
-- `row` (object): Data row for action
-- `fields` (array): Additional input fields
-- `relatedQueryKeys` (array): Query keys to invalidate
+- `api` (object, required): API action configuration
+- `row` (object/array): Data row(s) for action - supports single objects or arrays for bulk
+- `fields` (array): Additional input fields for user data collection
+- `relatedQueryKeys` (array): Query keys to invalidate after successful operation
+- `dialogAfterEffect` (function): Callback function after successful API call
+- `allowResubmit` (boolean): Allow form resubmission after initial submit - default: false
+- `children` (ReactNode/function): Custom content or render function
+- `defaultvalues` (object): Default form values
+
+**API Configuration:**
+```jsx
+{
+  url: '/api/ActionEndpoint',              // API endpoint
+  method: 'POST',                          // HTTP method (POST/GET)
+  type: 'POST',                            // Action type (legacy)
+  data: { param: '{rowField}' },           // Data template with row field substitution
+  multiPost: false,                        // Send individual requests vs bulk
+  confirmText: 'Are you sure?',            // Confirmation message
+  customFunction: (row, action, data) => {}, // Custom handler instead of API call
+  customDataformatter: (row, action, data) => {}, // Transform data before API call
+  dataFunction: (row, data) => {},         // Process data with row context
+  postEntireRow: false,                    // Send entire row as data
+  setDefaultValues: true,                  // Pre-populate form from row data
+  noConfirm: false,                        // Skip dialog and execute immediately
+  link: '/path/[field]',                   // Navigate to URL instead of API call
+  external: false,                         // Open link in new tab
+  target: '_blank',                        // Link target
+  onSuccess: (result) => {},               // Success callback
+  relatedQueryKeys: ['cache-key'],         // Query keys to invalidate
+  replacementBehaviour: 'removeNulls',     // Data processing behavior
+}
+```
 
 **Field Configuration:**
 ```jsx
 {
-  name: 'reason',
-  label: 'Reason for Action',
-  type: 'textarea',
-  required: true,
-  defaultValue: '',
-  validation: yup.string().required('Reason is required'),
+  name: 'reason',                          // Form field name
+  label: 'Reason for Action',             // Field label
+  type: 'textarea',                       // Field type (matches CippFormComponent types)
+  required: true,                         // Required validation
+  defaultValue: '',                       // Default value
+  validators: {                           // React Hook Form validation rules
+    required: 'Reason is required',
+    minLength: { value: 10, message: 'At least 10 characters' }
+  },
+  // Additional CippFormComponent props supported
 }
 ```
 
-**Usage:**
+**Data Template Replacement:**
+- `{fieldName}` - Replaced with row[fieldName] value
+- `!value` - Literal value (removes ! prefix)
+- Works with nested objects and arrays
+
+**Usage Examples:**
+
+**Basic Confirmation Dialog:**
 ```jsx
-import { CippApiDialog } from '../CippComponents/CippApiDialog';
-import { useDialog } from '../../hooks/use-dialog';
+import { CippApiDialog } from '../../../src/components/CippComponents/CippApiDialog';
+import { useDialog } from '../../../src/hooks/use-dialog';
 
 const MyComponent = () => {
   const createDialog = useDialog();
@@ -134,29 +183,25 @@ const MyComponent = () => {
     createDialog.handleOpen();
   };
 
+  const deleteAction = {
+    url: '/api/RemoveUser',
+    method: 'POST',
+    data: { userID: '{id}' },
+    confirmText: 'Are you sure you want to delete [displayName]?'
+  };
+
   return (
     <>
-      {/* Trigger button */}
       <Button onClick={() => handleAction(userData, deleteAction)}>
         Delete User
       </Button>
 
-      {/* Dialog */}
       {actionData.ready && (
         <CippApiDialog
           createDialog={createDialog}
-          title="Confirm Action"
+          title="Confirm Deletion"
           api={actionData.action}
           row={actionData.data}
-          fields={[
-            {
-              name: 'confirmationText',
-              label: 'Type "DELETE" to confirm',
-              type: 'textField',
-              required: true,
-              validation: yup.string().oneOf(['DELETE'], 'Must type DELETE'),
-            }
-          ]}
           relatedQueryKeys={['users']}
         />
       )}
@@ -164,6 +209,93 @@ const MyComponent = () => {
   );
 };
 ```
+
+**Dialog with Form Fields:**
+```jsx
+const resetPasswordAction = {
+  url: '/api/ExecResetPass',
+  method: 'POST',
+  data: { ID: '{id}', mustChangePass: '{mustChangePass}' },
+  confirmText: 'Reset password for [displayName]?'
+};
+
+const resetPasswordFields = [
+  {
+    name: 'mustChangePass',
+    label: 'User must change password at next logon',
+    type: 'switch',
+    defaultValue: true,
+  },
+  {
+    name: 'sendEmail',
+    label: 'Send new password via email',
+    type: 'switch',
+    defaultValue: false,
+  },
+  {
+    name: 'newPassword',
+    label: 'Custom Password (optional)',
+    type: 'password',
+    validators: {
+      minLength: { value: 8, message: 'Minimum 8 characters' }
+    }
+  }
+];
+
+<CippApiDialog
+  createDialog={createDialog}
+  title="Reset Password"
+  api={resetPasswordAction}
+  row={selectedUser}
+  fields={resetPasswordFields}
+  relatedQueryKeys={['users', 'user-details']}
+/>
+```
+
+**Bulk Operations:**
+```jsx
+const bulkDisableAction = {
+  url: '/api/ExecDisableUser',
+  method: 'POST',
+  data: { ID: '{id}', AccountEnabled: false },
+  multiPost: true, // Send individual requests
+  confirmText: 'Disable [length] selected users?'
+};
+
+<CippApiDialog
+  createDialog={createDialog}
+  title="Bulk Disable Users"
+  api={bulkDisableAction}
+  row={selectedUsers} // Array of user objects
+  relatedQueryKeys={['users']}
+/>
+```
+
+**Custom Data Processing:**
+```jsx
+const customAction = {
+  url: '/api/UpdateUser',
+  method: 'POST',
+  customDataformatter: (row, action, formData) => ({
+    userPrincipalName: row.userPrincipalName,
+    changes: {
+      department: formData.newDepartment,
+      manager: formData.selectedManager?.value,
+      updatedBy: currentUser.mail,
+      updatedAt: new Date().toISOString()
+    }
+  }),
+  confirmText: 'Update user [displayName]?'
+};
+```
+
+**Features:**
+- **Template Replacement**: Field names in `{}` are replaced with row data
+- **Bulk Support**: Handles single objects or arrays of objects
+- **Form Validation**: Real-time validation with React Hook Form
+- **Mobile Responsive**: Full-screen on mobile devices
+- **Progress Tracking**: Shows API results and progress for bulk operations
+- **Query Invalidation**: Automatically refreshes related data after success
 
 ### CippTenantSelector
 Global tenant selection component for multi-tenant operations.
@@ -344,25 +476,194 @@ import { CippTimeAgo } from '../CippComponents/CippTimeAgo';
 ```
 
 ### CippCodeBlock
-Syntax-highlighted code display component.
+Advanced code display component with syntax highlighting, editing capabilities, and copy functionality.
+
+**Key Features:**
+- Dual display modes: syntax highlighting and full editor
+- Monaco Editor integration for advanced editing
+- Automatic theme switching (light/dark)
+- Built-in copy-to-clipboard functionality
+- Line number support
+- Word wrapping and text overflow handling
+- Multiple language support
 
 **Props:**
-- `code` (string): Code content
-- `language` (string): Programming language
-- `showLineNumbers` (boolean): Show line numbers
-- `copyable` (boolean): Enable copy functionality
-- `maxHeight` (number): Maximum height in pixels
+- `code` (string, required): Code content to display
+- `language` (string, default: 'json'): Programming language for syntax highlighting
+- `showLineNumbers` (boolean, default: false): Display line numbers
+- `startingLineNumber` (number, default: 1): Starting line number for syntax view
+- `wrapLongLines` (boolean, default: true): Enable word wrapping
+- `type` (string, default: 'syntax'): Display type ('syntax' or 'editor')
+- `editorHeight` (string, default: '500px'): Height for editor mode
 
-**Usage:**
+**Display Types:**
+- **syntax**: Read-only syntax highlighting using react-syntax-highlighter
+- **editor**: Interactive Monaco editor with full editing capabilities
+
+**Usage Examples:**
+
+**Basic Syntax Highlighting:**
 ```jsx
 import { CippCodeBlock } from '../CippComponents/CippCodeBlock';
 
+const jsonData = {
+  "user": "john.doe@example.com",
+  "permissions": ["read", "write"],
+  "lastLogin": "2024-01-15T10:30:00Z"
+};
+
 <CippCodeBlock
-  code={jsonData}
+  code={JSON.stringify(jsonData, null, 2)}
   language="json"
-  copyable={true}
   showLineNumbers={true}
-  maxHeight={400}
+/>
+```
+
+**Monaco Editor Mode:**
+```jsx
+<CippCodeBlock
+  code={editableCode}
+  language="json"
+  type="editor"
+  editorHeight="400px"
+  showLineNumbers={true}
+/>
+```
+
+**PowerShell Script Display:**
+```jsx
+const powershellScript = `Get-MgUser -UserId $UserId | Select-Object DisplayName, Mail`;
+
+<CippCodeBlock
+  code={powershellScript}
+  language="powershell"
+  showLineNumbers={true}
+/>
+```
+
+### CippCopyToClipBoard
+Copy-to-clipboard functionality with visual feedback.
+
+**Props:**
+- `text` (string, required): Text to copy to clipboard
+- `type` (string): Display type ('button', 'chip') - default: 'button'
+- `visible` (boolean): Show/hide component - default: true
+
+**Usage:**
+```jsx
+import { CippCopyToClipBoard } from '../CippComponents/CippCopyToClipboard';
+
+// Button type
+<CippCopyToClipBoard
+  text={user.userPrincipalName}
+  type="button"
+/>
+
+// Chip type
+<CippCopyToClipBoard
+  text={secretValue}
+  type="chip"
+/>
+```
+
+### CippDropzone
+File upload component with drag-and-drop functionality.
+
+**Props:**
+- `onDrop` (function, required): File drop handler
+- `accept` (object): Accepted file types
+- `maxFiles` (number): Maximum number of files
+- `multiple` (boolean): Allow multiple files
+- `disabled` (boolean): Disable dropzone
+
+**Usage:**
+```jsx
+import { CippDropzone } from '../CippComponents/CippDropzone';
+
+const handleFileDrop = (acceptedFiles) => {
+  console.log('Uploaded files:', acceptedFiles);
+};
+
+<CippDropzone
+  onDrop={handleFileDrop}
+  accept={{
+    'text/csv': ['.csv'],
+    'application/json': ['.json']
+  }}
+  maxFiles={1}
+  multiple={false}
+/>
+```
+
+### CippAutocomplete
+Enhanced autocomplete component with API integration.
+
+**Props:**
+- `value` (any): Selected value
+- `onChange` (function): Change handler
+- `label` (string): Field label
+- `placeholder` (string): Placeholder text
+- `options` (array): Static options array
+- `url` (string): API endpoint for dynamic options
+- `data` (object): Additional API parameters
+- `optionKey` (string): Property name for option value
+- `optionLabel` (string): Property name for option display
+- `loading` (boolean): Loading state
+- `disabled` (boolean): Disable component
+- `multiple` (boolean): Multiple selection
+- `freeSolo` (boolean): Allow custom values
+
+**Usage:**
+```jsx
+import { CippAutocomplete } from '../CippComponents/CippAutocomplete';
+
+// Static options
+const departments = [
+  { id: 'it', name: 'Information Technology' },
+  { id: 'hr', name: 'Human Resources' },
+];
+
+<CippAutocomplete
+  value={selectedDepartment}
+  onChange={setSelectedDepartment}
+  label="Department"
+  options={departments}
+  optionKey="id"
+  optionLabel="name"
+/>
+
+// API-driven options
+<CippAutocomplete
+  value={selectedUser}
+  onChange={setSelectedUser}
+  label="Select User"
+  url="/api/ListUsers"
+  data={{ tenantFilter: tenantId }}
+  optionKey="userPrincipalName"
+  optionLabel="displayName"
+  multiple={false}
+/>
+```
+
+### CippCsvExportButton
+Button component for exporting table data to CSV format.
+
+**Props:**
+- `data` (array, required): Data to export
+- `filename` (string): Export filename - default: 'export.csv'
+- `headers` (array): Custom column headers
+- `disabled` (boolean): Disable export
+- `variant` (string): Button variant
+
+**Usage:**
+```jsx
+import { CippCsvExportButton } from '../CippComponents/CippCsvExportButton';
+
+<CippCsvExportButton
+  data={tableData}
+  filename="users-export.csv"
+  headers={['Name', 'Email', 'Department']}
+  variant="outlined"
 />
 ```
 
@@ -468,42 +769,46 @@ const speedDialActions = [
 />
 ```
 
-### CippPropertyList
-Generic property list component for key-value displays.
+### PropertyList
+Basic list container for property display components.
 
 **Props:**
-- `items` (array): Property items
-- `copyable` (boolean): Enable copy functionality
-- `divider` (boolean): Show dividers
-- `align` (string): Alignment ('horizontal', 'vertical')
-
-**Item Structure:**
-```jsx
-{
-  label: 'Property Name',
-  value: 'Property Value',
-  copyValue: 'Value to copy', // Optional
-  chip: true, // Render as chip
-  link: '/path/to/details', // Make clickable
-}
-```
+- `children` (ReactNode, required): PropertyListItem components
 
 **Usage:**
 ```jsx
-import { CippPropertyList } from '../CippComponents/CippPropertyList';
+import { PropertyList } from '../property-list';
+import { PropertyListItem } from '../property-list-item';
 
-const userProperties = [
-  { label: 'Name', value: user.displayName },
-  { label: 'Email', value: user.mail, copyable: true },
-  { label: 'Status', value: user.accountEnabled ? 'Enabled' : 'Disabled', chip: true },
-];
+<PropertyList>
+  <PropertyListItem label="Name" value={user.displayName} />
+  <PropertyListItem label="Email" value={user.mail} />
+</PropertyList>
+```
 
-<CippPropertyList
-  items={userProperties}
-  copyable={true}
-  divider={true}
-  align="vertical"
-/>
+### ActionList
+List container for action items with standardized styling.
+
+**Props:**
+- `children` (ReactNode, required): ActionListItem components
+
+**Usage:**
+```jsx
+import { ActionList } from '../action-list';
+import { ActionListItem } from '../action-list-item';
+
+<ActionList>
+  <ActionListItem 
+    icon={<EditIcon />} 
+    label="Edit User" 
+    onClick={handleEdit} 
+  />
+  <ActionListItem 
+    icon={<DeleteIcon />} 
+    label="Delete User" 
+    onClick={handleDelete} 
+  />
+</ActionList>
 ```
 
 ## Best Practices

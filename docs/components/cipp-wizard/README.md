@@ -107,15 +107,15 @@ const SetupWizard = () => {
 ```
 
 ### CippWizardPage
-Wrapper component for individual wizard pages with consistent layout.
+Full-page wrapper component for wizard layouts with navigation.
 
 **Props:**
-- `title` (string): Page title
-- `subtitle` (string): Page subtitle
-- `children` (ReactNode): Page content
-- `loading` (boolean): Loading state
-- `error` (string): Error message
-- `helpText` (string): Help information
+- `postUrl` (string): API endpoint for final submission
+- `initialState` (object): Initial form values
+- `steps` (array, required): Array of wizard step configurations
+- `wizardTitle` (string): Page title displayed in browser
+- `backButton` (boolean): Show back button - default: true
+- `wizardOrientation` (string): Wizard layout orientation - default: 'horizontal'
 
 **Usage:**
 ```jsx
@@ -156,22 +156,19 @@ const BasicInfoStep = ({ formControl, title, subtext }) => {
 ```
 
 ### CippWizardStepButtons
-Navigation button component for wizard steps.
+Navigation button component for wizard steps with API submission.
 
 **Props:**
 - `currentStep` (number): Current step index
 - `lastStep` (number): Last step index
 - `onPreviousStep` (function): Previous button handler
 - `onNextStep` (function): Next button handler
-- `onComplete` (function): Complete button handler
-- `isValid` (boolean): Current step validation state
-- `isSubmitting` (boolean): Submission state
-- `nextLabel` (string): Next button text
-- `previousLabel` (string): Previous button text
-- `completeLabel` (string): Complete button text
-- `hideNext` (boolean): Hide next button
-- `hidePrevious` (boolean): Hide previous button
-- `customButtons` (ReactNode): Additional buttons
+- `formControl` (object, required): React Hook Form control
+- `postUrl` (string): API endpoint for form submission
+- `noNextButton` (boolean): Hide next button - default: false
+- `noSubmitButton` (boolean): Hide submit button - default: false
+- `replacementBehaviour` (string): Custom submission behavior
+- `queryKeys` (array): Query keys to invalidate after submission
 
 **Usage:**
 ```jsx
@@ -209,16 +206,15 @@ const CustomStepComponent = ({
 ```
 
 ### CippWizardConfirmation
-Final confirmation step component with review functionality.
+Final confirmation step component with automatic form data review.
 
 **Props:**
-- `title` (string): Confirmation title
-- `subtitle` (string): Confirmation subtitle
-- `data` (object): Form data to review
-- `sections` (array): Review sections configuration
-- `onEdit` (function): Edit handler for sections
-- `submitLabel` (string): Submit button text
-- `isSubmitting` (boolean): Submission state
+- `postUrl` (string): API endpoint for submission
+- `lastStep` (number): Last step index
+- `formControl` (object, required): React Hook Form control
+- `onPreviousStep` (function): Previous button handler
+- `onNextStep` (function): Next button handler
+- `currentStep` (number): Current step index
 
 **Section Configuration:**
 ```jsx
@@ -585,6 +581,51 @@ const MultiTenantWizard = () => {
     />
   );
 };
+```
+
+## Additional Wizard Components
+
+### CippWizardOptionsList
+Component for displaying selectable options in wizard steps.
+
+**Usage:**
+```jsx
+import { CippWizardOptionsList } from '../CippWizard/CippWizardOptionsList';
+
+<CippWizardOptionsList
+  formControl={formControl}
+  name="selectedOptions"
+  options={availableOptions}
+/>
+```
+
+### CippWizardAutoComplete
+Autocomplete component optimized for wizard workflows.
+
+**Usage:**
+```jsx
+import { CippWizardAutoComplete } from '../CippWizard/CippWizardAutoComplete';
+
+<CippWizardAutoComplete
+  formControl={formControl}
+  name="selectedTenant"
+  label="Select Tenant"
+  url="/api/ListTenants"
+/>
+```
+
+### CippWizardCSVImport
+CSV file import component for bulk operations in wizards.
+
+**Usage:**
+```jsx
+import { CippWizardCSVImport } from '../CippWizard/CippWizardCSVImport';
+
+<CippWizardCSVImport
+  formControl={formControl}
+  name="csvData"
+  requiredColumns={['email', 'displayName']}
+/>
 ```
 
 ## Best Practices

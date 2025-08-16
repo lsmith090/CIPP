@@ -7,7 +7,7 @@ Real-world examples of using CIPP table components for different data management
 Simple user table with common actions:
 
 ```jsx
-import { CippTablePage } from '../CippComponents/CippTablePage';
+import { CippTablePage } from '../../../src/components/CippComponents/CippTablePage';
 import { Chip, Avatar, Stack, Typography } from '@mui/material';
 import { UserIcon, KeyIcon, XMarkIcon, EditIcon } from '@heroicons/react/24/outline';
 
@@ -153,7 +153,7 @@ const UsersTable = () => {
 Complex table with nested data and custom rendering:
 
 ```jsx
-import { CippDataTable } from '../CippTable/CippDataTable';
+import { CippDataTable } from '../../../src/components/CippTable/CippDataTable';
 import { useState } from 'react';
 
 const LicenseManagementTable = () => {
@@ -341,7 +341,7 @@ const LicenseManagementTable = () => {
 Table with priority-based styling and real-time updates:
 
 ```jsx
-import { CippDataTable } from '../CippTable/CippDataTable';
+import { CippDataTable } from '../../../src/components/CippTable/CippDataTable';
 import { useEffect, useState } from 'react';
 
 const SecurityAlertsTable = () => {
@@ -564,8 +564,8 @@ const SecurityAlertsTable = () => {
 Complex table with JSON data and advanced filtering:
 
 ```jsx
-import { CippDataTable } from '../CippTable/CippDataTable';
-import { JsonViewer } from '../CippComponents/JsonViewer';
+import { CippDataTable } from '../../../src/components/CippTable/CippDataTable';
+import { CippCodeBlock } from '../../../src/components/CippComponents/CippCodeBlock';
 
 const AuditLogTable = () => {
   const auditColumns = [
@@ -676,7 +676,11 @@ const AuditLogTable = () => {
           children: ({ data }) => (
             <Stack spacing={2}>
               <Typography variant="h6">Audit Log Details</Typography>
-              <JsonViewer data={data} />
+              <CippCodeBlock 
+                code={JSON.stringify(data, null, 2)}
+                language="json"
+                showLineNumbers={true}
+              />
             </Stack>
           )
         }}
@@ -725,7 +729,11 @@ const AuditLogTable = () => {
         <DialogTitle>Audit Log Details</DialogTitle>
         <DialogContent>
           {selectedAuditLog && (
-            <JsonViewer data={selectedAuditLog} />
+            <CippCodeBlock 
+              code={JSON.stringify(selectedAuditLog, null, 2)}
+              language="json"
+              showLineNumbers={true}
+            />
           )}
         </DialogContent>
       </Dialog>

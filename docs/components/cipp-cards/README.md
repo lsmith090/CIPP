@@ -17,7 +17,7 @@ Simple metric display card with optional action link.
 
 **Usage:**
 ```jsx
-import { CippInfoCard } from '../../../src/components/CippCards/CippInfoCard';
+import { CippInfoCard } from '/src/components/CippCards/CippInfoCard';
 import { UserIcon } from '@heroicons/react/24/outline';
 
 <CippInfoCard
@@ -76,11 +76,12 @@ Displays key-value property lists with optional actions.
 
 **Usage:**
 ```jsx
-import { CippPropertyListCard } from '../../../src/components/CippCards/CippPropertyListCard';
+import { CippPropertyListCard } from '/src/components/CippCards/CippPropertyListCard';
+import { KeyIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 const userProperties = [
   { label: 'Name', value: user.displayName },
-  { label: 'Email', value: user.mail, copyItems: true },
+  { label: 'Email', value: user.mail, copyValue: user.mail },
   { label: 'Department', value: user.department },
   { label: 'Status', value: user.accountEnabled ? 'Enabled' : 'Disabled', chip: true },
 ];
@@ -111,64 +112,101 @@ const userActions = [
 ```
 
 ### CippChartCard
-Chart visualization card component using ApexCharts with Material-UI theming.
+Chart visualization card component using ApexCharts with Material-UI theming and automatic totaling.
+
+**Key Features:**
+- ApexCharts integration with Material-UI theme
+- Automatic total calculation and display
+- Color-coded legend with data points
+- Interactive hover effects and click handlers
+- Built-in loading states with skeleton animation
+- Action menu integration
+- Responsive design
 
 **Props:**
 - `title` (string): Chart title displayed in header
-- `chartSeries` (array, default: []): Chart data series array
+- `chartSeries` (array, default: []): Chart data series array of numbers
 - `labels` (array, default: []): Chart labels for x-axis or pie slices
 - `chartType` (string, default: 'donut'): Chart type ('donut', 'line', 'bar', 'pie')
 - `actions` (array): Action menu items for chart interactions
 - `isFetching` (boolean): Loading state for skeleton display
-- `onClick` (function): Optional click handler for entire card
+- `onClick` (function): Optional click handler for entire card (makes card hoverable)
+
+**Chart Types:**
+- **donut/pie**: Circular charts for percentage/proportion data
+- **line**: Line charts for trend data over time
+- **bar**: Bar charts for comparing values across categories
+
+**Action Menu Items:**
+```jsx
+{
+  label: 'Export Data',
+  onClick: () => handleExport()
+}
+```
 
 **Usage:**
 ```jsx
-import { CippChartCard } from '../../../src/components/CippCards/CippChartCard';
+import { CippChartCard } from '/src/components/CippCards/CippChartCard';
 
-// Donut/Pie Chart
-const pieData = [400, 300, 500, 200];
-const pieLabels = ['Active', 'Inactive', 'Suspended', 'Guest'];
+// Donut Chart with Legend
+const userStatusData = [847, 156, 89, 45];
+const statusLabels = ['Active', 'Inactive', 'Suspended', 'Guest'];
 
 <CippChartCard
   title="User Status Distribution"
-  chartSeries={pieData}
-  labels={pieLabels}
+  chartSeries={userStatusData}
+  labels={statusLabels}
   chartType="donut"
-  isFetching={loading}
+  isFetching={isLoading}
   actions={[
-    { label: 'Export Data', onClick: handleExport },
-    { label: 'Refresh', onClick: handleRefresh }
+    { label: 'Export Data', onClick: () => exportChartData() },
+    { label: 'View Details', onClick: () => router.push('/users/status') }
   ]}
 />
 
-// Line Chart
-const lineData = [
-  { name: 'This Month', data: [10, 20, 30, 40, 50] },
-  { name: 'Last Month', data: [15, 25, 35, 45, 55] }
-];
-const lineLabels = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'];
+// Line Chart (Series data for trends)
+const trendData = [10, 20, 30, 40, 50];
+const timeLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May'];
 
 <CippChartCard
-  title="Weekly Activity Trend"
-  chartSeries={lineData}
-  labels={lineLabels}
+  title="Monthly Sign-ins"
+  chartSeries={trendData}
+  labels={timeLabels}
   chartType="line"
-  onClick={() => router.push('/analytics/details')}
+  onClick={() => router.push('/analytics/signins')}
 />
 
-// Bar Chart
-const barData = [65, 45, 80, 30];
-const barLabels = ['Q1', 'Q2', 'Q3', 'Q4'];
+// Bar Chart (Categorical data)
+const licenseData = [245, 156, 89, 67];
+const licenseLabels = ['E5', 'E3', 'F3', 'Exchange'];
 
 <CippChartCard
-  title="Quarterly Performance"
-  chartSeries={barData}
-  labels={barLabels}
+  title="License Distribution"
+  chartSeries={licenseData}
+  labels={licenseLabels}
   chartType="bar"
-  isFetching={loading}
+  isFetching={isLoading}
+/>
+
+// Simple Donut without Labels (just total)
+const simpleData = [75, 25];
+
+<CippChartCard
+  title="Storage Usage"
+  chartSeries={simpleData}
+  chartType="donut"
+  isFetching={isLoading}
 />
 ```
+
+**Features:**
+- **Automatic Totals**: Displays sum of all series data at bottom
+- **Color Legend**: Shows color-coded legend with individual values
+- **Theme Integration**: Uses Material-UI theme colors and dark/light mode
+- **Loading State**: Shows skeleton animation when `isFetching` is true
+- **Hover Effects**: Card elevation and animation when `onClick` is provided
+- **Null Filtering**: Automatically filters out null values from series data
 
 ### CippInfoBar
 Horizontal information bar displaying metrics in a grid layout with optional off-canvas details.
@@ -197,7 +235,7 @@ Horizontal information bar displaying metrics in a grid layout with optional off
 
 **Usage:**
 ```jsx
-import { CippInfoBar } from '../../../src/components/CippCards/CippInfoBar';
+import { CippInfoBar } from '/src/components/CippCards/CippInfoBar';
 
 const metrics = [
   {
@@ -246,7 +284,7 @@ Interactive card with primary action button.
 
 **Usage:**
 ```jsx
-import { CippButtonCard } from '../../../src/components/CippCards/CippButtonCard';
+import { CippButtonCard } from '/src/components/CippCards/CippButtonCard';
 
 <CippButtonCard
   title="Create New User"
@@ -255,6 +293,49 @@ import { CippButtonCard } from '../../../src/components/CippCards/CippButtonCard
   buttonIcon={<PlusIcon />}
   onButtonClick={() => router.push('/identity/administration/users/add')}
   disabled={!hasPermission}
+/>
+```
+
+### CippUserInfoCard
+Specialized card for displaying comprehensive user information with organized sections.
+
+**Props:**
+- `user` (object, required): User data object
+- `tenant` (string): Tenant identifier for photo URL
+- `isFetching` (boolean): Loading state - default: false
+
+**User Object Properties:**
+- `displayName`, `mail`, `userPrincipalName`: Basic info
+- `jobTitle`, `department`, `manager`, `companyName`: Work info
+- `streetAddress`, `postalCode`, `city`, `country`, `officeLocation`: Address info
+- `mobilePhone`, `businessPhones`: Contact info
+- `id`: User ID for photo retrieval
+
+**Usage:**
+```jsx
+import { CippUserInfoCard } from '/src/components/CippCards/CippUserInfoCard';
+
+<CippUserInfoCard
+  user={selectedUser}
+  tenant={currentTenant}
+  isFetching={isLoadingUser}
+/>
+```
+
+### CippExchangeInfoCard
+Card component for displaying Exchange-specific user information.
+
+**Props:**
+- `user` (object, required): User data with Exchange properties
+- `isFetching` (boolean): Loading state
+
+**Usage:**
+```jsx
+import { CippExchangeInfoCard } from '../../../src/components/CippCards/CippExchangeInfoCard';
+
+<CippExchangeInfoCard
+  user={userWithExchangeData}
+  isFetching={isLoading}
 />
 ```
 

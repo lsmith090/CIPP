@@ -64,8 +64,11 @@ export const CippInfoCard = (props) => {
 };
 
 CippInfoCard.propTypes = {
-  action: PropTypes.node,
   icon: PropTypes.node,
   label: PropTypes.string.isRequired,
   value: PropTypes.number.isRequired,
+  actionLink: PropTypes.string,
+  actionText: PropTypes.string,
+  isFetching: PropTypes.bool,
+  cardSize: PropTypes.string,
 };

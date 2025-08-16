@@ -7,10 +7,10 @@ Real-world examples of using CIPP form components for various data entry and man
 Complete user creation form with validation and conditional fields:
 
 ```jsx
-import CippFormPage from '../CippFormPages/CippFormPage';
-import { CippFormSection } from '../CippFormPages/CippFormSection';
-import { CippFormComponent } from '../CippComponents/CippFormComponent';
-import { CippFormTenantSelector } from '../CippComponents/CippFormTenantSelector';
+import CippFormPage from '../../../src/components/CippFormPages/CippFormPage';
+import { CippFormSection } from '../../../src/components/CippFormPages/CippFormSection';
+import { CippFormComponent } from '../../../src/components/CippComponents/CippFormComponent';
+import { CippFormTenantSelector } from '../../../src/components/CippComponents/CippFormTenantSelector';
 import { useForm } from 'react-hook-form';
 
 const AddUserForm = () => {
@@ -122,7 +122,7 @@ const AddUserForm = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <CippFormComponent
-                type="emailField"
+                type="textField"
                 name="mail"
                 label="Email Address"
                 formControl={formControl}
@@ -193,7 +193,7 @@ const AddUserForm = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <CippFormComponent
-                type="phoneField"
+                type="textField"
                 name="phoneNumber"
                 label="Phone Number"
                 formControl={formControl}
@@ -563,7 +563,7 @@ const ConditionalAccessPolicyForm = () => {
             </Grid>
             <Grid item xs={12}>
               <CippFormComponent
-                type="numberField"
+                type="number"
                 name="sessionControls.signInFrequency.value"
                 label="Sign-in frequency (hours)"
                 formControl={formControl}
@@ -586,8 +586,8 @@ Form with file upload and dynamic preview:
 
 ```jsx
 import { useState } from 'react';
-import { CippFormComponent } from '../CippComponents/CippFormComponent';
-import { CippFormPage } from '../CippFormPages/CippFormPage';
+import { CippFormComponent } from '../../../src/components/CippComponents/CippFormComponent';
+import CippFormPage from '../../../src/components/CippFormPages/CippFormPage';
 
 const BulkUserImportForm = () => {
   const [csvData, setCsvData] = useState([]);
@@ -732,7 +732,7 @@ const BulkUserImportForm = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <CippFormComponent
-                type="passwordField"
+                type="password"
                 name="defaultPassword"
                 label="Default Password"
                 formControl={formControl}
@@ -944,10 +944,16 @@ const SettingsForm = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <CippFormComponent
-                type="emailField"
+                type="textField"
                 name="general.supportEmail"
                 label="Support Email"
                 formControl={formControl}
+                validators={{
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Invalid email format"
+                  }
+                }}
                 fullWidth
               />
             </Grid>
@@ -991,7 +997,7 @@ const SettingsForm = () => {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <CippFormComponent
-                  type="numberField"
+                  type="number"
                   name="security.passwordPolicy.minimumLength"
                   label="Minimum Length"
                   formControl={formControl}
@@ -1004,7 +1010,7 @@ const SettingsForm = () => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <CippFormComponent
-                  type="numberField"
+                  type="number"
                   name="security.passwordPolicy.passwordHistory"
                   label="Password History"
                   formControl={formControl}
@@ -1063,7 +1069,7 @@ const SettingsForm = () => {
               </Grid>
               <Grid item xs={12} md={4}>
                 <CippFormComponent
-                  type="numberField"
+                  type="number"
                   name="security.accountLockout.threshold"
                   label="Lockout Threshold"
                   formControl={formControl}
@@ -1077,7 +1083,7 @@ const SettingsForm = () => {
               </Grid>
               <Grid item xs={12} md={4}>
                 <CippFormComponent
-                  type="numberField"
+                  type="number"
                   name="security.accountLockout.duration"
                   label="Lockout Duration (minutes)"
                   formControl={formControl}
@@ -1088,7 +1094,7 @@ const SettingsForm = () => {
               </Grid>
               <Grid item xs={12} md={4}>
                 <CippFormComponent
-                  type="numberField"
+                  type="number"
                   name="security.accountLockout.resetCounter"
                   label="Reset Counter After (minutes)"
                   formControl={formControl}

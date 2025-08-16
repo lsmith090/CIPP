@@ -93,7 +93,9 @@ Seamless backend integration:
 ### Dashboard Pattern
 ```jsx
 import { Grid, Container } from '@mui/material';
-import { CippInfoBar, CippChartCard, CippPropertyListCard } from '../../src/components/CippCards';
+import { CippInfoBar } from '../../src/components/CippCards/CippInfoBar';
+import { CippChartCard } from '../../src/components/CippCards/CippChartCard';
+import { CippPropertyListCard } from '../../src/components/CippCards/CippPropertyListCard';
 
 const Dashboard = () => (
   <Container maxWidth="xl">
@@ -102,7 +104,7 @@ const Dashboard = () => (
         <CippInfoBar items={metrics} />
       </Grid>
       <Grid item xs={12} md={6}>
-        <CippChartCard title="Usage Chart" data={chartData} />
+        <CippChartCard title="Usage Chart" chartSeries={chartData} />
       </Grid>
       <Grid item xs={12} md={6}>
         <CippPropertyListCard title="Details" propertyItems={properties} />
@@ -114,7 +116,7 @@ const Dashboard = () => (
 
 ### Table Pattern
 ```jsx
-import { CippTablePage } from '../../src/components/CippComponents';
+import { CippTablePage } from '../../src/components/CippComponents/CippTablePage';
 
 const UsersTable = () => (
   <CippTablePage
@@ -129,8 +131,8 @@ const UsersTable = () => (
 
 ### Form Pattern
 ```jsx
-import { CippFormPage } from '../../src/components/CippFormPages';
-import { CippFormComponent } from '../../src/components/CippComponents';
+import { CippFormPage } from '../../src/components/CippFormPages/CippFormPage';
+import { CippFormComponent } from '../../src/components/CippComponents/CippFormComponent';
 import { useForm } from 'react-hook-form';
 
 const AddUser = () => {
@@ -157,7 +159,7 @@ const AddUser = () => {
         validators={{ required: "Display Name is required" }}
       />
       <CippFormComponent
-        type="emailField"
+        type="textField"
         name="email"
         label="Email"
         formControl={formControl}
@@ -176,7 +178,7 @@ const AddUser = () => {
 
 ### Wizard Pattern
 ```jsx
-import { CippWizard } from '../../src/components/CippWizard';
+import { CippWizard } from '../../src/components/CippWizard/CippWizard';
 
 const SetupWizard = () => (
   <CippWizard
