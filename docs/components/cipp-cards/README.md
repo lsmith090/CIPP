@@ -2,6 +2,8 @@
 
 Card components for displaying information, metrics, and interactive content in a consistent, visually appealing format. All cards support loading states, theming, and responsive design.
 
+> **Architecture Reference**: See [Component Architecture - CippCards](../../architecture/components.md#1-cippcards---information-display) for architectural patterns and design principles.
+
 ## Components
 
 ### CippInfoCard

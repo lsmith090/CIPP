@@ -2,6 +2,8 @@
 
 Utility components that provide common functionality across the CIPP application. These components handle cross-cutting concerns like API interactions, tenant management, dialogs, and layout helpers.
 
+> **Architecture Reference**: See [Component Architecture - CippComponents](../../architecture/components.md#5-cippcomponents---utility-components) for architectural patterns and design principles.
+
 ## Core Utility Components
 
 ### CippTablePage

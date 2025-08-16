@@ -7,7 +7,7 @@ Real-world examples of using CIPP table components for different data management
 Simple user table with common actions:
 
 ```jsx
-import { CippTablePage } from '../../../src/components/CippComponents/CippTablePage';
+import { CippTablePage } from '/src/components/CippComponents/CippTablePage.jsx';
 import { Chip, Avatar, Stack, Typography } from '@mui/material';
 import { UserIcon, KeyIcon, XMarkIcon, EditIcon } from '@heroicons/react/24/outline';
 
@@ -153,7 +153,7 @@ const UsersTable = () => {
 Complex table with nested data and custom rendering:
 
 ```jsx
-import { CippDataTable } from '../../../src/components/CippTable/CippDataTable';
+import { CippDataTable } from '/src/components/CippTable/CippDataTable.jsx';
 import { useState } from 'react';
 
 const LicenseManagementTable = () => {
@@ -341,7 +341,7 @@ const LicenseManagementTable = () => {
 Table with priority-based styling and real-time updates:
 
 ```jsx
-import { CippDataTable } from '../../../src/components/CippTable/CippDataTable';
+import { CippDataTable } from '/src/components/CippTable/CippDataTable.jsx';
 import { useEffect, useState } from 'react';
 
 const SecurityAlertsTable = () => {
@@ -564,8 +564,8 @@ const SecurityAlertsTable = () => {
 Complex table with JSON data and advanced filtering:
 
 ```jsx
-import { CippDataTable } from '../../../src/components/CippTable/CippDataTable';
-import { CippCodeBlock } from '../../../src/components/CippComponents/CippCodeBlock';
+import { CippDataTable } from '/src/components/CippTable/CippDataTable.jsx';
+import { CippCodeBlock } from '/src/components/CippComponents/CippCodeBlock.jsx';
 
 const AuditLogTable = () => {
   const auditColumns = [

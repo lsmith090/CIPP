@@ -2,19 +2,43 @@
 
 The CIPP component library provides a comprehensive set of reusable React components built on Material-UI v6+ for building Microsoft 365 partner management interfaces. All components are tenant-aware, permission-controlled, and follow consistent design patterns.
 
+> **Architecture Overview**: For high-level architectural patterns, design principles, and integration guidelines, see the [Component Architecture](../architecture/components.md) documentation.
+
+## Quick Start Guide
+
+1. **Choose Component Category**: Identify your use case and select the appropriate component category
+2. **Review Component Documentation**: Read the detailed README for your chosen category
+3. **Check Examples**: Review real-world examples in the `examples.md` files
+4. **Follow Import Patterns**: Use absolute import paths with `.jsx` extensions
+5. **Implement with Props**: Follow the component-specific prop interfaces and validation
+
+### Navigation
+
+- **[Architecture Patterns](../architecture/components.md)** - Design principles and architectural guidance
+- **[CippCards](./cipp-cards/README.md)** - Information display and visualization components ([Examples](./cipp-cards/examples.md))
+- **[CippTable](./cipp-table/README.md)** - Data management and table components ([Examples](./cipp-table/examples.md))
+- **[CippForms](./cipp-forms/README.md)** - Form and input components ([Examples](./cipp-forms/examples.md))
+- **[CippWizard](./cipp-wizard/README.md)** - Multi-step workflow components ([Examples](./cipp-wizard/examples.md))
+- **[CippComponents](./cipp-components/README.md)** - Utility and helper components
+
 ## Component Categories
 
-### 1. [CippCards](./cipp-cards/README.md)
-Data display cards for presenting information, metrics, and interactive content.
+The component library is organized into five main categories, each serving specific use cases in Microsoft 365 partner management interfaces:
 
-- **CippInfoCard**: Simple metric display with optional action link
-- **CippPropertyListCard**: Key-value property lists with actions
-- **CippChartCard**: ApexCharts visualization with Material-UI theming
-- **CippInfoBar**: Horizontal metrics display with off-canvas details
-- **CippBannerListCard**: Collapsible banner with grouped information
-- **CippButtonCard**: Interactive card with primary action button
-- **CippImageCard**: Image content with overlays
-- **CippRemediationCard**: Business Email Compromise security remediation
+### 1. [CippCards](./cipp-cards/README.md) - Information Display
+**Purpose**: Dashboard and data visualization components for presenting metrics, status, and interactive content.
+
+**Core Components**:
+- **CippInfoCard**: Single metric display with optional action links
+- **CippPropertyListCard**: Key-value property lists with conditional actions
+- **CippChartCard**: ApexCharts integration with Material-UI theming
+- **CippInfoBar**: Horizontal metrics bar with expandable details
+- **CippBannerListCard**: Collapsible grouped information display
+- **CippButtonCard**: Action-focused interactive cards
+- **CippImageCard**: Image content with overlay functionality
+- **CippRemediationCard**: Security remediation workflow cards
+
+**Common Use Cases**: Dashboards, status displays, metric visualization, quick actions
 
 #### Additional Card Components
 
@@ -24,39 +48,55 @@ Data display cards for presenting information, metrics, and interactive content.
 - **CippListitemCard**: Individual list item component with actions
 - **CippPageCard**: Page-level card component for consistent layouts
 
-### 2. [CippTable](./cipp-table/README.md)
-Advanced data table system with filtering, sorting, and actions.
+### 2. [CippTable](./cipp-table/README.md) - Data Management
+**Purpose**: Advanced data table system for managing large datasets with comprehensive filtering, sorting, and action capabilities.
 
-- **CippDataTable**: Main table component with Material React Table
-- **CippTablePage**: Pre-configured page layout with table
-- **CippDataTableButton**: Custom table action buttons
+**Core Components**:
+- **CippDataTable**: Full-featured table with Material React Table integration
+- **CippTablePage**: Pre-configured page layout with integrated table
+- **CippDataTableButton**: Custom action buttons for table toolbars
 
-### 3. [CippFormPages](./cipp-forms/README.md)
-Form components with React Hook Form integration.
+**Key Features**: Sorting, filtering, pagination, bulk actions, export, virtualization, off-canvas details
+**Common Use Cases**: User management, license reporting, audit logs, data analysis
 
-- **CippFormPage**: Complete form page layout with validation
-- **CippFormSection**: Collapsible form sections
-- **CippFormComponent**: Form field components
-- **CippFormTenantSelector**: Tenant selection in forms
-- **CippFormUserSelector**: User selection components
+### 3. [CippFormPages](./cipp-forms/README.md) - Form Management
+**Purpose**: Comprehensive form components with React Hook Form integration, providing validation, submission handling, and consistent styling.
 
-### 4. [CippWizard](./cipp-wizard/README.md)
-Multi-step wizard system for complex workflows.
+**Core Components**:
+- **CippFormPage**: Complete form page with validation and submission workflow
+- **CippFormSection**: Collapsible sections for organizing complex forms
+- **CippFormComponent**: Universal field component supporting all input types
+- **CippFormTenantSelector**: Multi-tenant selection for forms
+- **CippFormUserSelector**: User and group selection with search
 
-- **CippWizard**: Main wizard container with step management
-- **CippWizardPage**: Individual wizard page wrapper
-- **CippWizardStepButtons**: Navigation controls
-- **CippWizardConfirmation**: Final confirmation step
+**Key Features**: Validation, error handling, tenant-aware operations, conditional fields, file uploads
+**Common Use Cases**: User creation, configuration forms, bulk operations, settings management
 
-### 5. [CippComponents](./cipp-components/README.md)
-Utility components for common functionality.
+### 4. [CippWizard](./cipp-wizard/README.md) - Multi-Step Workflows
+**Purpose**: Guided multi-step processes with validation, conditional logic, and progress tracking for complex operations.
 
-- **CippTablePage**: Complete table page template
-- **CippOffCanvas**: Slide-out panel for details
-- **CippApiDialog**: API action confirmation dialogs
-- **CippTenantSelector**: Global tenant selection
-- **CippApiResults**: API response display
-- **CippHead**: Page head metadata management
+**Core Components**:
+- **CippWizard**: Main wizard container with step management and state persistence
+- **CippWizardPage**: Individual wizard page wrapper with navigation
+- **CippWizardStepButtons**: Navigation controls with validation checks
+- **CippWizardConfirmation**: Final review and confirmation step
+
+**Key Features**: Step validation, conditional navigation, progress tracking, state persistence, responsive design
+**Common Use Cases**: User onboarding, complex configurations, bulk operations, guided setups
+
+### 5. [CippComponents](./cipp-components/README.md) - Utility Components
+**Purpose**: Cross-cutting utility components providing common functionality across the application.
+
+**Core Components**:
+- **CippTablePage**: Complete table page template with standard layout
+- **CippOffCanvas**: Slide-out detail panels with action integration
+- **CippApiDialog**: Confirmation dialogs with form inputs and API integration
+- **CippTenantSelector**: Global tenant selection with context management
+- **CippApiResults**: API response display with success/error handling
+- **CippCodeBlock**: Syntax highlighting and code editing capabilities
+
+**Key Features**: Dialog management, tenant context, API integration, layout consistency
+**Common Use Cases**: Page layouts, data operations, tenant switching, code display
 
 ## Key Features
 
@@ -89,6 +129,8 @@ Seamless backend integration:
 - Loading states and skeletons
 
 ## Design Patterns
+
+> **Architectural Patterns**: For comprehensive information on architectural design patterns, composition strategies, and system integration, see the [Component Architecture documentation](../architecture/components.md#architectural-design-patterns).
 
 ### Dashboard Pattern
 ```jsx

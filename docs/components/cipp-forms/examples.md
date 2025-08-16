@@ -7,10 +7,10 @@ Real-world examples of using CIPP form components for various data entry and man
 Complete user creation form with validation and conditional fields:
 
 ```jsx
-import CippFormPage from '../../../src/components/CippFormPages/CippFormPage';
-import { CippFormSection } from '../../../src/components/CippFormPages/CippFormSection';
-import { CippFormComponent } from '../../../src/components/CippComponents/CippFormComponent';
-import { CippFormTenantSelector } from '../../../src/components/CippComponents/CippFormTenantSelector';
+import CippFormPage from '/src/components/CippFormPages/CippFormPage.jsx';
+import { CippFormSection } from '/src/components/CippFormPages/CippFormSection.jsx';
+import { CippFormComponent } from '/src/components/CippComponents/CippFormComponent.jsx';
+import { CippFormTenantSelector } from '/src/components/CippComponents/CippFormTenantSelector.jsx';
 import { useForm } from 'react-hook-form';
 
 const AddUserForm = () => {
@@ -586,8 +586,8 @@ Form with file upload and dynamic preview:
 
 ```jsx
 import { useState } from 'react';
-import { CippFormComponent } from '../../../src/components/CippComponents/CippFormComponent';
-import CippFormPage from '../../../src/components/CippFormPages/CippFormPage';
+import { CippFormComponent } from '/src/components/CippComponents/CippFormComponent.jsx';
+import CippFormPage from '/src/components/CippFormPages/CippFormPage.jsx';
 
 const BulkUserImportForm = () => {
   const [csvData, setCsvData] = useState([]);

@@ -2,6 +2,8 @@
 
 Multi-step wizard system for complex workflows and guided user experiences. The wizard system provides step management, validation, conditional steps, and form state persistence across steps.
 
+> **Architecture Reference**: See [Component Architecture - CippWizard](../../architecture/components.md#4-cippwizard---multi-step-workflows) for architectural patterns and design principles.
+
 ## Components
 
 ### CippWizard

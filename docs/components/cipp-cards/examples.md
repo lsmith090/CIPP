@@ -133,7 +133,7 @@ const TenantDashboard = () => {
 Detailed user information using property cards:
 
 ```jsx
-import { CippPropertyListCard } from '../CippCards';
+import { CippPropertyListCard } from '/src/components/CippCards/CippPropertyListCard.jsx';
 import { KeyIcon, XMarkIcon, UserIcon } from '@heroicons/react/24/outline';
 
 const UserDetailView = ({ userId }) => {
@@ -231,7 +231,9 @@ const UserDetailView = ({ userId }) => {
 Security-focused cards with status indicators:
 
 ```jsx
-import { CippRemediationCard, CippInfoCard, CippChartCard } from '../CippCards';
+import { CippRemediationCard } from '/src/components/CippCards/CippRemediationCard.jsx';
+import { CippInfoCard } from '/src/components/CippCards/CippInfoCard.jsx';
+import { CippChartCard } from '/src/components/CippCards/CippChartCard.jsx';
 import { ShieldIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 const SecurityDashboard = () => {
@@ -320,7 +322,9 @@ const SecurityDashboard = () => {
 License overview with actionable cards:
 
 ```jsx
-import { CippPropertyListCard, CippChartCard, CippButtonCard } from '../CippCards';
+import { CippPropertyListCard } from '/src/components/CippCards/CippPropertyListCard.jsx';
+import { CippChartCard } from '/src/components/CippCards/CippChartCard.jsx';
+import { CippButtonCard } from '/src/components/CippCards/CippButtonCard.jsx';
 
 const LicenseManagement = () => {
   const { data: licenses, isLoading } = ApiGetCall({
@@ -465,7 +469,7 @@ Custom styled cards with enhanced functionality:
 
 ```jsx
 import { styled } from '@mui/material/styles';
-import { CippPropertyListCard } from '../CippCards';
+import { CippPropertyListCard } from '/src/components/CippCards/CippPropertyListCard.jsx';
 
 const CustomCard = styled(CippPropertyListCard)(({ theme, priority }) => ({
   borderLeft: `4px solid ${

@@ -7,8 +7,10 @@ Comprehensive examples of using CIPP wizard components for complex multi-step wo
 Complete user onboarding workflow with conditional steps:
 
 ```jsx
-import { CippWizard, CippWizardPage, CippWizardStepButtons } from '../CippWizard';
-import { CippFormComponent } from '../CippComponents/CippFormComponent';
+import { CippWizard } from '/src/components/CippWizard/CippWizard.jsx';
+import { CippWizardPage } from '/src/components/CippWizard/CippWizardPage.jsx';
+import { CippWizardStepButtons } from '/src/components/CippWizard/CippWizardStepButtons.jsx';
+import { CippFormComponent } from '/src/components/CippComponents/CippFormComponent.jsx';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 

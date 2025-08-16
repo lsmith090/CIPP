@@ -2,6 +2,8 @@
 
 Form components built with React Hook Form integration, providing validation, submission handling, and consistent styling across the application. All form components support tenant-aware operations and permission-based field visibility.
 
+> **Architecture Reference**: See [Component Architecture - CippFormPages](../../architecture/components.md#3-cippformpages---form-management) for architectural patterns and design principles.
+
 ## Components
 
 ### CippFormPage

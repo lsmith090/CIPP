@@ -48,7 +48,7 @@ Each item in the `items` array should have the following structure:
 
 ### Basic List
 ```jsx
-import { CippBannerListCard } from '../../src/components/CippCards/CippBannerListCard';
+import { CippBannerListCard } from '/src/components/CippCards/CippBannerListCard.jsx';
 
 const basicItems = [
   {
@@ -159,7 +159,7 @@ const actionItems = [
 
 ### With Data Fetching
 ```jsx
-import { ApiGetCall } from '../../../api/ApiCall';
+import { ApiGetCall } from '/src/api/ApiCall.jsx';
 
 const AlertsList = () => {
   const { data: alerts = [], isLoading } = ApiGetCall({

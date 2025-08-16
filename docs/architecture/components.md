@@ -1,726 +1,207 @@
 # Component Architecture
 
-This document outlines the CIPP frontend component architecture, design patterns, and usage guidelines for the component library.
+This document outlines the CIPP frontend component architecture, design principles, and architectural patterns. For detailed component documentation, API references, and implementation examples, see the [component library documentation](../components/README.md).
 
-## Component Library Overview
+## Architectural Overview
 
-The CIPP component library is organized into functional categories, each serving specific use cases within the application. This modular approach promotes reusability, consistency, and maintainability.
+The CIPP component library follows a modular, composable architecture designed for scalability, reusability, and maintainability in multi-tenant Microsoft 365 management scenarios.
+
+### Design Principles
+
+1. **Composition Over Inheritance**: Components are designed to be composed together rather than extended
+2. **Single Responsibility**: Each component has a focused, well-defined purpose
+3. **Tenant-Aware**: All components handle multi-tenant context automatically
+4. **Permission-Controlled**: Role-based access control is built into component logic
+5. **API-First**: Components integrate seamlessly with the CIPP API layer
+6. **Material-UI Consistency**: All components follow Material-UI v6+ patterns and theming
 
 ## Component Categories
 
-### 1. CippCards - Dashboard and Information Display
-
-Dashboard components for displaying metrics, status information, and interactive elements.
-
-#### Core Card Components
-
-**CippInfoBar**
-```jsx
-import { CippInfoBar } from '../components/CippCards/CippInfoBar';
-
-// Usage: Dashboard information display with array of data items
-<CippInfoBar
-  data={[
-    {
-      name: 'Tenant Status',
-      value: 'Healthy',
-      color: 'success',
-      icon: <CheckCircleIcon />
-    },
-    {
-      name: 'Active Users',
-      value: '1,250',
-      color: 'primary'
-    }
-  ]}
-  isFetching={false}
-/>
-```
-
-**CippChartCard**
-```jsx
-import { CippChartCard } from '../components/CippCards/CippChartCard';
-
-// Usage: Data visualization with charts
-<CippChartCard
-  title="User Growth"
-  chartType="line"
-  data={chartData}
-  height="300px"
-  showLegend={true}
-/>
-```
-
-**CippPropertyListCard**
-```jsx
-import { CippPropertyListCard } from '../components/CippCards/CippPropertyListCard';
-
-// Usage: Key-value property display
-<CippPropertyListCard
-  title="Tenant Information"
-  properties={[
-    { label: 'Domain', value: 'contoso.com' },
-    { label: 'Users', value: '1,250' },
-    { label: 'Licenses', value: '1,000' }
-  ]}
-/>
-```
-
-#### Dashboard Layout Pattern
-
-```jsx
-// Typical dashboard layout using Grid system
-import { Grid } from '@mui/system';
-
-function Dashboard() {
-  return (
-    <Grid container spacing={3}>
-      <Grid size={{ xs: 12, md: 4 }}>
-        <CippInfoBar title="Active Users" value="1,250" />
-      </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
-        <CippInfoBar title="Licenses Used" value="1,000" />
-      </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
-        <CippInfoBar title="Security Score" value="85%" />
-      </Grid>
-      <Grid size={{ xs: 12, md: 8 }}>
-        <CippChartCard title="User Activity" data={activityData} />
-      </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
-        <CippPropertyListCard title="Quick Stats" properties={statsData} />
-      </Grid>
-    </Grid>
-  );
-}
-```
-
-### 2. CippTable - Data Tables and Lists
-
-Comprehensive data table solution with advanced features for data management.
-
-#### Core Table Component
-
-**CippDataTable**
-```jsx
-import { CippDataTable } from '../components/CippTable/CippDataTable';
-
-// Basic usage with API integration
-<CippDataTable
-  title="Users"
-  api={{
-    url: '/api/listUsers',
-    data: { tenantFilter: selectedTenant }
-  }}
-  queryKey={['users']}
-  columns={[
-    { accessorKey: 'displayName', header: 'Name' },
-    { accessorKey: 'userPrincipalName', header: 'Email' },
-    { accessorKey: 'accountEnabled', header: 'Status' }
-  ]}
-  actions={[
-    {
-      label: 'Edit User',
-      icon: <EditIcon />,
-      action: (row) => handleEditUser(row.original)
-    }
-  ]}
-/>
-```
-
-#### Advanced Table Features
-
-```jsx
-// Table with simple columns and bulk actions
-<CippDataTable
-  title="License Report"
-  api={{ url: '/api/listLicenses' }}
-  queryKey={['licenses']}
-  simpleColumns={['displayName', 'assignedLicenses', 'usageLocation']}
-  filters={[
-    { id: 'accountEnabled', value: true }
-  ]}
-  actions={[
-    {
-      label: 'Assign License',
-      action: (selectedRows) => handleBulkLicenseAssignment(selectedRows)
-    }
-  ]}
-  exportEnabled={true}
-  cardButton={<Button onClick={handleAddUser}>Add User</Button>}
-/>
-```
-
-#### Table Patterns
-
-1. **List Pages**: Read-only data display with export capabilities
-2. **Management Pages**: Interactive tables with row actions and offcanvas details
-3. **Report Pages**: Data analysis with filtering and simple columns
-4. **Selection Pages**: Multi-select for bulk operations
-
-### 3. CippFormPages - Form Components
-
-Standardized form components with validation, error handling, and submission workflows.
-
-#### Core Form Component
-
-**CippFormPage**
-```jsx
-import { CippFormPage } from '../components/CippFormPages/CippFormPage';
-import { CippFormComponent } from '../components/CippComponents/CippFormComponent';
-import { useForm } from 'react-hook-form';
-
-function AddUserPage() {
-  const formControl = useForm({
-    defaultValues: {
-      displayName: '',
-      userPrincipalName: '',
-      accountEnabled: true
-    }
-  });
-
-  return (
-    <CippFormPage
-      title="Add User"
-      formPageType="Add"
-      queryKey={['users']}
-      formControl={formControl}
-      postUrl="/api/addUser"
-    >
-      <CippFormComponent
-        type="textField"
-        label="Display Name"
-        name="displayName"
-        required={true}
-        formControl={formControl}
-      />
-      <CippFormComponent
-        type="textField"
-        label="Email Address"
-        name="userPrincipalName"
-        required={true}
-        formControl={formControl}
-      />
-      <CippFormComponent
-        type="switch"
-        label="Account Enabled"
-        name="accountEnabled"
-        formControl={formControl}
-      />
-    </CippFormPage>
-  );
-}
-```
-
-#### Form Field Components
-
-**CippFormComponent** - Universal form field component:
-```jsx
-// Text input
-<CippFormComponent
-  type="textField"
-  label="Display Name"
-  name="displayName"
-  required={true}
-  formControl={formControl}
-/>
-
-// Select dropdown
-<CippFormComponent
-  type="autoComplete"
-  label="License Type"
-  name="licenseType"
-  options={licenseOptions}
-  formControl={formControl}
-/>
-
-// Multi-select
-<CippFormComponent
-  type="autoComplete"
-  label="Groups"
-  name="memberOf"
-  multiple={true}
-  options={groupOptions}
-  formControl={formControl}
-/>
-
-// Switch/Toggle
-<CippFormComponent
-  type="switch"
-  label="Account Enabled"
-  name="accountEnabled"
-  formControl={formControl}
-/>
-```
-
-#### Specialized Form Components
-
-**CippFormTenantSelector**
-```jsx
-<CippFormTenantSelector
-  name="tenantId"
-  label="Select Tenant"
-  formControl={formControl}
-  multiple={false}
-/>
-```
-
-**CippFormUserSelector**
-```jsx
-<CippFormUserSelector
-  name="userId"
-  label="Select User"
-  formControl={formControl}
-  tenantId={selectedTenant}
-/>
-```
-
-### 4. CippWizard - Multi-Step Workflows
-
-Components for complex multi-step processes with validation and progress tracking.
-
-#### Core Wizard Component
-
-**CippWizard**
-```jsx
-import { CippWizard } from '../components/CippWizard/CippWizard';
-
-function OnboardingWizard() {
-  const steps = [
-    {
-      title: 'Basic Information',
-      component: BasicInfoStep
-    },
-    {
-      title: 'License Assignment',
-      component: LicenseStep
-    },
-    {
-      title: 'Group Membership',
-      component: GroupStep
-    },
-    {
-      title: 'Confirmation',
-      component: ConfirmationStep
-    }
-  ];
-
-  return (
-    <CippWizard
-      postUrl="/api/onboardUser"
-      steps={steps}
-      orientation="horizontal"
-    />
-  );
-}
-```
-
-#### Wizard Step Pattern
-
-```jsx
-// Individual wizard step component
-function BasicInfoStep({ formControl, nextStep, previousStep }) {
-  return (
-    <CippWizardPage
-      title="Basic Information"
-      subtitle="Enter user details"
-    >
-      <CippFormComponent
-        type="textField"
-        label="First Name"
-        name="firstName"
-        required={true}
-        formControl={formControl}
-      />
-      <CippFormComponent
-        type="textField"
-        label="Last Name"
-        name="lastName"
-        required={true}
-        formControl={formControl}
-      />
-      <CippWizardStepButtons
-        onNext={nextStep}
-        onPrevious={previousStep}
-        nextDisabled={!formControl.formState.isValid}
-      />
-    </CippWizardPage>
-  );
-}
-```
-
-### 5. CippComponents - Utility Components
-
-General-purpose components used throughout the application.
-
-#### Dialog Components
-
-**CippApiDialog**
-```jsx
-import { CippApiDialog } from '../components/CippComponents/CippApiDialog';
-
-// API operation with confirmation dialog
-<CippApiDialog
-  title="Delete User"
-  content="Are you sure you want to delete this user?"
-  api={{
-    url: '/api/removeUser',
-    data: { userId: selectedUser.id }
-  }}
-  onSuccess={() => showSuccess('User deleted successfully')}
-/>
-```
-
-**CippComponentDialog**
-```jsx
-// Custom content dialog
-<CippComponentDialog
-  title="User Details"
-  open={dialogOpen}
-  onClose={() => setDialogOpen(false)}
-  maxWidth="md"
->
-  <UserDetailsContent user={selectedUser} />
-</CippComponentDialog>
-```
-
-#### Selector Components
-
-**CippTenantSelector**
-```jsx
-import { CippTenantSelector } from '../components/CippComponents/CippTenantSelector';
-
-// Global tenant selection
-<CippTenantSelector
-  value={selectedTenant}
-  onChange={handleTenantChange}
-  allTenants={false}
-  placeholder="Select a tenant"
-/>
-```
-
-#### Utility Components
-
-**CippCopyToClipBoard**
-```jsx
-import { CippCopyToClipBoard } from '../components/CippComponents/CippCopyToClipboard';
-
-<CippCopyToClipBoard
-  text="user@contoso.com"
-  type="button"
-  visible={true}
-/>
-```
-
-**CippTimeAgo**
-```jsx
-<CippTimeAgo
-  date="2024-01-15T10:30:00Z"
-  live={true}
-  tooltip={true}
-/>
-```
-
-## Component Design Patterns
-
-### 1. Composition Pattern
-
-Components are designed for composition, allowing flexible layouts:
-
-```jsx
-// Flexible card composition
-<Card>
-  <CardHeader
-    title="User Statistics"
-    action={<CippCopyToClipboard value={shareUrl} />}
-  />
-  <CardContent>
-    <CippPropertyList properties={userStats} />
-  </CardContent>
-  <CardActions>
-    <Button onClick={handleRefresh}>Refresh</Button>
-    <Button onClick={handleExport}>Export</Button>
-  </CardActions>
-</Card>
-```
-
-### 2. Render Props Pattern
-
-For components that need custom rendering:
-
-```jsx
-<CippDataTable
-  title="Users"
-  api={{ url: '/api/listUsers' }}
-  columns={[
-    {
-      accessorKey: 'displayName',
-      header: 'Name',
-      cell: ({ row }) => (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar src={row.original.photo} />
-          <Typography ml={2}>{row.original.displayName}</Typography>
-        </Box>
-      )
-    }
-  ]}
-/>
-```
-
-### 3. Hook Integration Pattern
-
-Components integrate with custom hooks for logic separation:
-
-```jsx
-function UserManagementPage() {
-  const { users, isLoading, error } = useUsers();
-  const { permissions } = usePermissions();
-  const { showDialog } = useDialog();
-
-  const actions = useMemo(() => [
-    {
-      label: 'Edit',
-      action: (user) => showDialog('editUser', { user }),
-      disabled: !permissions.canEditUsers
-    }
-  ], [permissions, showDialog]);
-
-  return (
-    <CippDataTable
-      title="Users"
-      data={users}
-      isLoading={isLoading}
-      error={error}
-      actions={actions}
-    />
-  );
-}
-```
-
-## Component Props Patterns
-
-### Common Prop Patterns
-
-```jsx
-// Base component props
-// title (string, optional): Component title
-// loading (boolean, optional): Loading state
-// error (string|Error, optional): Error state
-// sx (object, optional): MUI styling
-// children (ReactNode, optional): Child components
-
-// API integration props
-// api.url (string, required): API endpoint
-// api.data (object, optional): Request data
-// queryKey (array, optional): React Query key
-
-// Form component props
-// name (string, required): Form field name
-// label (string, required): Field label
-// required (boolean, optional): Required field
-// disabled (boolean, optional): Disabled state
-// formControl (object, required): React Hook Form control
-```
-
-### Prop Validation
-
-Components use PropTypes and provide sensible defaults:
-
-```jsx
-function CippInfoCard({
-  title,
-  value,
-  color = 'primary',
-  icon,
-  loading = false,
-  error,
-  ...props
-}) {
-  if (loading) return <Skeleton variant="rectangular" height={120} />;
-  if (error) return <ErrorDisplay error={error} />;
-  
-  return (
-    <Card {...props}>
-      {/* Component implementation */}
-    </Card>
-  );
-}
-```
-
-## Performance Considerations
-
-### 1. Component Memoization
-
-Large components use React.memo for performance:
-
-```jsx
-import { memo } from 'react';
-
-export const CippDataTable = memo(function CippDataTable(props) {
-  // Component implementation
-}, (prevProps, nextProps) => {
-  // Custom comparison for complex props
-  return isEqual(prevProps.data, nextProps.data);
-});
-```
-
-### 2. Lazy Loading
-
-Heavy components are loaded on demand:
-
-```jsx
-import { lazy, Suspense } from 'react';
-
-const CippChartCard = lazy(() => import('./CippChartCard'));
-
-function Dashboard() {
-  return (
-    <Suspense fallback={<Skeleton height={300} />}>
-      <CippChartCard data={chartData} />
-    </Suspense>
-  );
-}
-```
-
-### 3. Pagination
-
-Large data sets use pagination:
-
-```jsx
-<CippDataTable
-  data={largeDataset}
-  api={{ url: '/api/largeData' }}
-  queryKey={['largeData']}
-/>
-```
-
-## Integration Notes
-
-### API Integration
-
-Components integrate with the CIPP API using React Query:
-
-```jsx
-// Most data components accept an api prop
-<CippDataTable
-  api={{
-    url: '/api/endpoint',
-    data: { tenantFilter: 'contoso.com' }
-  }}
-  queryKey={['uniqueKey']}
-/>
-
-// Forms use postUrl for submissions
-<CippFormPage
-  postUrl="/api/addUser"
-  queryKey={['users']}
-  formControl={formControl}
->
-```
-
-## Best Practices
-
-### Component Usage
-
-1. **Always provide queryKey** for components with API integration
-2. **Use consistent prop naming** across similar components
-3. **Handle loading and error states** in data components
-4. **Follow MUI v6+ patterns** for styling and theming
-5. **Use React Hook Form** for all form implementations
-
-### Performance
-
-1. **Memoize expensive operations** in large components
-2. **Use appropriate loading states** for better UX
-3. **Implement proper error boundaries** for robustness
-
-## Real-World Usage Examples
-
-### User Management Page
-
-```jsx
-// Typical user management implementation
-import { CippDataTable } from '../components/CippTable/CippDataTable';
-import { CippTenantSelector } from '../components/CippComponents/CippTenantSelector';
-
-function UsersPage() {
-  const [selectedTenant, setSelectedTenant] = useState(null);
-  
-  return (
-    <>
-      <CippTenantSelector
-        value={selectedTenant}
-        onChange={setSelectedTenant}
-        allTenants={false}
-      />
-      
-      <CippDataTable
-        title="Users"
-        api={{
-          url: '/api/listUsers',
-          data: { tenantFilter: selectedTenant }
-        }}
-        queryKey={['users', selectedTenant]}
-        simpleColumns={['displayName', 'userPrincipalName', 'accountEnabled']}
-        actions={[
-          {
-            label: 'Edit User',
-            action: (row) => router.push(`/users/edit/${row.original.id}`)
-          },
-          {
-            label: 'Reset Password',
-            action: (row) => handlePasswordReset(row.original)
-          }
-        ]}
-        exportEnabled={true}
-        offCanvas={true}
-      />
-    </>
-  );
-}
-```
-
-### Dashboard Information Cards
-
-```jsx
-// Dashboard with multiple info cards
-import { CippInfoBar } from '../components/CippCards/CippInfoBar';
-import { Grid } from '@mui/system';
-
-function TenantDashboard() {
-  const dashboardData = [
-    {
-      name: 'Total Users',
-      value: '1,247',
-      color: 'primary',
-      icon: <UsersIcon />
-    },
-    {
-      name: 'Active Licenses',
-      value: '1,100',
-      color: 'success',
-      icon: <LicenseIcon />
-    },
-    {
-      name: 'Security Alerts',
-      value: '3',
-      color: 'warning',
-      icon: <AlertIcon />,
-      offcanvas: {
-        title: 'Security Alerts',
-        component: SecurityAlertsDetails
-      }
-    }
-  ];
-  
-  return (
-    <Grid container spacing={3}>
-      <Grid size={{ xs: 12 }}>
-        <CippInfoBar data={dashboardData} isFetching={false} />
-      </Grid>
-    </Grid>
-  );
-}
-```
-
-This component architecture provides a solid foundation for building consistent, maintainable, and scalable user interfaces in the CIPP application.
+### 1. [CippCards](../components/cipp-cards/README.md) - Information Display
+**Purpose**: Dashboard and information display components for presenting metrics, status, and interactive content.
+
+**Key Patterns**:
+- **Metric Display**: Single-value cards with optional actions and visual indicators
+- **Property Lists**: Key-value displays with conditional rendering and copy functionality  
+- **Data Visualization**: Chart integration with Material-UI theming and responsive design
+- **Interactive Cards**: Action-enabled cards for navigation and operations
+
+### 2. [CippTable](../components/cipp-table/README.md) - Data Management
+**Purpose**: Comprehensive data table system for large dataset management with advanced features.
+
+**Key Patterns**:
+- **List Management**: Read-only data display with export and filtering capabilities
+- **Interactive Management**: Tables with row actions, bulk operations, and detail panels
+- **Report Generation**: Data analysis interfaces with advanced filtering and simple column modes
+- **Selection Interfaces**: Multi-select functionality for bulk operations
+
+### 3. [CippFormPages](../components/cipp-forms/README.md) - Form Management
+**Purpose**: Standardized form components with validation, error handling, and submission workflows.
+
+**Key Patterns**:
+- **Form Lifecycle Management**: Complete form pages with validation, submission, and error handling
+- **Universal Field Components**: Type-safe field components that integrate with React Hook Form
+- **Tenant-Aware Selectors**: Specialized selectors for multi-tenant operations
+- **Section Organization**: Collapsible form sections for complex data entry workflows
+
+### 4. [CippWizard](../components/cipp-wizard/README.md) - Multi-Step Workflows
+**Purpose**: Components for complex multi-step processes with validation and progress tracking.
+
+**Key Patterns**:
+- **Step Management**: Progressive workflow with validation checkpoints
+- **Conditional Logic**: Dynamic step visibility based on user input
+- **State Persistence**: Form data maintained across step navigation
+- **Progress Tracking**: Visual indicators and completion status
+
+### 5. [CippComponents](../components/cipp-components/README.md) - Utility Components
+**Purpose**: General-purpose components providing common functionality across the application.
+
+**Key Patterns**:
+- **Cross-Cutting Concerns**: Dialog management, tenant context, API integration utilities
+- **Layout Helpers**: Page templates, off-canvas panels, navigation aids  
+- **Data Operations**: Copy-to-clipboard, time formatting, CSV export functionality
+- **Specialized Selectors**: User, group, and license selection with search and filtering
+
+## Architectural Design Patterns
+
+### 1. Composition Architecture
+Components are designed for flexible composition, enabling complex UIs from simple building blocks. Each component focuses on a single responsibility while providing clear interfaces for integration.
+
+**Benefits**:
+- Promotes code reuse and maintainability
+- Enables flexible layouts without component inheritance
+- Supports progressive enhancement of functionality
+
+### 2. Render Props and Children Pattern
+Components support custom rendering through render props and children patterns, allowing for flexible customization without component modification.
+
+**Benefits**:
+- Maintains component reusability while supporting customization
+- Enables complex data presentation patterns
+- Supports progressive disclosure of information
+
+### 3. Hook-Based Architecture
+Components integrate with custom hooks for clean separation of logic and presentation, following React best practices for state management and side effects.
+
+**Benefits**:
+- Separates business logic from presentation
+- Enables logic reuse across components
+- Simplifies testing and maintenance
+
+## Component Interface Patterns
+
+### Standardized Prop Conventions
+
+The component library follows consistent prop naming and typing conventions across all components:
+
+**Base Component Props**:
+- Consistent naming for common props (title, loading, error, children)
+- Material-UI sx prop support for styling customization
+- Predictable prop defaults and optional vs required designations
+
+**API Integration Props**:
+- Standardized API configuration object structure
+- Consistent query key patterns for caching
+- Uniform data loading and error state handling
+
+**Form Component Props**:
+- React Hook Form integration patterns
+- Consistent validation prop structure  
+- Standardized field naming and labeling conventions
+
+### Error Boundaries and Fallbacks
+
+Components implement graceful degradation with:
+- Loading state displays using Material-UI Skeleton components
+- Error boundaries with meaningful error messages
+- Fallback rendering for missing data scenarios
+
+## Performance Architecture
+
+### Component Optimization Strategies
+
+The component library implements several performance optimization patterns:
+
+**Memoization Strategy**:
+- Strategic use of React.memo for expensive components
+- Custom comparison functions for complex prop objects
+- Memoized action definitions and computed values
+
+**Code Splitting and Lazy Loading**:
+- Heavy visualization components loaded on demand
+- Suspense boundaries with appropriate loading states
+- Progressive component loading for large applications
+
+**Data Management**:
+- Virtualization for large dataset components  
+- Pagination strategies for table and list components
+- Efficient query key management for cache optimization
+
+## System Integration Patterns
+
+### API Integration Architecture
+
+Components follow consistent patterns for API integration:
+
+**Data Fetching Strategy**:
+- React Query integration for caching and state management
+- Standardized API configuration object patterns
+- Consistent error handling and loading state management
+
+**Multi-Tenant Context**:
+- Automatic tenant context injection
+- Tenant-aware API request patterns
+- Consistent tenant filtering and scoping
+
+**Cache Management**:
+- Predictable query key patterns for cache invalidation
+- Optimistic updates for better user experience
+- Background refetching strategies for data freshness
+
+## Architectural Best Practices
+
+### Design Guidelines
+
+**Component Design**:
+- Single Responsibility Principle: Each component serves a focused purpose
+- Composition over inheritance for flexibility and reusability
+- Consistent prop interfaces across component categories
+- Material-UI v6+ compliance for theming and responsive design
+
+**Integration Standards**:
+- React Query for all data fetching and caching
+- React Hook Form for form state management
+- Consistent error handling and loading state patterns
+- Tenant-aware operations throughout the component library
+
+**Performance Guidelines**:
+- Strategic memoization for expensive rendering operations
+- Code splitting for heavy components and visualization libraries
+- Efficient re-rendering patterns with proper dependency management
+- Optimized query key patterns for cache management
+
+### Development Workflow
+
+**Component Development**:
+- Start with the detailed [component documentation](../components/README.md) for implementation specifics
+- Follow established patterns for new component development
+- Maintain consistency with existing component interfaces
+- Implement proper error boundaries and fallback UI
+
+**Testing Strategy**:
+- Unit tests for component logic and prop validation
+- Integration tests for API interactions and form workflows
+- Visual regression testing for UI consistency
+- Performance testing for large dataset components
+
+## Implementation Resources
+
+For detailed implementation guidance, examples, and API documentation:
+
+- **[Component Library Documentation](../components/README.md)** - Comprehensive component reference
+- **[CippCards Examples](../components/cipp-cards/examples.md)** - Dashboard and visualization patterns
+- **[CippForms Examples](../components/cipp-forms/examples.md)** - Form and validation workflows
+- **[CippTable Documentation](../components/cipp-table/README.md)** - Data management patterns
+- **[CippWizard Documentation](../components/cipp-wizard/README.md)** - Multi-step workflow patterns
+
+This architecture ensures consistent, maintainable, and scalable component development while supporting the complex requirements of multi-tenant Microsoft 365 management interfaces.

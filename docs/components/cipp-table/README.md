@@ -2,6 +2,8 @@
 
 Advanced data table system built on Material React Table with comprehensive filtering, sorting, pagination, and action capabilities. Designed for displaying large datasets with tenant-aware data fetching and permission-controlled actions.
 
+> **Architecture Reference**: See [Component Architecture - CippTable](../../architecture/components.md#2-cipptable---data-management) for architectural patterns and design principles.
+
 ## Components
 
 ### CippDataTable
