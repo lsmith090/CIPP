@@ -328,46 +328,55 @@ export const CippInfoCard = (props) => {
 ```
 
 **Key Styling Patterns:**
-- Consistent card padding: `p: 2` (16px)
-- Avatar with theme colors: `primary.alpha12` background
+- Flexible component/accordion modes for different layouts
+- CardHeader with customizable action areas  
 - Loading states with Skeleton components
-- Conditional action sections with Divider separation
+- Conditional CardButton sections with proper spacing
+- Accordion mode with expand/collapse functionality
 
 #### 2. Button Card Pattern
 ```jsx
-const CippButtonCard = ({ title, description, icon, onClick, disabled, color = "primary" }) => (
-  <Card
-    sx={{
-      cursor: disabled ? 'not-allowed' : 'pointer',
-      transition: 'all 0.2s',
-      '&:hover': {
-        transform: disabled ? 'none' : 'translateY(-2px)',
-        boxShadow: disabled ? 1 : 4,
-      },
-      opacity: disabled ? 0.6 : 1,
-    }}
-    onClick={disabled ? undefined : onClick}
-  >
-    <CardContent sx={{ textAlign: 'center', p: 3 }}>
-      <Avatar
-        sx={{
-          bgcolor: `${color}.alpha12`,
-          color: `${color}.main`,
-          width: 56,
-          height: 56,
-          mx: 'auto',
-          mb: 2,
-        }}
-      >
-        <SvgIcon fontSize="large">{icon}</SvgIcon>
-      </Avatar>
-      <Typography variant="h6" gutterBottom>
-        {title}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        {description}
-      </Typography>
-    </CardContent>
+const CippButtonCard = ({ 
+  title, 
+  CardButton, 
+  children, 
+  isFetching = false, 
+  cardSx, 
+  cardActions, 
+  variant, 
+  component = "card", 
+  accordionExpanded = false, 
+  onAccordionChange 
+}) => (
+  <Card variant={variant} sx={cardSx}>
+    {component === "card" && (
+      <>
+        <CardHeader action={cardActions} title={title} />
+        <Divider />
+        <CardContent style={{ marginBottom: "auto" }}>
+          {isFetching ? <Skeleton /> : children}
+        </CardContent>
+        <Divider />
+        {CardButton && <CardActions>{CardButton}</CardActions>}
+      </>
+    )}
+    {component === "accordion" && (
+      <Accordion expanded={accordionExpanded}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          onClick={() => setAccordionExpanded(!accordionExpanded)}
+        >
+          <CardHeader action={cardActions} title={title} sx={{ pl: 1, py: 0 }} />
+        </AccordionSummary>
+        <Divider />
+        <AccordionDetails sx={{ p: 0 }}>
+          <CardContent style={{ marginBottom: "auto" }}>
+            {isFetching ? <Skeleton /> : children}
+          </CardContent>
+          {CardButton && <CardActions>{CardButton}</CardActions>}
+        </AccordionDetails>
+      </Accordion>
+    )}
   </Card>
 );
 ```
