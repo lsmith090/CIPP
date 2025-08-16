@@ -668,19 +668,53 @@ const ContentCard = ({ children, actions }) => (
 );
 ```
 
+#### Grid Usage Standards
+
+**IMPORTANT: Always use `@mui/system` for Grid imports, never `@mui/material`**
+
+```javascript
+// ✅ CORRECT - Use @mui/system
+import { Grid } from '@mui/system';
+
+// ❌ INCORRECT - Do not use @mui/material
+import { Grid } from '@mui/material';
+```
+
+**MUI Grid v6+ Syntax Requirements:**
+
+- Use the new `size` prop object syntax: `<Grid size={{ xs: 12, md: 6 }}>`
+- Avoid the deprecated `item xs={12}` syntax
+- Always specify responsive breakpoints as an object
+
+```javascript
+// ✅ CORRECT - New Grid v2 syntax
+<Grid size={{ xs: 12, sm: 6, md: 4 }}>
+  <Component />
+</Grid>
+
+// ❌ INCORRECT - Old Grid v1 syntax
+<Grid item xs={12} sm={6} md={4}>
+  <Component />
+</Grid>
+```
+
+**Standard Breakpoint Patterns:**
+
+- **Full width**: `size={{ xs: 12 }}`
+- **Half width on desktop**: `size={{ xs: 12, md: 6 }}`
+- **Third width on desktop**: `size={{ xs: 12, md: 4 }}`
+- **Quarter width on large screens**: `size={{ xs: 12, sm: 6, md: 4, lg: 3 }}`
+
 #### Grid Layouts
 
 ```javascript
-import { Grid } from '@mui/material';
+import { Grid } from '@mui/system';
 
 const DashboardLayout = ({ widgets }) => (
   <Grid container spacing={3}>
     {widgets.map((widget, index) => (
       <Grid 
-        item 
-        xs={12} 
-        sm={6} 
-        md={4} 
+        size={{ xs: 12, sm: 6, md: 4 }}
         key={index}
       >
         <InfoCard {...widget} />
@@ -694,11 +728,12 @@ const ResponsiveGrid = ({ items }) => (
   <Grid container spacing={2}>
     {items.map((item, index) => (
       <Grid
-        item
-        xs={12}      // Full width on mobile
-        sm={6}       // Half width on small screens
-        md={4}       // Third width on medium screens
-        lg={3}       // Quarter width on large screens
+        size={{
+          xs: 12,    // Full width on mobile
+          sm: 6,     // Half width on small screens  
+          md: 4,     // Third width on medium screens
+          lg: 3      // Quarter width on large screens
+        }}
         key={index}
       >
         <ItemCard {...item} />

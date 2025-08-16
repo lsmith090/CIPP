@@ -1258,13 +1258,13 @@ const AdminDashboard = () => {
   return (
     <Grid container spacing={3}>
       <PermissionCheck requiredPermissions={['tenants.read']}>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <TenantStatsCard data={tenants.data} />
         </Grid>
       </PermissionCheck>
       
       <PermissionCheck requiredPermissions={['users.read']}>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <UserStatsCard data={users.data} />
         </Grid>
       </PermissionCheck>

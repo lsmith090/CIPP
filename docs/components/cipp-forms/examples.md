@@ -89,7 +89,7 @@ const AddUserForm = () => {
           required={true}
         >
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="givenName"
@@ -99,7 +99,7 @@ const AddUserForm = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="surname"
@@ -109,7 +109,7 @@ const AddUserForm = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="textField"
                 name="displayName"
@@ -120,7 +120,7 @@ const AddUserForm = () => {
                 helperText="Auto-generated from first and last name"
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="mail"
@@ -136,7 +136,7 @@ const AddUserForm = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="userPrincipalName"
@@ -156,7 +156,7 @@ const AddUserForm = () => {
           description="Employment and organizational details"
         >
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="jobTitle"
@@ -165,7 +165,7 @@ const AddUserForm = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="select"
                 name="department"
@@ -182,7 +182,7 @@ const AddUserForm = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="officeLocation"
@@ -191,7 +191,7 @@ const AddUserForm = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="phoneNumber"
@@ -200,7 +200,7 @@ const AddUserForm = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <CippFormUserSelector
                 name="manager"
                 label="Manager"
@@ -217,7 +217,7 @@ const AddUserForm = () => {
           description="Security and access configuration"
         >
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="switch"
                 name="accountEnabled"
@@ -226,7 +226,7 @@ const AddUserForm = () => {
                 helperText="Enable user account for sign-in"
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="switch"
                 name="mustChangePassword"
@@ -341,7 +341,7 @@ const ConditionalAccessPolicyForm = () => {
           required={true}
         >
           <Grid container spacing={3}>
-            <Grid item xs={12} md={8}>
+            <Grid size={{ xs: 12, md: 8 }}>
               <CippFormComponent
                 type="textField"
                 name="displayName"
@@ -352,7 +352,7 @@ const ConditionalAccessPolicyForm = () => {
                 helperText="Enter a descriptive name for this policy"
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <CippFormComponent
                 type="select"
                 name="state"
@@ -380,7 +380,7 @@ const ConditionalAccessPolicyForm = () => {
             {/* Users and Groups */}
             <Typography variant="h6">Users and Groups</Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <CippFormUserSelector
                   name="conditions.users.includeUsers"
                   label="Include Users"
@@ -390,7 +390,7 @@ const ConditionalAccessPolicyForm = () => {
                   validators={{ required: "At least one user must be included" }}
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <CippFormUserSelector
                   name="conditions.users.excludeUsers"
                   label="Exclude Users"
@@ -404,7 +404,7 @@ const ConditionalAccessPolicyForm = () => {
             {/* Cloud Applications */}
             <Typography variant="h6">Cloud Applications</Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <CippFormComponent
                   type="select"
                   name="conditions.applications.includeApplications"
@@ -420,7 +420,7 @@ const ConditionalAccessPolicyForm = () => {
                 />
               </Grid>
               {!watchIncludeApplications?.includes('All') && (
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="autoComplete"
                     name="conditions.applications.specificApplications"
@@ -438,7 +438,7 @@ const ConditionalAccessPolicyForm = () => {
             {/* Conditions */}
             <Typography variant="h6">Conditions</Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <CippFormComponent
                   type="select"
                   name="conditions.locations.includeLocations"
@@ -451,7 +451,7 @@ const ConditionalAccessPolicyForm = () => {
                   ]}
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <CippFormComponent
                   type="select"
                   name="conditions.platforms.includePlatforms"
@@ -468,7 +468,7 @@ const ConditionalAccessPolicyForm = () => {
                   ]}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <CippFormComponent
                   type="select"
                   name="conditions.clientAppTypes"
@@ -495,7 +495,7 @@ const ConditionalAccessPolicyForm = () => {
           required={true}
         >
           <Grid container spacing={3}>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <CippFormComponent
                 type="select"
                 name="grantControls.operator"
@@ -508,7 +508,7 @@ const ConditionalAccessPolicyForm = () => {
                 validators={{ required: "Grant operator is required" }}
               />
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid size={{ xs: 12, md: 8 }}>
               <CippFormComponent
                 type="select"
                 name="grantControls.builtInControls"
@@ -535,7 +535,7 @@ const ConditionalAccessPolicyForm = () => {
           description="Control the user experience within applications"
         >
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="select"
                 name="sessionControls.applicationEnforcedRestrictions"
@@ -547,7 +547,7 @@ const ConditionalAccessPolicyForm = () => {
                 ]}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="select"
                 name="sessionControls.cloudAppSecurity"
@@ -561,7 +561,7 @@ const ConditionalAccessPolicyForm = () => {
                 ]}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="number"
                 name="sessionControls.signInFrequency.value"
@@ -693,7 +693,7 @@ const BulkUserImportForm = () => {
           required={true}
         >
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="filePicker"
                 name="csvFile"
@@ -705,7 +705,7 @@ const BulkUserImportForm = () => {
                 required
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Alert severity="info">
                 <Typography variant="body2">
                   <strong>Required columns:</strong> firstName, lastName, email<br />
@@ -722,7 +722,7 @@ const BulkUserImportForm = () => {
           description="Default values applied to all imported users"
         >
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormTenantSelector
                 name="defaultDomain"
                 label="Default Domain"
@@ -730,7 +730,7 @@ const BulkUserImportForm = () => {
                 required
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="password"
                 name="defaultPassword"
@@ -739,7 +739,7 @@ const BulkUserImportForm = () => {
                 helperText="Leave blank to generate random passwords"
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <CippFormComponent
                 type="switch"
                 name="accountEnabled"
@@ -747,7 +747,7 @@ const BulkUserImportForm = () => {
                 formControl={formControl}
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <CippFormComponent
                 type="switch"
                 name="mustChangePassword"
@@ -755,7 +755,7 @@ const BulkUserImportForm = () => {
                 formControl={formControl}
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <CippFormComponent
                 type="switch"
                 name="sendWelcomeEmail"
@@ -763,7 +763,7 @@ const BulkUserImportForm = () => {
                 formControl={formControl}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormLicenseSelector
                 name="defaultLicenses"
                 label="Default Licenses"
@@ -771,7 +771,7 @@ const BulkUserImportForm = () => {
                 multiple={true}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormGroupSelector
                 name="defaultGroups"
                 label="Default Groups"
@@ -932,7 +932,7 @@ const SettingsForm = () => {
           defaultExpanded={true}
         >
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="general.organizationName"
@@ -942,7 +942,7 @@ const SettingsForm = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="general.supportEmail"
@@ -957,7 +957,7 @@ const SettingsForm = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="textField"
                 name="general.logoUrl"
@@ -973,7 +973,7 @@ const SettingsForm = () => {
                 helperText="URL to your organization logo"
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="select"
                 name="general.timezone"
@@ -995,7 +995,7 @@ const SettingsForm = () => {
             {/* Password Policy */}
             <Typography variant="h6">Password Policy</Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <CippFormComponent
                   type="number"
                   name="security.passwordPolicy.minimumLength"
@@ -1008,7 +1008,7 @@ const SettingsForm = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <CippFormComponent
                   type="number"
                   name="security.passwordPolicy.passwordHistory"
@@ -1022,7 +1022,7 @@ const SettingsForm = () => {
                   helperText="Number of previous passwords to remember"
                 />
               </Grid>
-              <Grid item xs={12} md={3}>
+              <Grid size={{ xs: 12, md: 3 }}>
                 <CippFormComponent
                   type="switch"
                   name="security.passwordPolicy.requireUppercase"
@@ -1030,7 +1030,7 @@ const SettingsForm = () => {
                   formControl={formControl}
                 />
               </Grid>
-              <Grid item xs={12} md={3}>
+              <Grid size={{ xs: 12, md: 3 }}>
                 <CippFormComponent
                   type="switch"
                   name="security.passwordPolicy.requireLowercase"
@@ -1038,7 +1038,7 @@ const SettingsForm = () => {
                   formControl={formControl}
                 />
               </Grid>
-              <Grid item xs={12} md={3}>
+              <Grid size={{ xs: 12, md: 3 }}>
                 <CippFormComponent
                   type="switch"
                   name="security.passwordPolicy.requireNumbers"
@@ -1046,7 +1046,7 @@ const SettingsForm = () => {
                   formControl={formControl}
                 />
               </Grid>
-              <Grid item xs={12} md={3}>
+              <Grid size={{ xs: 12, md: 3 }}>
                 <CippFormComponent
                   type="switch"
                   name="security.passwordPolicy.requireSymbols"
@@ -1059,7 +1059,7 @@ const SettingsForm = () => {
             {/* Account Lockout */}
             <Typography variant="h6">Account Lockout</Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <CippFormComponent
                   type="switch"
                   name="security.accountLockout.enabled"
@@ -1067,7 +1067,7 @@ const SettingsForm = () => {
                   formControl={formControl}
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <CippFormComponent
                   type="number"
                   name="security.accountLockout.threshold"
@@ -1081,7 +1081,7 @@ const SettingsForm = () => {
                   helperText="Failed attempts before lockout"
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <CippFormComponent
                   type="number"
                   name="security.accountLockout.duration"
@@ -1092,7 +1092,7 @@ const SettingsForm = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <CippFormComponent
                   type="number"
                   name="security.accountLockout.resetCounter"
@@ -1113,7 +1113,7 @@ const SettingsForm = () => {
           description="Configure alert and notification preferences"
         >
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="switch"
                 name="notifications.emailNotifications"
@@ -1121,7 +1121,7 @@ const SettingsForm = () => {
                 formControl={formControl}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CippFormComponent
                 type="switch"
                 name="notifications.smsNotifications"
@@ -1129,7 +1129,7 @@ const SettingsForm = () => {
                 formControl={formControl}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="textField"
                 name="notifications.webhookUrl"
@@ -1139,7 +1139,7 @@ const SettingsForm = () => {
                 helperText="URL to send webhook notifications"
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <CippFormComponent
                 type="select"
                 name="notifications.alertTypes"

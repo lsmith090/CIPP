@@ -419,7 +419,7 @@ const Page = () => {
 For dashboard-style layouts with cards and widgets:
 
 ```javascript
-import { Grid } from "@mui/material";
+import { Grid } from "@mui/system";
 import { CippInfoCard } from "/src/components/CippCards/CippInfoCard.jsx";
 
 const Page = () => {
@@ -434,14 +434,14 @@ const Page = () => {
       <Box sx={{ flexGrow: 1, py: 4 }}>
         <Container maxWidth={false}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={3}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <CippInfoCard
                 label="Total Users"
                 value={data?.userCount || 0}
                 icon={<UsersIcon />}
               />
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <CippInfoCard
                 label="Active Licenses"
                 value={data?.licenseCount || 0}

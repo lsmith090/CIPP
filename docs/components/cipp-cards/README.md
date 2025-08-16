@@ -17,7 +17,7 @@ Simple metric display card with optional action link.
 
 **Usage:**
 ```jsx
-import { CippInfoCard } from '/src/components/CippCards/CippInfoCard';
+import { CippInfoCard } from '/src/components/CippCards/CippInfoCard.jsx';
 import { UserIcon } from '@heroicons/react/24/outline';
 
 <CippInfoCard
@@ -76,7 +76,7 @@ Displays key-value property lists with optional actions.
 
 **Usage:**
 ```jsx
-import { CippPropertyListCard } from '/src/components/CippCards/CippPropertyListCard';
+import { CippPropertyListCard } from '/src/components/CippCards/CippPropertyListCard.jsx';
 import { KeyIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 const userProperties = [
@@ -147,7 +147,7 @@ Chart visualization card component using ApexCharts with Material-UI theming and
 
 **Usage:**
 ```jsx
-import { CippChartCard } from '/src/components/CippCards/CippChartCard';
+import { CippChartCard } from '/src/components/CippCards/CippChartCard.jsx';
 
 // Donut Chart with Legend
 const userStatusData = [847, 156, 89, 45];
@@ -235,7 +235,7 @@ Horizontal information bar displaying metrics in a grid layout with optional off
 
 **Usage:**
 ```jsx
-import { CippInfoBar } from '/src/components/CippCards/CippInfoBar';
+import { CippInfoBar } from '/src/components/CippCards/CippInfoBar.jsx';
 
 const metrics = [
   {
@@ -284,7 +284,7 @@ Interactive card with primary action button.
 
 **Usage:**
 ```jsx
-import { CippButtonCard } from '/src/components/CippCards/CippButtonCard';
+import { CippButtonCard } from '/src/components/CippCards/CippButtonCard.jsx';
 
 <CippButtonCard
   title="Create New User"
@@ -313,7 +313,7 @@ Specialized card for displaying comprehensive user information with organized se
 
 **Usage:**
 ```jsx
-import { CippUserInfoCard } from '/src/components/CippCards/CippUserInfoCard';
+import { CippUserInfoCard } from '/src/components/CippCards/CippUserInfoCard.jsx';
 
 <CippUserInfoCard
   user={selectedUser}
@@ -331,7 +331,7 @@ Card component for displaying Exchange-specific user information.
 
 **Usage:**
 ```jsx
-import { CippExchangeInfoCard } from '../../../src/components/CippCards/CippExchangeInfoCard';
+import { CippExchangeInfoCard } from '/src/components/CippCards/CippExchangeInfoCard.jsx';
 
 <CippExchangeInfoCard
   user={userWithExchangeData}
@@ -353,7 +353,7 @@ Image content card with overlays and actions.
 
 **Usage:**
 ```jsx
-import { CippImageCard } from '../../src/components/CippCards/CippImageCard';
+import { CippImageCard } from '/src/components/CippCards/CippImageCard.jsx';
 
 <CippImageCard
   src="/assets/tenant-logo.png"
@@ -386,7 +386,7 @@ Business Email Compromise security remediation status display card.
 
 **Usage:**
 ```jsx
-import { CippRemediationCard } from '../../src/components/CippCards/CippRemediationCard';
+import { CippRemediationCard } from '/src/components/CippCards/CippRemediationCard.jsx';
 
 <CippRemediationCard
   title="Enable MFA for Admin Accounts"
@@ -432,10 +432,10 @@ Cards adapt to screen size:
 
 ```jsx
 <Grid container spacing={3}>
-  <Grid item xs={12} sm={6} md={4}>
+  <Grid size={{ xs: 12, sm: 6, md: 4 }}>
     <CippInfoCard {...props} />
   </Grid>
-  <Grid item xs={12} md={8}>
+  <Grid size={{ xs: 12, md: 8 }}>
     <CippPropertyListCard layout="double" {...props} />
   </Grid>
 </Grid>

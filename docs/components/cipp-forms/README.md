@@ -36,7 +36,7 @@ Complete form page layout with validation, submission, and error handling.
 
 **Usage:**
 ```jsx
-import CippFormPage from '../CippFormPages/CippFormPage';
+import CippFormPage from '/src/components/CippFormPages/CippFormPage.jsx';
 import { useForm } from 'react-hook-form';
 
 const AddUserForm = () => {
@@ -69,7 +69,7 @@ const AddUserForm = () => {
       backButtonTitle="Back to Users"
     >
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="textField"
             label="Display Name"
@@ -78,7 +78,7 @@ const AddUserForm = () => {
             validators={{ required: "Display Name is required" }}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="textField"
             label="Email"
@@ -93,7 +93,7 @@ const AddUserForm = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="textField"
             label="Department"
@@ -101,7 +101,7 @@ const AddUserForm = () => {
             formControl={formControl}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="switch"
             label="Account Enabled"
@@ -127,7 +127,7 @@ Collapsible form sections for organizing related fields.
 
 **Usage:**
 ```jsx
-import { CippFormSection } from '../CippFormPages/CippFormSection';
+import { CippFormSection } from '/src/components/CippFormPages/CippFormSection.jsx';
 
 <CippFormSection
   title="Basic Information"
@@ -136,7 +136,7 @@ import { CippFormSection } from '../CippFormPages/CippFormSection';
   required={true}
 >
   <Grid container spacing={2}>
-    <Grid item xs={12} md={6}>
+    <Grid size={{ xs: 12, md: 6 }}>
       <CippFormComponent
         type="textField"
         label="First Name"
@@ -145,7 +145,7 @@ import { CippFormSection } from '../CippFormPages/CippFormSection';
         required
       />
     </Grid>
-    <Grid item xs={12} md={6}>
+    <Grid size={{ xs: 12, md: 6 }}>
       <CippFormComponent
         type="textField"
         label="Last Name"
@@ -209,7 +209,7 @@ Universal form field component supporting multiple input types.
 
 **Usage Examples:**
 ```jsx
-import { CippFormComponent } from '../CippComponents/CippFormComponent';
+import { CippFormComponent } from '/src/components/CippComponents/CippFormComponent.jsx';
 
 // Text field
 <CippFormComponent
@@ -277,7 +277,7 @@ Tenant selection component for multi-tenant forms.
 
 **Usage:**
 ```jsx
-import { CippFormTenantSelector } from '../CippComponents/CippFormTenantSelector';
+import { CippFormTenantSelector } from '/src/components/CippComponents/CippFormTenantSelector.jsx';
 
 <CippFormTenantSelector
   name="targetTenant"
@@ -300,7 +300,7 @@ User selection component with search and filtering.
 
 **Usage:**
 ```jsx
-import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector';
+import { CippFormUserSelector } from '/src/components/CippComponents/CippFormUserSelector.jsx';
 
 <CippFormUserSelector
   name="assignedUsers"
@@ -324,7 +324,7 @@ Group selection component with filtering options.
 
 **Usage:**
 ```jsx
-import { CippFormGroupSelector } from '../CippComponents/CippFormGroupSelector';
+import { CippFormGroupSelector } from '/src/components/CippComponents/CippFormGroupSelector.jsx';
 
 <CippFormGroupSelector
   name="memberOf"
@@ -403,7 +403,7 @@ const DynamicFieldsForm = () => {
     <CippFormPage formControl={formControl} {...props}>
       {fields.map((field, index) => (
         <Grid container spacing={2} key={field.id}>
-          <Grid item xs={10}>
+          <Grid size={{ xs: 10 }}>
             <CippFormComponent
               type="select"
               name={`licenses.${index}.skuId`}
@@ -412,7 +412,7 @@ const DynamicFieldsForm = () => {
               options={licenseOptions}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid size={{ xs: 2 }}>
             <IconButton onClick={() => remove(index)}>
               <DeleteIcon />
             </IconButton>

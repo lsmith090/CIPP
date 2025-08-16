@@ -75,19 +75,19 @@ import { Grid } from '@mui/system';
 function Dashboard() {
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CippInfoBar title="Active Users" value="1,250" />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CippInfoBar title="Licenses Used" value="1,000" />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CippInfoBar title="Security Score" value="85%" />
       </Grid>
-      <Grid item xs={12} md={8}>
+      <Grid size={{ xs: 12, md: 8 }}>
         <CippChartCard title="User Activity" data={activityData} />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CippPropertyListCard title="Quick Stats" properties={statsData} />
       </Grid>
     </Grid>
@@ -715,7 +715,7 @@ function TenantDashboard() {
   
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12}>
+      <Grid size={{ xs: 12 }}>
         <CippInfoBar data={dashboardData} isFetching={false} />
       </Grid>
     </Grid>

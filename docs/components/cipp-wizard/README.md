@@ -43,7 +43,7 @@ Main wizard container that manages step navigation and form state.
 
 **Usage:**
 ```jsx
-import { CippWizard } from '../CippWizard/CippWizard';
+import { CippWizard } from '/src/components/CippWizard/CippWizard.jsx';
 
 const SetupWizard = () => {
   const wizardSteps = [
@@ -119,7 +119,7 @@ Full-page wrapper component for wizard layouts with navigation.
 
 **Usage:**
 ```jsx
-import { CippWizardPage } from '../CippWizard/CippWizardPage';
+import { CippWizardPage } from '/src/components/CippWizard/CippWizardPage.jsx';
 
 const BasicInfoStep = ({ formControl, title, subtext }) => {
   return (
@@ -129,7 +129,7 @@ const BasicInfoStep = ({ formControl, title, subtext }) => {
       helpText="This information will be used to configure your organization settings"
     >
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="textField"
             name="organizationName"
@@ -139,7 +139,7 @@ const BasicInfoStep = ({ formControl, title, subtext }) => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="emailField"
             name="adminEmail"
@@ -172,7 +172,7 @@ Navigation button component for wizard steps with API submission.
 
 **Usage:**
 ```jsx
-import { CippWizardStepButtons } from '../CippWizard/CippWizardStepButtons';
+import { CippWizardStepButtons } from '/src/components/CippWizard/CippWizardStepButtons.jsx';
 
 const CustomStepComponent = ({ 
   currentStep, 
@@ -230,7 +230,7 @@ Final confirmation step component with automatic form data review.
 
 **Usage:**
 ```jsx
-import { CippWizardConfirmation } from '../CippWizard/CippWizardConfirmation';
+import { CippWizardConfirmation } from '/src/components/CippWizard/CippWizardConfirmation.jsx';
 
 const ReviewStep = ({ formControl, onPreviousStep, currentStep }) => {
   const formData = formControl.getValues();
@@ -413,7 +413,7 @@ const CustomStep = ({
       loading={loading}
     >
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="select"
             name="selectedOption"
@@ -425,7 +425,7 @@ const CustomStep = ({
         </Grid>
         
         {/* Dynamic content based on selection */}
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <ConditionalContent formControl={formControl} />
         </Grid>
       </Grid>
@@ -590,7 +590,7 @@ Component for displaying selectable options in wizard steps.
 
 **Usage:**
 ```jsx
-import { CippWizardOptionsList } from '../CippWizard/CippWizardOptionsList';
+import { CippWizardOptionsList } from '/src/components/CippWizard/CippWizardOptionsList.jsx';
 
 <CippWizardOptionsList
   formControl={formControl}
@@ -604,7 +604,7 @@ Autocomplete component optimized for wizard workflows.
 
 **Usage:**
 ```jsx
-import { CippWizardAutoComplete } from '../CippWizard/CippWizardAutoComplete';
+import { CippWizardAutoComplete } from '/src/components/CippWizard/CippWizardAutoComplete.jsx';
 
 <CippWizardAutoComplete
   formControl={formControl}
@@ -619,7 +619,7 @@ CSV file import component for bulk operations in wizards.
 
 **Usage:**
 ```jsx
-import { CippWizardCSVImport } from '../CippWizard/CippWizardCSVImport';
+import { CippWizardCSVImport } from '/src/components/CippWizard/CippWizardCSVImport.jsx';
 
 <CippWizardCSVImport
   formControl={formControl}

@@ -7,7 +7,7 @@ Real-world examples of using CIPP card components in different scenarios.
 A typical dashboard using multiple card types:
 
 ```jsx
-import { Grid, Container } from '@mui/material';
+import { Grid, Container } from '@mui/system';
 import {
   CippInfoBar,
   CippInfoCard,
@@ -51,12 +51,12 @@ const TenantDashboard = () => {
     <Container maxWidth="xl">
       <Grid container spacing={3}>
         {/* Top metrics */}
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippInfoBar items={metrics} />
         </Grid>
 
         {/* Key metrics cards */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <CippInfoCard
             label="Licensed Users"
             value={overview?.licensedUsers || 0}
@@ -67,7 +67,7 @@ const TenantDashboard = () => {
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <CippInfoCard
             label="Security Alerts"
             value={overview?.securityAlerts || 0}
@@ -79,7 +79,7 @@ const TenantDashboard = () => {
         </Grid>
 
         {/* Chart visualization */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippChartCard
             title="User Login Activity"
             data={overview?.loginActivity || []}
@@ -90,7 +90,7 @@ const TenantDashboard = () => {
         </Grid>
 
         {/* Tenant details */}
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippPropertyListCard
             title="Tenant Information"
             propertyItems={[
@@ -104,7 +104,7 @@ const TenantDashboard = () => {
         </Grid>
 
         {/* Quick actions */}
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <CippButtonCard
             title="Add New User"
             description="Create a new user account"
@@ -113,7 +113,7 @@ const TenantDashboard = () => {
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <CippButtonCard
             title="Run Security Scan"
             description="Perform security assessment"
@@ -203,7 +203,7 @@ const UserDetailView = ({ userId }) => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <CippPropertyListCard
           title="Basic Information"
           propertyItems={basicInfo}
@@ -214,7 +214,7 @@ const UserDetailView = ({ userId }) => {
         />
       </Grid>
 
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <CippPropertyListCard
           title="Account Details"
           propertyItems={accountInfo}
@@ -246,7 +246,7 @@ const SecurityDashboard = () => {
   return (
     <Grid container spacing={3}>
       {/* Security metrics */}
-      <Grid item xs={12} sm={6} md={3}>
+      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
         <CippInfoCard
           label="Security Score"
           value={securityData?.securityScore || 0}
@@ -255,7 +255,7 @@ const SecurityDashboard = () => {
         />
       </Grid>
 
-      <Grid item xs={12} sm={6} md={3}>
+      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
         <CippInfoCard
           label="Active Threats"
           value={threats.length}
@@ -267,7 +267,7 @@ const SecurityDashboard = () => {
       </Grid>
 
       {/* Threat analysis chart */}
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <CippChartCard
           title="Threat Trends"
           data={securityData?.threatTrends || []}
@@ -282,14 +282,14 @@ const SecurityDashboard = () => {
       </Grid>
 
       {/* Remediation items */}
-      <Grid item xs={12}>
+      <Grid size={{ xs: 12 }}>
         <Typography variant="h6" gutterBottom>
           Security Remediations
         </Typography>
       </Grid>
 
       {remediationItems.map((item, index) => (
-        <Grid item xs={12} sm={6} md={4} key={index}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
           <CippRemediationCard
             title={item.title}
             status={item.status}
@@ -348,7 +348,7 @@ const LicenseManagement = () => {
   return (
     <Grid container spacing={3}>
       {/* License overview */}
-      <Grid item xs={12} md={8}>
+      <Grid size={{ xs: 12, md: 8 }}>
         <CippChartCard
           title="License Utilization"
           data={licenses?.utilizationChart || []}
@@ -363,7 +363,7 @@ const LicenseManagement = () => {
       </Grid>
 
       {/* License details */}
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CippPropertyListCard
           title="License Summary"
           propertyItems={[
@@ -380,7 +380,7 @@ const LicenseManagement = () => {
 
       {/* Individual license types */}
       {licenses?.licenseDetails?.map((license, index) => (
-        <Grid item xs={12} sm={6} md={4} key={index}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
           <CippPropertyListCard
             title={license.skuPartNumber}
             propertyItems={[
@@ -396,7 +396,7 @@ const LicenseManagement = () => {
       ))}
 
       {/* Quick actions */}
-      <Grid item xs={12} sm={6} md={4}>
+      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
         <CippButtonCard
           title="Bulk License Assignment"
           description="Assign licenses to multiple users"
@@ -423,7 +423,7 @@ const ResponsiveDashboard = () => {
   return (
     <Grid container spacing={isMobile ? 2 : 3}>
       {/* Full width on mobile */}
-      <Grid item xs={12}>
+      <Grid size={{ xs: 12 }}>
         <CippInfoBar 
           items={metrics}
           spacing={isMobile ? 1 : 3}
@@ -432,7 +432,7 @@ const ResponsiveDashboard = () => {
       </Grid>
 
       {/* Stack cards vertically on mobile */}
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <CippPropertyListCard
           title="Details"
           propertyItems={properties}
@@ -442,7 +442,7 @@ const ResponsiveDashboard = () => {
       </Grid>
 
       {/* Smaller chart on mobile */}
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <CippChartCard
           title="Analytics"
           data={chartData}

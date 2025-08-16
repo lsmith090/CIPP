@@ -31,7 +31,7 @@ Pre-built page layout optimized for data tables with standard elements.
 
 **Usage:**
 ```jsx
-import { CippTablePage } from '../CippComponents/CippTablePage';
+import { CippTablePage } from '/src/components/CippComponents/CippTablePage.jsx';
 
 <CippTablePage
   title="User Management"
@@ -66,7 +66,7 @@ Slide-out panel for displaying detailed information and additional actions.
 
 **Usage:**
 ```jsx
-import { CippOffCanvas } from '../CippComponents/CippOffCanvas';
+import { CippOffCanvas } from '/src/components/CippComponents/CippOffCanvas.jsx';
 
 const [offCanvasVisible, setOffCanvasVisible] = useState(false);
 const [selectedData, setSelectedData] = useState({});
@@ -167,8 +167,8 @@ Advanced confirmation dialog for API actions with form inputs, validation, and c
 
 **Basic Confirmation Dialog:**
 ```jsx
-import { CippApiDialog } from '../../../src/components/CippComponents/CippApiDialog';
-import { useDialog } from '../../../src/hooks/use-dialog';
+import { CippApiDialog } from '/src/components/CippComponents/CippApiDialog.jsx';
+import { useDialog } from '/src/hooks/use-dialog.js';
 
 const MyComponent = () => {
   const createDialog = useDialog();
@@ -311,7 +311,7 @@ Global tenant selection component for multi-tenant operations.
 
 **Usage:**
 ```jsx
-import { CippTenantSelector } from '../CippComponents/CippTenantSelector';
+import { CippTenantSelector } from '/src/components/CippComponents/CippTenantSelector.jsx';
 
 const [selectedTenant, setSelectedTenant] = useState('');
 
@@ -336,8 +336,8 @@ Component for displaying API operation results with success/error states.
 
 **Usage:**
 ```jsx
-import { CippApiResults } from '../CippComponents/CippApiResults';
-import { ApiPostCall } from '../../api/ApiCall';
+import { CippApiResults } from '/src/components/CippComponents/CippApiResults.jsx';
+import { ApiPostCall } from '/src/api/ApiCall.jsx';
 
 const MyComponent = () => {
   const postCall = ApiPostCall({
@@ -375,7 +375,7 @@ Page head component for managing document title and metadata.
 
 **Usage:**
 ```jsx
-import { CippHead } from '../CippComponents/CippHead';
+import { CippHead } from '/src/components/CippComponents/CippHead.jsx';
 
 <CippHead 
   title="User Management"
@@ -398,7 +398,7 @@ Tenant selection component specifically for forms.
 
 **Usage:**
 ```jsx
-import { CippFormTenantSelector } from '../CippComponents/CippFormTenantSelector';
+import { CippFormTenantSelector } from '/src/components/CippComponents/CippFormTenantSelector.jsx';
 
 <CippFormTenantSelector
   name="targetTenant"
@@ -421,7 +421,7 @@ User selection component with search and filtering.
 
 **Usage:**
 ```jsx
-import { CippFormUserSelector } from '../CippComponents/CippFormUserSelector';
+import { CippFormUserSelector } from '/src/components/CippComponents/CippFormUserSelector.jsx';
 
 <CippFormUserSelector
   name="assignedUsers"
@@ -445,7 +445,7 @@ Group selection component with type filtering.
 
 **Usage:**
 ```jsx
-import { CippFormGroupSelector } from '../CippComponents/CippFormGroupSelector';
+import { CippFormGroupSelector } from '/src/components/CippComponents/CippFormGroupSelector.jsx';
 
 <CippFormGroupSelector
   name="memberOf"
@@ -466,7 +466,7 @@ Relative time display component with automatic updates.
 
 **Usage:**
 ```jsx
-import { CippTimeAgo } from '../CippComponents/CippTimeAgo';
+import { CippTimeAgo } from '/src/components/CippComponents/CippTimeAgo.jsx';
 
 <CippTimeAgo 
   date={user.lastSignInDateTime}
@@ -504,7 +504,7 @@ Advanced code display component with syntax highlighting, editing capabilities, 
 
 **Basic Syntax Highlighting:**
 ```jsx
-import { CippCodeBlock } from '../CippComponents/CippCodeBlock';
+import { CippCodeBlock } from '/src/components/CippComponents/CippCodeBlock.jsx';
 
 const jsonData = {
   "user": "john.doe@example.com",
@@ -551,7 +551,7 @@ Copy-to-clipboard functionality with visual feedback.
 
 **Usage:**
 ```jsx
-import { CippCopyToClipBoard } from '../CippComponents/CippCopyToClipboard';
+import { CippCopyToClipBoard } from '/src/components/CippComponents/CippCopyToClipboard.jsx';
 
 // Button type
 <CippCopyToClipBoard
@@ -578,7 +578,7 @@ File upload component with drag-and-drop functionality.
 
 **Usage:**
 ```jsx
-import { CippDropzone } from '../CippComponents/CippDropzone';
+import { CippDropzone } from '/src/components/CippComponents/CippDropzone.jsx';
 
 const handleFileDrop = (acceptedFiles) => {
   console.log('Uploaded files:', acceptedFiles);
@@ -615,7 +615,7 @@ Enhanced autocomplete component with API integration.
 
 **Usage:**
 ```jsx
-import { CippAutocomplete } from '../CippComponents/CippAutocomplete';
+import { CippAutocomplete } from '/src/components/CippComponents/CippAutocomplete.jsx';
 
 // Static options
 const departments = [
@@ -657,7 +657,7 @@ Button component for exporting table data to CSV format.
 
 **Usage:**
 ```jsx
-import { CippCsvExportButton } from '../CippComponents/CippCsvExportButton';
+import { CippCsvExportButton } from '/src/components/CippComponents/CippCsvExportButton.jsx';
 
 <CippCsvExportButton
   data={tableData}
@@ -683,7 +683,7 @@ Reusable dialog wrapper for components.
 
 **Usage:**
 ```jsx
-import { CippComponentDialog } from '../CippComponents/CippComponentDialog';
+import { CippComponentDialog } from '/src/components/CippComponents/CippComponentDialog.jsx';
 
 <CippComponentDialog
   open={dialogOpen}
@@ -713,7 +713,7 @@ Dialog specifically for displaying table data.
 
 **Usage:**
 ```jsx
-import { CippTableDialog } from '../CippComponents/CippTableDialog';
+import { CippTableDialog } from '/src/components/CippComponents/CippTableDialog.jsx';
 
 <CippTableDialog
   open={tableDialogOpen}
@@ -747,7 +747,7 @@ Floating action button with expandable options.
 
 **Usage:**
 ```jsx
-import { CippSpeedDial } from '../CippComponents/CippSpeedDial';
+import { CippSpeedDial } from '/src/components/CippComponents/CippSpeedDial.jsx';
 
 const speedDialActions = [
   {
@@ -777,8 +777,8 @@ Basic list container for property display components.
 
 **Usage:**
 ```jsx
-import { PropertyList } from '../property-list';
-import { PropertyListItem } from '../property-list-item';
+import { PropertyList } from '/src/components/property-list.js';
+import { PropertyListItem } from '/src/components/property-list-item.js';
 
 <PropertyList>
   <PropertyListItem label="Name" value={user.displayName} />
@@ -794,8 +794,8 @@ List container for action items with standardized styling.
 
 **Usage:**
 ```jsx
-import { ActionList } from '../action-list';
-import { ActionListItem } from '../action-list-item';
+import { ActionList } from '/src/components/action-list.js';
+import { ActionListItem } from '/src/components/action-list-item.js';
 
 <ActionList>
   <ActionListItem 

@@ -92,21 +92,21 @@ Seamless backend integration:
 
 ### Dashboard Pattern
 ```jsx
-import { Grid, Container } from '@mui/material';
-import { CippInfoBar } from '../../src/components/CippCards/CippInfoBar';
-import { CippChartCard } from '../../src/components/CippCards/CippChartCard';
-import { CippPropertyListCard } from '../../src/components/CippCards/CippPropertyListCard';
+import { Grid, Container } from '@mui/system';
+import { CippInfoBar } from '/src/components/CippCards/CippInfoBar.jsx';
+import { CippChartCard } from '/src/components/CippCards/CippChartCard.jsx';
+import { CippPropertyListCard } from '/src/components/CippCards/CippPropertyListCard.jsx';
 
 const Dashboard = () => (
   <Container maxWidth="xl">
     <Grid container spacing={3}>
-      <Grid item xs={12}>
+      <Grid size={{ xs: 12 }}>
         <CippInfoBar items={metrics} />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <CippChartCard title="Usage Chart" chartSeries={chartData} />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <CippPropertyListCard title="Details" propertyItems={properties} />
       </Grid>
     </Grid>
@@ -116,7 +116,7 @@ const Dashboard = () => (
 
 ### Table Pattern
 ```jsx
-import { CippTablePage } from '../../src/components/CippComponents/CippTablePage';
+import { CippTablePage } from '/src/components/CippComponents/CippTablePage.jsx';
 
 const UsersTable = () => (
   <CippTablePage
@@ -131,8 +131,8 @@ const UsersTable = () => (
 
 ### Form Pattern
 ```jsx
-import { CippFormPage } from '../../src/components/CippFormPages/CippFormPage';
-import { CippFormComponent } from '../../src/components/CippComponents/CippFormComponent';
+import { CippFormPage } from '/src/components/CippFormPages/CippFormPage.jsx';
+import { CippFormComponent } from '/src/components/CippComponents/CippFormComponent.jsx';
 import { useForm } from 'react-hook-form';
 
 const AddUser = () => {
@@ -178,7 +178,7 @@ const AddUser = () => {
 
 ### Wizard Pattern
 ```jsx
-import { CippWizard } from '../../src/components/CippWizard/CippWizard';
+import { CippWizard } from '/src/components/CippWizard/CippWizard.jsx';
 
 const SetupWizard = () => (
   <CippWizard
@@ -214,7 +214,7 @@ const MyComponent = () => {
 ```jsx
 // Use Material-UI Grid system
 <Grid container spacing={3}>
-  <Grid item xs={12} md={6} lg={4}>
+  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
     <CippInfoCard />
   </Grid>
 </Grid>
@@ -248,7 +248,7 @@ sx={{
 
 ### React Query Integration
 ```jsx
-import { ApiGetCall } from '../../src/api/ApiCall';
+import { ApiGetCall } from '/src/api/ApiCall.jsx';
 
 const MyComponent = () => {
   const { data, isLoading, error } = ApiGetCall({
@@ -265,7 +265,7 @@ const MyComponent = () => {
 
 ### Tenant-Aware Queries
 ```jsx
-import { useSettings } from '../../src/hooks/use-settings';
+import { useSettings } from '/src/hooks/use-settings.js';
 
 const TenantDataComponent = () => {
   const { currentTenant } = useSettings();

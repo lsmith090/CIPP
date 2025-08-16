@@ -56,7 +56,7 @@ const UserInfoStep = ({ formControl, title, onNextStep, onPreviousStep, currentS
       helpText="This information will be used to create the user account and set up their profile"
     >
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="textField"
             name="firstName"
@@ -66,7 +66,7 @@ const UserInfoStep = ({ formControl, title, onNextStep, onPreviousStep, currentS
             fullWidth
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="textField"
             name="lastName"
@@ -76,7 +76,7 @@ const UserInfoStep = ({ formControl, title, onNextStep, onPreviousStep, currentS
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="emailField"
             name="email"
@@ -93,7 +93,7 @@ const UserInfoStep = ({ formControl, title, onNextStep, onPreviousStep, currentS
             helperText="This will be the user's primary email address"
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="select"
             name="department"
@@ -104,7 +104,7 @@ const UserInfoStep = ({ formControl, title, onNextStep, onPreviousStep, currentS
             fullWidth
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="textField"
             name="jobTitle"
@@ -114,7 +114,7 @@ const UserInfoStep = ({ formControl, title, onNextStep, onPreviousStep, currentS
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="textFieldMultiline"
             name="notes"
@@ -146,7 +146,7 @@ const AccessRightsStep = ({ formControl, title, onNextStep, onPreviousStep, curr
       subtitle="Configure user access rights and permissions"
     >
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="select"
             name="userType"
@@ -164,7 +164,7 @@ const AccessRightsStep = ({ formControl, title, onNextStep, onPreviousStep, curr
         </Grid>
 
         {userType === 'employee' && (
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <CippFormUserSelector
               name="manager"
               label="Manager"
@@ -175,7 +175,7 @@ const AccessRightsStep = ({ formControl, title, onNextStep, onPreviousStep, curr
           </Grid>
         )}
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippFormLicenseSelector
             name="licenses"
             label="License Assignment"
@@ -185,7 +185,7 @@ const AccessRightsStep = ({ formControl, title, onNextStep, onPreviousStep, curr
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippFormGroupSelector
             name="groups"
             label="Group Membership"
@@ -196,7 +196,7 @@ const AccessRightsStep = ({ formControl, title, onNextStep, onPreviousStep, curr
         </Grid>
 
         {(userType === 'contractor' || userType === 'partner') && (
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Alert severity="info">
               External users will have limited access and require manager approval for certain actions.
             </Alert>
@@ -224,7 +224,7 @@ const SecuritySettingsStep = ({ formControl, title, onNextStep, onPreviousStep, 
       subtitle="Configure security settings and access duration"
     >
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <FormControlLabel
             control={
               <CippFormComponent
@@ -241,7 +241,7 @@ const SecuritySettingsStep = ({ formControl, title, onNextStep, onPreviousStep, 
         </Grid>
 
         {mfaRequired && (
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <CippFormComponent
               type="select"
               name="mfaMethod"
@@ -257,7 +257,7 @@ const SecuritySettingsStep = ({ formControl, title, onNextStep, onPreviousStep, 
           </Grid>
         )}
 
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CippFormComponent
             type="datePicker"
             name="startDate"
@@ -270,7 +270,7 @@ const SecuritySettingsStep = ({ formControl, title, onNextStep, onPreviousStep, 
         </Grid>
 
         {(userType === 'contractor' || userType === 'partner') && (
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <CippFormComponent
               type="datePicker"
               name="endDate"
@@ -283,7 +283,7 @@ const SecuritySettingsStep = ({ formControl, title, onNextStep, onPreviousStep, 
           </Grid>
         )}
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="switch"
             name="mustChangePassword"
@@ -292,7 +292,7 @@ const SecuritySettingsStep = ({ formControl, title, onNextStep, onPreviousStep, 
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <CippFormComponent
             type="switch"
             name="sendWelcomeEmail"
@@ -357,7 +357,7 @@ const ReviewStep = ({ formControl, onPreviousStep, currentStep, onComplete, isSu
             <CardContent>
               <Grid container spacing={2}>
                 {section.data.map((item, itemIndex) => (
-                  <Grid item xs={12} md={6} key={itemIndex}>
+                  <Grid size={{ xs: 12, md: 6 }} key={itemIndex}>
                     <Typography variant="subtitle2" color="text.secondary">
                       {item.label}
                     </Typography>
@@ -510,7 +510,7 @@ const TenantSetupWizard = () => {
         loading={isLoading}
       >
         <Grid container spacing={3}>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <CippFormTenantSelector
               name="targetTenants"
               label="Target Tenants"
@@ -519,7 +519,7 @@ const TenantSetupWizard = () => {
               required
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -579,7 +579,7 @@ const TenantSetupWizard = () => {
       >
         <Grid container spacing={3}>
           {setupOptions.map((option) => (
-            <Grid item xs={12} md={4} key={option.value}>
+            <Grid size={{ xs: 12, md: 4 }} key={option.value}>
               <Card
                 sx={{
                   cursor: 'pointer',
@@ -645,7 +645,7 @@ const TenantSetupWizard = () => {
             <CardHeader title="Password Policy" />
             <CardContent>
               <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <CippFormComponent
                     type="numberField"
                     name="passwordPolicy.minimumLength"
@@ -656,7 +656,7 @@ const TenantSetupWizard = () => {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <CippFormComponent
                     type="numberField"
                     name="passwordPolicy.passwordHistory"
@@ -667,7 +667,7 @@ const TenantSetupWizard = () => {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid size={{ xs: 12, md: 3 }}>
                   <CippFormComponent
                     type="switch"
                     name="passwordPolicy.requireUppercase"
@@ -675,7 +675,7 @@ const TenantSetupWizard = () => {
                     formControl={formControl}
                   />
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid size={{ xs: 12, md: 3 }}>
                   <CippFormComponent
                     type="switch"
                     name="passwordPolicy.requireLowercase"
@@ -683,7 +683,7 @@ const TenantSetupWizard = () => {
                     formControl={formControl}
                   />
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid size={{ xs: 12, md: 3 }}>
                   <CippFormComponent
                     type="switch"
                     name="passwordPolicy.requireNumbers"
@@ -691,7 +691,7 @@ const TenantSetupWizard = () => {
                     formControl={formControl}
                   />
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid size={{ xs: 12, md: 3 }}>
                   <CippFormComponent
                     type="switch"
                     name="passwordPolicy.requireSymbols"
@@ -708,7 +708,7 @@ const TenantSetupWizard = () => {
             <CardHeader title="Multi-Factor Authentication" />
             <CardContent>
               <Grid container spacing={3}>
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="switch"
                     name="mfaSettings.enableMFA"
@@ -716,7 +716,7 @@ const TenantSetupWizard = () => {
                     formControl={formControl}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <CippFormComponent
                     type="select"
                     name="mfaSettings.allowedMethods"
@@ -732,7 +732,7 @@ const TenantSetupWizard = () => {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <CippFormComponent
                     type="numberField"
                     name="mfaSettings.rememberDeviceDays"
@@ -898,19 +898,19 @@ const TenantSetupWizard = () => {
             <CardHeader title="Configuration Summary" />
             <CardContent>
               <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Typography variant="subtitle2">Setup Type</Typography>
                   <Typography variant="body2" sx={{ mb: 2 }}>
                     {formData.setupType}
                   </Typography>
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Typography variant="subtitle2">Target Tenants</Typography>
                   <Typography variant="body2" sx={{ mb: 2 }}>
                     {formData.targetTenants?.length || 0} tenants selected
                   </Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                   <Typography variant="subtitle2">Enabled Features</Typography>
                   <List dense>
                     {formData.passwordPolicy && (

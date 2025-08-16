@@ -328,21 +328,21 @@ const CippDashboard = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CippInfoCard
           label="Users"
           value={usersQuery.data?.count}
           isLoading={usersQuery.isLoading}
         />
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CippInfoCard
           label="Tenants"
           value={tenantsQuery.data?.count}
           isLoading={tenantsQuery.isLoading}
         />
       </Grid>
-      <Grid item xs={12} md={8}>
+      <Grid size={{ xs: 12, md: 8 }}>
         <CippAlertsList
           alerts={alertsQuery.data}
           isLoading={alertsQuery.isLoading}

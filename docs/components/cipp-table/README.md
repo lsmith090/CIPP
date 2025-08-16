@@ -128,7 +128,7 @@ actions: [
 
 **Usage:**
 ```jsx
-import { CippDataTable } from '../CippTable/CippDataTable';
+import { CippDataTable } from '/src/components/CippTable/CippDataTable.js';
 
 <CippDataTable
   queryKey="users-list"
@@ -173,7 +173,7 @@ Pre-configured page layout with table and standard elements.
 
 **Usage:**
 ```jsx
-import { CippTablePage } from '../CippComponents/CippTablePage';
+import { CippTablePage } from '/src/components/CippComponents/CippTablePage.jsx';
 
 <CippTablePage
   title="User Management"
@@ -213,7 +213,7 @@ Custom button component for table toolbars.
 
 **Usage:**
 ```jsx
-import { CippDataTableButton } from '../CippTable/CippDataTableButton';
+import { CippDataTableButton } from '/src/components/CippTable/CippDataTableButton.jsx';
 
 <CippDataTableButton
   variant="contained"
