@@ -1,227 +1,161 @@
-# Architecture Overview
+# CIPP Project Overview
 
-This document provides a comprehensive overview of the CIPP frontend architecture, technology choices, and key design patterns.
+Welcome to CIPP! This document introduces you to the project and helps you understand what it is, how it works, and how you can contribute.
 
-## Application Overview
+## What is CIPP?
 
-CIPP (CyberDrain Improved Partner Portal) is a sophisticated Microsoft 365 partner management platform built with modern web technologies. The frontend serves as a comprehensive dashboard for managing multiple Microsoft 365 tenants, providing tools for administration, monitoring, and automation.
+**CIPP (CyberDrain Improved Partner Portal)** is a powerful, open-source Microsoft 365 partner management platform that simplifies the complexity of managing multiple Microsoft 365 tenants from a single, unified interface.
 
-## Technology Stack
+### The Problem CIPP Solves
 
-### Core Framework
-- **Next.js 15+** - React-based framework with file-based routing, static site generation, and API routes
-- **React 19** - Component-based UI library with latest features including concurrent rendering
-- **JavaScript/JSX** - ES6+ JavaScript with JSX for React components
+Microsoft 365 partners and MSPs face significant challenges:
+- **Tenant fragmentation**: Managing dozens or hundreds of separate Microsoft 365 tenants
+- **Repetitive tasks**: Performing the same administrative actions across multiple environments
+- **Inconsistent configurations**: Ensuring security and compliance standards across all tenants
+- **Limited visibility**: Getting consolidated reports and insights across the entire partner ecosystem
 
-### UI and Styling
-- **Material-UI (MUI) v6+** - Comprehensive React component library
-  - Custom theming with light/dark mode support
-  - Responsive design system
-  - Accessibility-first components
-- **Emotion** - CSS-in-JS styling solution for component styling
-- **ApexCharts** - Interactive charts and data visualizations
+### The CIPP Solution
 
-### State Management
-- **Redux Toolkit** - Predictable state container with modern Redux patterns
-- **Redux Persist** - State persistence across browser sessions
-- **TanStack Query (React Query) v5** - Server state management with caching
-  - localStorage persistence for offline support
-  - Automatic background refetching
-  - Optimistic updates
+CIPP provides a centralized platform that enables:
+- **Unified management**: Single dashboard for all your Microsoft 365 tenants
+- **Automation**: Standardize configurations and automate routine tasks
+- **Monitoring**: Real-time insights into security, compliance, and performance
+- **Efficiency**: Reduce administrative overhead and human error
 
-### Forms and Validation
-- **React Hook Form** - Modern form library (preferred for new development)
-- **Yup** - Schema-based form validation
-- **Formik** - Primary form library for complex forms (legacy)
+## Who Uses CIPP?
 
-### Data Fetching and API
-- **Axios** - HTTP client for API requests
-- **Custom API utilities** - Standardized API call patterns
-- **SWR-like patterns** - Via TanStack Query for data synchronization
+- **Microsoft 365 Partners**: Organizations managing multiple customer tenants
+- **Managed Service Providers (MSPs)**: Companies providing IT services to multiple clients
+- **IT Administrators**: Teams responsible for large-scale Microsoft 365 deployments
+- **Security Teams**: Organizations focused on maintaining consistent security posture
 
-### Development and Build Tools
-- **ESLint** - Code linting and quality enforcement
-- **Webpack** (via Next.js) - Module bundling and optimization
-- **Babel** (via Next.js) - JavaScript transpilation
+## How CIPP Works
 
-## Architecture Patterns
+CIPP consists of two main components working together:
 
-### Component-Based Architecture
+### 1. **CIPP Frontend** (This Repository)
+- **Modern web application** built with Next.js and React
+- **User interface** for managing tenants, users, and configurations
+- **Dashboard and reporting** for monitoring and analytics
+- **Responsive design** that works on desktop and mobile devices
 
-The application follows a modular component architecture with clear separation of concerns:
+### 2. **CIPP-API Backend** (Separate Repository)
+- **PowerShell-based API** running on Azure Functions
+- **Microsoft Graph integration** for interacting with Microsoft 365 services
+- **Automation engine** for executing tasks across multiple tenants
+- **Data storage** and caching for performance
+
+### Key Features
+
+- **Multi-tenant management**: Switch between and manage multiple Microsoft 365 tenants
+- **User and group administration**: Create, modify, and manage users and groups across tenants
+- **Security monitoring**: Track security alerts, compliance status, and policy violations
+- **Automated standards**: Apply and maintain consistent security and configuration standards
+- **Reporting and analytics**: Generate reports on usage, security, and compliance
+- **Extension system**: Add custom functionality through extensions
+
+## Technology Overview
+
+CIPP uses modern, well-established technologies that make it reliable and maintainable:
+
+### Frontend Technologies
+- **Next.js 15+**: React framework providing routing, optimization, and deployment features
+- **React 19**: Modern component-based UI library
+- **Material-UI v6+**: Professional component library with consistent design
+- **TanStack Query**: Efficient data fetching and caching
+- **Redux Toolkit**: Predictable state management
+
+### Integration and APIs
+- **Microsoft Graph API**: Direct integration with Microsoft 365 services
+- **Azure Active Directory**: Authentication and authorization
+- **PowerShell API**: Backend services for automation and management
+
+## Project Structure Overview
+
+CIPP follows a well-organized structure that makes it easy to find and understand different parts of the application:
 
 ```
-src/
-├── components/           # Reusable UI components
-│   ├── CippCards/       # Dashboard and info cards
-│   ├── CippTable/       # Data table components
-│   ├── CippFormPages/   # Form-based page components
-│   ├── CippWizard/      # Multi-step workflow components
-│   └── CippComponents/  # General utility components
-├── pages/               # Next.js pages and routes
-├── hooks/               # Custom React hooks
-├── utils/               # Utility functions
-├── store/               # Redux store configuration
-└── theme/               # Material-UI theme customization
+CIPP/
+├── src/                 # All source code
+│   ├── components/      # Reusable UI components (buttons, tables, forms)
+│   ├── pages/          # Application pages and routing
+│   ├── hooks/          # Custom React hooks for common functionality
+│   ├── api/            # API integration and data fetching
+│   ├── store/          # Application state management
+│   └── theme/          # Styling and visual design
+├── docs/               # Documentation (including this file!)
+├── public/             # Static assets (images, icons)
+└── deployment/         # Deployment configuration
 ```
 
-### Page Patterns
+### Key Component Categories
 
-CIPP implements consistent page patterns for different use cases:
+CIPP organizes its components into logical categories:
 
-1. **Table Pages (CippTablePage)**
-   - Data listing with pagination, filtering, and sorting
-   - Bulk actions and individual row actions
-   - Export capabilities (CSV, PDF)
-   - Real-time data updates
+- **CippTable**: Data tables for listing and managing resources (users, groups, etc.)
+- **CippCards**: Dashboard cards for displaying metrics and information
+- **CippFormPages**: Form components for creating and editing data
+- **CippWizard**: Multi-step workflows for complex operations
+- **CippComponents**: General utility components used throughout the app
 
-2. **Form Pages (CippFormPage)**
-   - Add/edit operations with validation
-   - Conditional field rendering
-   - Auto-save and draft support
-   - Success/error feedback
+## Getting Started as a Contributor
 
-3. **Wizard Pages (CippWizard)**
-   - Multi-step processes with validation
-   - Progress tracking and navigation
-   - Step completion validation
-   - Summary and confirmation steps
+### 1. **First Steps**
+- Read this overview to understand the project
+- Follow the [Development Setup Guide](./development-setup.md) to get your environment ready
+- Review the [Project Structure](./project-structure.md) for detailed organization
 
-4. **Dashboard Pages**
-   - Card-based layouts with metrics
-   - Interactive charts and graphs
-   - Real-time status indicators
-   - Customizable layouts
+### 2. **Types of Contributions**
+- **Frontend development**: Improve UI components, add new features, fix bugs
+- **Documentation**: Help improve guides, add examples, clarify instructions
+- **Testing**: Add test coverage, improve quality assurance
+- **Design**: Enhance user experience and visual design
 
-### State Management Strategy
+### 3. **Finding Your First Task**
+- Look for issues labeled "good first issue" in the GitHub repository
+- Check the documentation for areas marked "needs improvement"
+- Explore the codebase to familiarize yourself with patterns
+- Ask questions in the community discussions
 
-The application uses a hybrid state management approach:
+## Learning Path for New Developers
 
-#### Global State (Redux)
-- User authentication and profile
-- Tenant selection and context
-- Application settings and preferences
-- UI state (theme, sidebar state)
+### If you're new to React/Next.js:
+1. Complete the [React Tutorial](https://react.dev/learn)
+2. Learn [Next.js basics](https://nextjs.org/learn)
+3. Understand [Material-UI components](https://mui.com/getting-started/usage/)
 
-#### Server State (TanStack Query)
-- API data caching and synchronization
-- Background refetching and updates
-- Optimistic mutations
-- Error handling and retry logic
+### If you're experienced with React:
+1. Review the component patterns in `src/components/`
+2. Understand the API integration in `src/api/`
+3. Explore the routing structure in `src/pages/`
 
-#### Local State (React useState/useReducer)
-- Component-specific UI state
-- Form state (via React Hook Form)
-- Temporary interactions and animations
+### If you want to contribute to documentation:
+1. Read existing documentation for style and tone
+2. Look for missing or outdated information
+3. Consider user experience and clarity
 
-### Authentication and Authorization
+## Security and Best Practices
 
-#### Azure AD Integration
-- **Azure Static Web Apps Authentication** - Seamless Azure AD integration
-- **JWT Token Management** - Automatic token refresh and validation
-- **Role-Based Access Control (RBAC)** - Granular permission system
+As a Microsoft 365 partner management platform, CIPP takes security seriously:
 
-#### Multi-Tenant Support
-- **Tenant Context** - Global tenant selection and switching
-- **GDAP (Granular Delegated Admin Privileges)** - Partner-tenant relationship management
-- **Tenant Isolation** - Data segregation and security
+- **Authentication**: Azure AD integration with role-based access control
+- **Data protection**: All communications use HTTPS and follow security best practices
+- **Permission isolation**: Each tenant's data is properly isolated and protected
+- **Code review**: All contributions go through review process
 
-### API Integration Patterns
+## Community and Support
 
-#### Standardized API Calls
-```javascript
-// GET requests with caching
-const { data, isLoading, error } = ApiGetCall({
-  url: '/api/listUsers',
-  queryKey: ['users', tenantId],
-  data: { tenantFilter: tenantId }
-});
+- **GitHub Repository**: Main hub for code, issues, and discussions
+- **Documentation**: Comprehensive guides and API documentation
+- **Community**: Active community of developers and users
 
-// POST requests with optimistic updates
-const mutation = ApiPostCall({
-  relatedQueryKeys: ['users'],
-  onSuccess: () => showSuccess('User created successfully')
-});
-```
+## Next Steps
 
-#### Error Handling
-- Centralized error handling and user feedback
-- Automatic retry mechanisms for transient failures
-- Graceful degradation for offline scenarios
+Ready to dive deeper? Here's where to go next:
 
-### Performance Optimization
+1. **[Development Setup Guide](./development-setup.md)** - Set up your development environment
+2. **[Project Structure](./project-structure.md)** - Understand the codebase organization
+3. **Component Documentation** - Learn about specific component libraries
+4. **Contributing Guidelines** - Learn the contribution workflow
 
-#### Code Splitting
-- Page-level code splitting via Next.js dynamic imports
-- Component-level lazy loading for heavy components
-- Bundle analysis and optimization
-
-#### Data Loading
-- Prefetching for anticipated user actions
-- Background data updates without UI blocking
-- Pagination and virtualization for large datasets
-
-#### Caching Strategy
-- Memory caching via TanStack Query
-- LocalStorage persistence for offline support
-- Strategic cache invalidation
-
-## Security Considerations
-
-### Data Protection
-- Client-side input validation and sanitization
-- HTTPS enforcement for all communications
-- Sensitive data encryption in transit and at rest
-
-### Authentication Security
-- Token-based authentication with short expiration
-- Automatic logout on token expiration
-- Secure token storage practices
-
-### Permission System
-- Role-based access control at component level
-- API-level permission validation
-- Tenant-specific permission isolation
-
-## Scalability and Maintainability
-
-### Code Organization
-- Modular component architecture
-- Clear separation of concerns
-- Consistent naming conventions
-- Comprehensive type definitions
-
-### Documentation
-- Component documentation with examples
-- API documentation with TypeScript types
-- Architecture decision records (ADRs)
-
-## Development Workflow
-
-### Local Development
-1. **Development Server** - Hot reloading with Next.js dev server
-2. **API Mocking** - Local API development with Azure Functions emulation
-3. **State Debugging** - Redux DevTools and React Query DevTools
-4. **Type Checking** - Real-time TypeScript validation
-
-### Build and Deployment
-1. **Static Generation** - Next.js static export for Azure Static Web Apps
-2. **Bundle Optimization** - Automatic code splitting and minification
-3. **Asset Optimization** - Image optimization and lazy loading
-4. **Progressive Web App** - Service worker for offline functionality
-
-## Integration Points
-
-### Backend Integration (CIPP-API)
-- PowerShell-based Azure Functions API
-- Microsoft Graph API integration
-- Azure resource management
-- Automated workflow orchestration
-
-### External Services
-- **Microsoft 365 Services** - Graph API, Exchange Online, SharePoint
-- **Security Services** - Azure Security Center, Defender
-- **Monitoring Services** - Application Insights, Azure Monitor
-- **Third-party Integrations** - PSA tools, RMM platforms
-
-This architecture provides a robust, scalable, and maintainable foundation for the CIPP frontend application, enabling efficient management of Microsoft 365 environments at scale.
+Welcome to the CIPP community! We're excited to have you contribute to making Microsoft 365 partner management more efficient and accessible.

@@ -1,6 +1,24 @@
 # Project Structure
 
-This document provides a comprehensive overview of the CIPP frontend project structure, explaining the purpose and organization of each directory and key files.
+This guide helps you understand how the CIPP frontend is organized, where to find different types of code, and where to start when you want to make changes or contributions.
+
+## Quick Navigation
+
+**Looking for something specific?**
+- **🎨 UI Components**: [`src/components/`](#component-library-srccomponents)
+- **📄 Pages and Routes**: [`src/pages/`](#page-structure-srcpages)
+- **🔌 API Integration**: [`src/api/`](#api-layer-srcapi)
+- **⚙️ Configuration**: [Root directory files](#configuration-files)
+- **📚 Documentation**: [`docs/`](#documentation)
+
+## For New Contributors
+
+**If you want to:**
+- **Add a new page**: Start with `src/pages/` and follow existing patterns
+- **Create UI components**: Look at `src/components/` for examples and patterns
+- **Fix bugs**: Search the relevant component category based on the feature
+- **Improve documentation**: Check `docs/` directory
+- **Understand data flow**: Review `src/api/` and `src/store/`
 
 ## Root Directory Structure
 
@@ -88,6 +106,8 @@ CippCards/
 
 **Usage**: Dashboard components for displaying metrics, status, and interactive elements.
 
+**👋 New to components?** Start with `CippInfoCard` for simple information display or `CippButtonCard` for interactive dashboard elements.
+
 #### CippTable Components
 ```
 CippTable/
@@ -100,6 +120,8 @@ CippTable/
 ```
 
 **Usage**: Comprehensive data table solution with pagination, filtering, sorting, and actions.
+
+**🔍 Working with tables?** `CippDataTable` is the main component - check existing pages for implementation examples.
 
 #### CippFormPages Components
 ```
@@ -114,6 +136,8 @@ CippFormPages/
 
 **Usage**: Standardized form pages with validation, error handling, and submission workflows.
 
+**📝 Building forms?** Start with `CippFormPage` as your wrapper and `CippFormSection` to organize fields.
+
 #### CippWizard Components
 ```
 CippWizard/
@@ -126,9 +150,13 @@ CippWizard/
 
 **Usage**: Multi-step processes with validation, progress tracking, and state management.
 
+**🧙‍♂️ Creating wizards?** Use `CippWizard` for the container and `CippWizardPage` for each step. Check existing wizards for patterns.
+
 ### Page Structure (`src/pages/`)
 
 Next.js file-based routing with domain-organized pages:
+
+**💡 Understanding routing**: File structure = URL structure. `pages/email/administration/users.js` becomes `/email/administration/users`
 
 ```
 pages/
@@ -361,5 +389,51 @@ import { useQuery } from '@tanstack/react-query';
 2. **Reusability**: Shared components in `/components`, page-specific in `/sections`
 3. **Size Consideration**: Large components get their own directories
 4. **Domain Separation**: Business logic components separated by domain
+
+## Getting Started with Common Tasks
+
+### Adding a New Page
+1. **Choose the right directory**: Place it in the appropriate domain folder in `src/pages/`
+2. **Follow naming conventions**: Use kebab-case for file names
+3. **Use existing patterns**: Copy a similar page as a starting point
+4. **Check navigation**: Update `src/layouts/side-nav.js` if needed
+
+### Creating a New Component
+1. **Determine component type**: Cards, Tables, Forms, or Wizards?
+2. **Choose the right location**: Domain-specific in `src/components/[Category]/`
+3. **Follow naming conventions**: PascalCase for React components
+4. **Import patterns**: Use relative imports for local files, absolute for external libraries
+
+### Modifying Existing Features
+1. **Find the page**: Use file structure to locate the main page file
+2. **Identify components**: Look for component imports to find relevant pieces
+3. **Check data flow**: Review API calls in the page or component
+4. **Test thoroughly**: Ensure changes work across different screen sizes
+
+### Working with Styles
+1. **Use MUI components**: Leverage the existing Material-UI theme
+2. **Check theme files**: Look in `src/theme/` for color and style definitions
+3. **Follow Grid patterns**: Always import Grid from `@mui/system` (see CLAUDE.md)
+4. **Responsive design**: Use MUI's responsive props for different screen sizes
+
+### Understanding Data Flow
+1. **API calls**: Start in `src/api/ApiCall.jsx` for patterns
+2. **State management**: Check `src/store/` for global state
+3. **Component state**: Look for `useState` and custom hooks in components
+4. **Data caching**: TanStack Query handles most caching automatically
+
+## Quick Reference
+
+### Most Common File Types
+- **`.jsx`**: React components (main UI building blocks)
+- **`.js`**: Utility functions, configuration, and some components
+- **`.json`**: Configuration data and static information
+
+### Key Files to Know
+- **`src/pages/_app.js`**: Application wrapper and global providers
+- **`src/layouts/side-nav.js`**: Main navigation menu
+- **`src/api/ApiCall.jsx`**: Core API integration patterns
+- **`src/theme/index.js`**: Theme configuration and customization
+- **`package.json`**: Dependencies and available npm scripts
 
 This structure provides a scalable foundation for the CIPP frontend, enabling efficient development and maintenance while maintaining clear separation of concerns.
