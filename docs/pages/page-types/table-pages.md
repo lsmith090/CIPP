@@ -11,7 +11,7 @@ The `CippTablePage` component is the foundation for all table-based pages in CIP
 ## Basic Usage
 
 ```javascript
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 
 const Page = () => {
@@ -76,13 +76,13 @@ export default Page;
 Here's the actual implementation from `/src/pages/identity/administration/users/index.js`:
 
 ```javascript
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { Send, GroupAdd, PersonAdd } from "@mui/icons-material";
 import Link from "next/link";
 import { useSettings } from "/src/hooks/use-settings.js";
 import { PermissionButton } from "../../../../utils/permissions";
-import { CippUserActions } from "/src/components/CippComponents/CippUserActions.jsx";
+import { CippUserActions } from "../../../components/CippComponents/CippUserActions.jsx";
 
 const Page = () => {
   const pageTitle = "Users";

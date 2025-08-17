@@ -260,6 +260,8 @@ For tabbed layouts, tabs are defined in `tabOptions.json` files:
 The layout integrates with the global settings context:
 
 ```javascript
+import { useSettings } from '../../../hooks/use-settings';
+
 const settings = useSettings();
 
 // Available settings
@@ -529,4 +531,4 @@ const isDark = theme.palette.mode === 'dark';
 - [Main Layout](./main-layout.md) - Detailed DashboardLayout documentation
 - [Tabbed Layouts](./tabbed-layouts.md) - HeaderedTabbedLayout and TabbedLayout
 - [Page Types](../page-types/) - How layouts work with different page patterns
-- [Routing](../routing.md) - Next.js routing integration with layouts
+- [Routing](../../guides/routing.md) - Next.js routing integration with layouts

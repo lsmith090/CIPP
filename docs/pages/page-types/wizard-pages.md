@@ -14,8 +14,8 @@ The wizard system consists of two main components:
 
 ```javascript
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
-import { CippTenantStep } from "/src/components/CippWizard/CippTenantStep.jsx";
+import CippWizardPage from "../../../components/CippWizard/CippWizardPage.jsx";
+import { CippTenantStep } from "../../../components/CippWizard/CippTenantStep.jsx";
 import { CippWizardConfirmation } from "/src/components/CippWizard/CippWizardConfirmation";
 
 const Page = () => {
@@ -90,8 +90,8 @@ Here's the actual implementation from `/src/pages/identity/administration/offboa
 ```javascript
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippWizardConfirmation } from "/src/components/CippWizard/CippWizardConfirmation";
-import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
-import { CippTenantStep } from "/src/components/CippWizard/CippTenantStep.jsx";
+import CippWizardPage from "../../../components/CippWizard/CippWizardPage.jsx";
+import { CippTenantStep } from "../../../components/CippWizard/CippTenantStep.jsx";
 import { CippWizardAutoComplete } from "../../../../components/CippWizard/CippWizardAutoComplete";
 import { CippWizardOffboarding } from "../../../../components/CippWizard/CippWizardOffboarding";
 import { useSettings } from "../../../../hooks/use-settings";

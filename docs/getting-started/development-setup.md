@@ -266,7 +266,7 @@ npm run build
 
 ### 3. Testing and Quality Assurance
 
-CIPP currently focuses on manual testing and code quality tools:
+CIPP uses manual testing and code quality tools:
 
 ```bash
 # Run ESLint to check code quality
@@ -276,12 +276,12 @@ npm run lint
 npm run lint-fix
 ```
 
-> **Note**: CIPP does not currently have automated unit or end-to-end tests configured. Testing is primarily done through:
+> **Note**: CIPP does not have automated unit or end-to-end tests configured. Testing is done through:
 > - Manual testing of features during development
 > - Code review process
 > - ESLint for code quality enforcement
 > 
-> Contributing test frameworks and test coverage would be a valuable contribution to the project!
+> The project follows manual testing practices with ESLint for code quality.
 
 ### 4. Build Verification
 

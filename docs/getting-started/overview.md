@@ -56,12 +56,12 @@ CIPP consists of two main components working together:
 
 ## Technology Overview
 
-CIPP uses modern, well-established technologies that make it reliable and maintainable:
+CIPP uses established technologies that provide reliability and maintainability:
 
 ### Frontend Technologies
-- **Next.js 15+**: React framework providing routing, optimization, and deployment features
+- **Next.js**: React framework providing routing, optimization, and deployment features
 - **React 19**: Modern component-based UI library
-- **Material-UI v6+**: Professional component library with consistent design
+- **Material-UI**: Professional component library with consistent design
 - **TanStack Query**: Efficient data fetching and caching
 - **Redux Toolkit**: Predictable state management
 

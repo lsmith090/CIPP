@@ -453,7 +453,7 @@ const Page = () => {
     const interval = setInterval(() => {
       setLastUpdate(new Date());
       // Trigger refetch of critical data
-      queryClient.invalidateQueries(['dashboard-data']);
+      queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
     }, 5 * 60 * 1000);
 
     return () => clearInterval(interval);

@@ -104,7 +104,7 @@ const currentRole = ApiGetCall({
 
 ### 3. Permission System
 
-The layout implements sophisticated permission filtering:
+The layout implements permission filtering:
 
 ```javascript
 const filterItemsByRole = (items) => {
@@ -200,6 +200,8 @@ const useMobileNav = () => {
 The layout integrates with the global settings context:
 
 ```javascript
+import { useSettings } from '../../../hooks/use-settings';
+
 const settings = useSettings();
 
 // Available settings
@@ -244,6 +246,8 @@ useEffect(() => {
 The layout provides tenant context to all child pages:
 
 ```javascript
+import { useSettings } from '../../../hooks/use-settings';
+
 const { currentTenant } = useSettings();
 
 // Tenant validation for single-tenant pages

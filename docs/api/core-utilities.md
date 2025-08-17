@@ -1,6 +1,6 @@
 # CIPP Utility Functions Documentation
 
-This document provides comprehensive documentation for all utility functions used in the CIPP application. These utilities provide common functionality for data processing, formatting, validation, and various helper operations.
+This document provides documentation for all utility functions used in the CIPP application. These utilities provide common functionality for data processing, formatting, validation, and various helper operations.
 
 ## Documentation Structure
 
@@ -1122,7 +1122,7 @@ const apiDocs = getArticles(['title', 'slug', 'tags'])
 
 ## API Utilities Reference
 
-For comprehensive API interaction utilities, see the **[API Utilities Documentation](./api-utilities.md)** which covers:
+For API interaction utilities, see the **[API Utilities Documentation](./api-utilities.md)** which covers:
 
 - **ApiGetCall** - GET requests with caching and retry logic
 - **ApiPostCall** - POST/PUT/DELETE requests with mutation support  
@@ -1295,4 +1295,4 @@ const safeGetInitials = (name) => {
 };
 ```
 
-This comprehensive utility documentation provides developers with all the tools needed for consistent data processing, formatting, and manipulation throughout the CIPP application.
+This utility documentation provides developers with the tools needed for data processing, formatting, and manipulation throughout the CIPP application.

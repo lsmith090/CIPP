@@ -148,7 +148,7 @@ export const rootReducer = combineReducers({
 
 ### Toast Management
 
-The only Redux slice currently in use manages application-wide toast notifications:
+The Redux slice manages application-wide toast notifications:
 
 ```javascript
 // /src/store/toasts.js

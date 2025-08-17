@@ -99,13 +99,13 @@ src/
 
 ### File Extension Patterns
 ```
-.jsx    # React components with JSX (optional - modern React supports JSX in .js files)
+.jsx    # React components with JSX (optional - React supports JSX in .js files)
 .js     # React components, utility functions, hooks, configs
 .json   # Static data and configuration
 .md     # Documentation files
 ```
 
-**Note**: Modern React (17+) supports JSX syntax in `.js` files without requiring `.jsx` extension. CIPP uses both patterns depending on the component.
+**Note**: React supports JSX syntax in `.js` files without requiring `.jsx` extension. CIPP uses both patterns depending on the component.
 
 ## Variable and Function Naming
 

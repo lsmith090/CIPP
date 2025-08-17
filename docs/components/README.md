@@ -1,6 +1,6 @@
 # CIPP Component Library
 
-The CIPP component library provides a comprehensive set of reusable React components built on Material-UI v6+ for building Microsoft 365 partner management interfaces. All components are tenant-aware, permission-controlled, and follow consistent design patterns.
+The CIPP component library provides a comprehensive set of reusable React components built on Material-UI for building Microsoft 365 partner management interfaces. All components are tenant-aware, permission-controlled, and follow consistent design patterns.
 
 > **Architecture Overview**: For high-level architectural patterns, design principles, and integration guidelines, see the [Component Architecture](../architecture/components.md) documentation.
 
@@ -100,7 +100,7 @@ The component library is organized into five main categories, each serving speci
 
 ## Key Features
 
-### Material-UI v6+ Integration
+### Material-UI Integration
 All components use Material-UI components and theming system:
 - Consistent design tokens and spacing
 - Dark/light mode support
@@ -135,9 +135,9 @@ Seamless backend integration:
 ### Dashboard Pattern
 ```jsx
 import { Grid, Container } from '@mui/system';
-import { CippInfoBar } from '/src/components/CippCards/CippInfoBar.jsx';
-import { CippChartCard } from '/src/components/CippCards/CippChartCard.jsx';
-import { CippPropertyListCard } from '/src/components/CippCards/CippPropertyListCard.jsx';
+import { CippInfoBar } from '../components/CippCards/CippInfoBar.jsx';
+import { CippChartCard } from '../components/CippCards/CippChartCard.jsx';
+import { CippPropertyListCard } from '../components/CippCards/CippPropertyListCard.jsx';
 
 const Dashboard = () => (
   <Container maxWidth="xl">
@@ -158,7 +158,7 @@ const Dashboard = () => (
 
 ### Table Pattern
 ```jsx
-import { CippTablePage } from '/src/components/CippComponents/CippTablePage.jsx';
+import { CippTablePage } from '../components/CippComponents/CippTablePage.jsx';
 
 const UsersTable = () => (
   <CippTablePage
@@ -173,8 +173,8 @@ const UsersTable = () => (
 
 ### Form Pattern
 ```jsx
-import { CippFormPage } from '/src/components/CippFormPages/CippFormPage.jsx';
-import { CippFormComponent } from '/src/components/CippComponents/CippFormComponent.jsx';
+import { CippFormPage } from '../components/CippFormPages/CippFormPage.jsx';
+import { CippFormComponent } from '../components/CippComponents/CippFormComponent.jsx';
 import { useForm } from 'react-hook-form';
 
 const AddUser = () => {
@@ -220,7 +220,7 @@ const AddUser = () => {
 
 ### Wizard Pattern
 ```jsx
-import { CippWizard } from '/src/components/CippWizard/CippWizard.jsx';
+import { CippWizard } from '../components/CippWizard/CippWizard.jsx';
 
 const SetupWizard = () => (
   <CippWizard
@@ -290,7 +290,7 @@ sx={{
 
 ### React Query Integration
 ```jsx
-import { ApiGetCall } from '/src/api/ApiCall.jsx';
+import { ApiGetCall } from '../api/ApiCall.jsx';
 
 const MyComponent = () => {
   const { data, isLoading, error } = ApiGetCall({
@@ -307,7 +307,7 @@ const MyComponent = () => {
 
 ### Tenant-Aware Queries
 ```jsx
-import { useSettings } from '/src/hooks/use-settings.js';
+import { useSettings } from '../hooks/use-settings.js';
 
 const TenantDataComponent = () => {
   const { currentTenant } = useSettings();

@@ -46,6 +46,7 @@ Main wizard container that manages step navigation and form state.
 **Usage:**
 ```jsx
 import { CippWizard } from '/src/components/CippWizard/CippWizard.jsx';
+import { showNotification } from '../../../utils/notifications';
 
 const SetupWizard = () => {
   const wizardSteps = [
@@ -449,6 +450,8 @@ const CustomStep = ({
 
 ### Save and Resume
 ```jsx
+import { showNotification } from '../../../utils/notifications';
+
 const ResumableWizard = () => {
   const [draftId, setDraftId] = useState(null);
 
@@ -532,6 +535,8 @@ const ProgressTrackedWizard = () => {
 
 ### Multi-Tenant Wizard
 ```jsx
+import { showNotification } from '../../../utils/notifications';
+
 const MultiTenantWizard = () => {
   const [selectedTenants, setSelectedTenants] = useState([]);
 

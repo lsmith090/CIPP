@@ -13,7 +13,7 @@ Welcome to the comprehensive documentation for the CIPP (CyberDrain Improved Par
 - [Component Architecture](./architecture/components.md) - Component library organization and patterns
 - [Page Patterns](./architecture/page-patterns.md) - Common page types and their implementations
 - [State Management](./architecture/state-management.md) - Comprehensive Redux, React Query, and Context patterns
-- [Routing & Navigation](./architecture/routing.md) - Next.js routing and navigation patterns
+- [Routing & Navigation](./guides/routing.md) - Next.js routing and navigation patterns
 - [Authentication & Authorization](./architecture/auth.md) - Azure AD integration, RBAC system, and permission components
 
 ### Components Documentation
@@ -29,8 +29,6 @@ Welcome to the comprehensive documentation for the CIPP (CyberDrain Improved Par
 - [Creating Components](./guides/creating-components.md) - Component development guidelines
 - [Working with APIs](./guides/api-integration.md) - API integration patterns
 - [Styling Guidelines](./guides/styling.md) - Material-UI theming and component styling
-- [Testing Patterns](./guides/testing.md) - Testing strategies and examples
-- [Accessibility](./guides/accessibility.md) - WCAG 2.1 compliance and accessibility patterns
 - [Naming Conventions](./guides/naming-conventions.md) - Code naming standards and patterns
 - [Performance Optimization](./guides/performance.md) - React performance patterns and optimization
 
@@ -40,17 +38,15 @@ Welcome to the comprehensive documentation for the CIPP (CyberDrain Improved Par
 - [Core Utilities](./api/core-utilities.md) - Utility functions and helpers
 
 ### Deployment & Configuration
-- [Build & Deployment](./deployment/build.md) - Build process and deployment
-- [Environment Configuration](./deployment/environment.md) - Environment variables and configuration
-- [Azure Static Web Apps](./deployment/azure-swa.md) - Azure SWA specific configuration
+For deployment information, see the main CLAUDE.md file in the project root.
 
 ## Key Architecture Highlights
 
 ### Technology Stack
-- **Framework**: Next.js 15+ with React 19
-- **UI Library**: Material-UI (MUI) v6+ with custom theming
+- **Framework**: Next.js with React
+- **UI Library**: Material-UI (MUI) with custom theming
 - **State Management**: Redux Toolkit with Redux Persist
-- **Data Fetching**: TanStack Query (React Query) v5 with localStorage persistence
+- **Data Fetching**: TanStack Query (React Query) with localStorage persistence
 - **Forms**: React Hook Form with Yup validation
 - **Routing**: Next.js file-based routing
 - **Authentication**: Azure AD via Static Web Apps authentication

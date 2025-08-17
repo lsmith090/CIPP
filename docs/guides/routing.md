@@ -21,10 +21,10 @@ This comprehensive guide covers CIPP's routing architecture, implementation patt
 
 ## Architecture Overview
 
-CIPP implements a sophisticated routing system built on Next.js 15+ with the following key components:
+CIPP implements a routing system built on Next.js with the following key components:
 
 ### Core Technologies
-- **Framework**: Next.js 15+ with React 19
+- **Framework**: Next.js with React
 - **Routing**: File-based routing with custom layout composition
 - **Authentication**: Azure Static Web Apps with Azure AD
 - **State Management**: Redux Toolkit with Redux Persist
@@ -259,7 +259,7 @@ Display collections of data using `CippTablePage`:
 
 ```javascript
 // /src/pages/identity/administration/users/index.js
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { CippTablePage } from "../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 
 const UsersPage = () => {

@@ -13,7 +13,7 @@ The CIPP component library follows a modular, composable architecture designed f
 3. **Tenant-Aware**: All components handle multi-tenant context automatically
 4. **Permission-Controlled**: Role-based access control is built into component logic
 5. **API-First**: Components integrate seamlessly with the CIPP API layer
-6. **Material-UI Consistency**: All components follow Material-UI v6+ patterns and theming
+6. **Material-UI Consistency**: All components follow Material-UI patterns and theming
 
 ## Component Categories
 
@@ -166,7 +166,7 @@ Components follow consistent patterns for API integration:
 - Single Responsibility Principle: Each component serves a focused purpose
 - Composition over inheritance for flexibility and reusability
 - Consistent prop interfaces across component categories
-- Material-UI v6+ compliance for theming and responsive design
+- Material-UI compliance for theming and responsive design
 
 **Integration Standards**:
 - React Query for all data fetching and caching

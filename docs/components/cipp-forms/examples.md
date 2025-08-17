@@ -7,16 +7,17 @@ Real-world examples of using CIPP form components for various data entry and man
 Complete user creation form with validation and conditional fields:
 
 ```jsx
-import CippFormPage from '/src/components/CippFormPages/CippFormPage.jsx';
-import { CippFormSection } from '/src/components/CippFormPages/CippFormSection.jsx';
-import { CippFormComponent } from '/src/components/CippComponents/CippFormComponent.jsx';
-import { CippFormTenantSelector } from '/src/components/CippComponents/CippFormTenantSelector.jsx';
+import { Grid } from '@mui/system';
+import CippFormPage from '../../../components/CippFormPages/CippFormPage.jsx';
+import { CippFormSection } from '../../../components/CippFormPages/CippFormSection.jsx';
+import { CippFormComponent } from '../../../components/CippComponents/CippFormComponent.jsx';
+import { CippFormTenantSelector } from '../../../components/CippComponents/CippFormTenantSelector.jsx';
 import { useForm } from 'react-hook-form';
-import { getCippFormatting } from '/src/utils/get-cipp-formatting';
-import { getCippValidator } from '/src/utils/get-cipp-validator';
-import { getCippError } from '/src/utils/get-cipp-error';
-import { deepCopy } from '/src/utils/deep-copy';
-import { createResourceId } from '/src/utils/create-resource-id';
+import { getCippFormatting } from '../../../utils/get-cipp-formatting';
+import { getCippValidator } from '../../../utils/get-cipp-validator';
+import { getCippError } from '../../../utils/get-cipp-error';
+import { deepCopy } from '../../../utils/deep-copy';
+import { createResourceId } from '../../../utils/create-resource-id';
 
 const AddUserForm = () => {
   const router = useRouter();
@@ -593,13 +594,14 @@ Form with file upload and dynamic preview:
 
 ```jsx
 import { useState } from 'react';
-import { CippFormComponent } from '/src/components/CippComponents/CippFormComponent.jsx';
-import CippFormPage from '/src/components/CippFormPages/CippFormPage.jsx';
-import { getCippFormatting } from '/src/utils/get-cipp-formatting';
-import { getCippValidator } from '/src/utils/get-cipp-validator';
-import { getCippError } from '/src/utils/get-cipp-error';
-import { deepCopy } from '/src/utils/deep-copy';
-import { createResourceId } from '/src/utils/create-resource-id';
+import { Grid } from '@mui/system';
+import { CippFormComponent } from '../../../components/CippComponents/CippFormComponent.jsx';
+import CippFormPage from '../../../components/CippFormPages/CippFormPage.jsx';
+import { getCippFormatting } from '../../../utils/get-cipp-formatting';
+import { getCippValidator } from '../../../utils/get-cipp-validator';
+import { getCippError } from '../../../utils/get-cipp-error';
+import { deepCopy } from '../../../utils/deep-copy';
+import { createResourceId } from '../../../utils/create-resource-id';
 
 const BulkUserImportForm = () => {
   const [csvData, setCsvData] = useState([]);

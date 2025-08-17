@@ -1,6 +1,6 @@
 # Page Construction Patterns
 
-This documentation covers the comprehensive page construction patterns used in CIPP (CyberDrain Improved Partner Portal). Understanding these patterns is essential for building consistent, maintainable pages and components within the application.
+This documentation covers the page construction patterns used in CIPP (CyberDrain Improved Partner Portal). Understanding these patterns is essential for building consistent, maintainable pages and components within the application.
 
 ## Overview
 
@@ -128,7 +128,7 @@ All patterns follow mobile-first responsive design:
 ### Creating a New Table Page
 
 ```javascript
-import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
+import { CippTablePage } from "../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 
 const Page = () => {
@@ -192,7 +192,7 @@ export default Page;
 - [Wizard Pages](./page-types/wizard-pages.md) - Multi-step process patterns
 - [Dashboard Pages](./page-types/dashboard-pages.md) - Dashboard and card layouts
 - [Layout System](./layouts/README.md) - Layout components and patterns
-- [Routing](./routing.md) - Next.js routing patterns and navigation
+- [Routing](../guides/routing.md) - Next.js routing patterns and navigation
 
 ## Contributing
 

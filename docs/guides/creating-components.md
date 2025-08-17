@@ -153,7 +153,7 @@ CippExampleCard.propTypes = {
 
 ### Material-UI Integration
 
-CIPP uses Material-UI v6+ with custom theming. Follow these patterns:
+CIPP uses Material-UI with custom theming. Follow these patterns:
 
 #### Component Styling
 

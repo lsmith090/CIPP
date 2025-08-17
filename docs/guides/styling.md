@@ -689,19 +689,19 @@ import { Grid } from '@mui/system';
 import { Grid } from '@mui/material';
 ```
 
-**MUI Grid v6+ Syntax Requirements:**
+**MUI Grid Syntax Requirements:**
 
-- Use the new `size` prop object syntax: `<Grid size={{ xs: 12, md: 6 }}>`
+- Use the `size` prop object syntax: `<Grid size={{ xs: 12, md: 6 }}>`
 - Avoid the deprecated `item xs={12}` syntax
 - Always specify responsive breakpoints as an object
 
 ```javascript
-// ✅ CORRECT - New Grid v2 syntax
+// ✅ CORRECT - Current Grid syntax
 <Grid size={{ xs: 12, sm: 6, md: 4 }}>
   <Component />
 </Grid>
 
-// ❌ INCORRECT - Old Grid v1 syntax
+// ❌ INCORRECT - Deprecated Grid syntax
 <Grid item xs={12} sm={6} md={4}>
   <Component />
 </Grid>

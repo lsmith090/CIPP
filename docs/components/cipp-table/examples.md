@@ -171,7 +171,8 @@ const UsersTable = () => {
 Complex table with nested data and custom rendering:
 
 ```jsx
-import { CippDataTable } from '/src/components/CippTable/CippDataTable.jsx';
+import { Grid } from '@mui/system';
+import { CippDataTable } from '../../../components/CippTable/CippDataTable.jsx';
 import { useState } from 'react';
 
 const LicenseManagementTable = () => {
@@ -494,7 +495,7 @@ const SecurityAlertsTable = () => {
     if (!realTimeUpdates) return;
     
     const interval = setInterval(() => {
-      queryClient.invalidateQueries(['security-alerts']);
+      queryClient.invalidateQueries({ queryKey: ['security-alerts'] });
     }, 30000); // Refresh every 30 seconds
 
     return () => clearInterval(interval);
@@ -520,7 +521,7 @@ const SecurityAlertsTable = () => {
       renderTopToolbarCustomActions={() => (
         <Stack direction="row" spacing={1} alignItems="center">
           <IconButton
-            onClick={() => queryClient.invalidateQueries(['security-alerts'])}
+            onClick={() => queryClient.invalidateQueries({ queryKey: ['security-alerts'] })}
             size="small"
             title="Refresh"
           >

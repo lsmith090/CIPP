@@ -7,13 +7,15 @@ Comprehensive examples of using CIPP wizard components for complex multi-step wo
 Complete user onboarding workflow with conditional steps:
 
 ```jsx
-import { CippWizard } from '/src/components/CippWizard/CippWizard.jsx';
-import { CippWizardPage } from '/src/components/CippWizard/CippWizardPage.jsx';
-import { CippWizardStepButtons } from '/src/components/CippWizard/CippWizardStepButtons.jsx';
-import { CippFormComponent } from '/src/components/CippComponents/CippFormComponent.jsx';
+import { Grid } from '@mui/system';
+import { CippWizard } from '../../../components/CippWizard/CippWizard.jsx';
+import { CippWizardPage } from '../../../components/CippWizard/CippWizardPage.jsx';
+import { CippWizardStepButtons } from '../../../components/CippWizard/CippWizardStepButtons.jsx';
+import { CippFormComponent } from '../../../components/CippComponents/CippFormComponent.jsx';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { getCippFormatting } from '/src/utils/get-cipp-formatting';
+import { getCippFormatting } from '../../../utils/get-cipp-formatting';
+import { showNotification } from '../../../utils/notifications';
 
 // Validation schemas for each step
 const userInfoSchema = yup.object({
@@ -495,6 +497,7 @@ Multi-tenant configuration wizard with branching logic:
 
 ```jsx
 import { useState } from 'react';
+import { Grid } from '@mui/system';
 
 const TenantSetupWizard = () => {
   const [selectedTenants, setSelectedTenants] = useState([]);

@@ -1,6 +1,6 @@
 # CIPP Custom Hooks Documentation
 
-This document provides comprehensive documentation for all custom React hooks used in the CIPP application. These hooks encapsulate common functionality and provide reusable logic for components.
+This document provides documentation for all custom React hooks used in the CIPP application. These hooks encapsulate common functionality and provide reusable logic for components.
 
 ## Table of Contents
 
@@ -622,9 +622,9 @@ const MyPage = () => {
 ```
 
 **Usage:**
-- Placeholder for future analytics integration
+- Hook for page view tracking
+- No-op implementation
 - Can be extended to track page views
-- No-op implementation ready for enhancement
 
 ### useHasAccess
 
